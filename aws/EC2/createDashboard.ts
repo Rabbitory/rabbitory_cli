@@ -31,7 +31,7 @@ eval "$(pm2 startup | grep 'sudo env')"
 pm2 save
 `;
 
-const createDashboard = async () => {
+export const createDashboard = async () => {
   const encodedUserData = Buffer.from(userData).toString("base64");
 
   const params: RunInstancesCommandInput = {
