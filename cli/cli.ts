@@ -1,9 +1,9 @@
 import { Command } from "commander";
 import { setupRabbitoryRoleWithPolicy } from "../aws/IAM/createRabbitoryRole";
 import { setupBrokerRoleWithPolicy } from "../aws/IAM/createBrokerRole";
+import { setupRabbitorySG } from "../aws/security-groups/createRabbitoryEngineSG";
 import { createDashboard } from "../aws/EC2/createDashboard";
 import { createTable } from "../aws/dynamoDB/createTable";
-import { create } from "domain";
 
 const program = new Command();
 
@@ -20,7 +20,9 @@ program
     // Confirm that user account is linked to AWS
     // Run IAM script
     await setupRabbitoryRoleWithPolicy();
-    await setupRabbitoryRoleWithPolicy();
+    await setupBrokerRoleWithPolicy();
+    // set up security group
+    const securityGroupId = await setupRabbitorySG();
     // Run EC2 script
     await createDashboard();
     // Run database script
