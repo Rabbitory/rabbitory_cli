@@ -15,7 +15,6 @@ sudo apt install -y npm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
 export NVM_DIR="/usr/local/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-source ~/.bashrc
 
 nvm install ${NODE_VERSION}
 nvm use ${NODE_VERSION}
@@ -39,6 +38,13 @@ const createDashboard = async () => {
     InstanceType: "t2.micro",
     MinCount: 1,
     MaxCount: 1,
+    TagSpecifications: [
+      {
+        ResourceType: "instance",
+        Tags: [{ Key: "Name", Value: "rabbitory-dashboard" }],
+      },
+    ],
+
     UserData: encodedUserData,
     SecurityGroupIds: ["sg-0fbcb7b93398dd715"], // Security group ID must be made earlier in setup
   };
