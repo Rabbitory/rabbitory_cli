@@ -24,7 +24,7 @@ const attachPolicy = async (policyArn: string) => {
   }
 };
 
-export const attachPolicies = async () => {
+export const attachRabbitoryPolicies = async () => {
   try {
     for (const policy of policies) {
       await attachPolicy(policy);
