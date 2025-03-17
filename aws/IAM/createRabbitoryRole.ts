@@ -41,7 +41,6 @@ const createRabbitoryRole = async (): Promise<string | null> => {
 };
 
 const policies = [
-  // "arn:aws:iam::aws:policy/AmazonS3FullAccess",
   "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
   "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
 ];
