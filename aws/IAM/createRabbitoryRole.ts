@@ -68,8 +68,7 @@ const attachRabbitoryPolicies = async () => {
   }
 };
 
-// Function that creates the role and attaches the policies in sequence
-export const createAndAttachRabbitoryRole = async () => {
+export const setupRabbitoryRoleWithPolicy = async () => {
   try {
     const roleArn = await createRabbitoryRole();
     if (roleArn) {
@@ -81,3 +80,5 @@ export const createAndAttachRabbitoryRole = async () => {
     console.error("Error in creating role and attaching policies:", error);
   }
 };
+
+// setupRabbitoryRoleWithPolicy();
