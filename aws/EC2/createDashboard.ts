@@ -31,7 +31,7 @@ eval "$(pm2 startup | grep 'sudo env')"
 pm2 save
 `;
 
-export const createDashboard = async () => {
+export const createDashboard = async (securityGroupId: string) => {
   const encodedUserData = Buffer.from(userData).toString("base64");
 
   const params: RunInstancesCommandInput = {
@@ -40,7 +40,7 @@ export const createDashboard = async () => {
     MinCount: 1,
     MaxCount: 1,
     UserData: encodedUserData,
-    SecurityGroupIds: ["sg-0fbcb7b93398dd715"], // Security group ID must be made earlier in setup
+    SecurityGroupIds: [securityGroupId], // Security group ID must be made earlier in setup
   };
 
   try {
