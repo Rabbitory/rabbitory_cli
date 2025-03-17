@@ -113,5 +113,3 @@ export const setupRabbitorySG = async (): Promise<string> => {
     throw err;
   }
 };
-
-setupRabbitorySG();
