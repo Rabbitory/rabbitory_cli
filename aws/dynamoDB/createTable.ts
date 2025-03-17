@@ -4,7 +4,7 @@ const REGION = 'us-east-1';
 const client = new DynamoDBClient({ region: REGION });
 
 // might want to extract to own file if needed elsewhere
-const tableExists = async (tableName) => {
+const tableExists = async (tableName: string) => {
   try {
     await client.send(new DescribeTableCommand({ TableName: tableName }));
     console.log(`Table "${tableName}" already exists.`);
@@ -43,3 +43,5 @@ export const createTable = async () => {
     console.error('Error creating table:', err);
   }
 }
+
+createTable();
