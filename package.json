@@ -12,7 +12,8 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.767.0",
     "@aws-sdk/client-ec2": "^3.767.0",
-    "@aws-sdk/client-iam": "^3.758.0"
+    "@aws-sdk/client-iam": "^3.758.0",
+    "commander": "^13.1.0"
   },
   "type": "module",
   "devDependencies": {
