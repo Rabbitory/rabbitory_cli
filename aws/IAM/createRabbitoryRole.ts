@@ -1,6 +1,11 @@
-import { CreateRoleCommand, AttachRolePolicyCommand, IAMClient, CreateRoleResponse } from "@aws-sdk/client-iam";
+import {
+  CreateRoleCommand,
+  AttachRolePolicyCommand,
+  IAMClient,
+  CreateRoleResponse,
+} from "@aws-sdk/client-iam";
 
-const REGION = 'us-east-1';
+const REGION = "us-east-1";
 const client = new IAMClient({ region: REGION });
 
 export const ROLE_NAME = "RabbitoryRole";
@@ -80,5 +85,3 @@ export const setupRabbitoryRoleWithPolicy = async () => {
     console.error("Error in creating role and attaching policies:", error);
   }
 };
-
-// setupRabbitoryRoleWithPolicy();
