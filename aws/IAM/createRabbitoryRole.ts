@@ -76,12 +76,10 @@ const attachRabbitoryPolicies = async () => {
 export const setupRabbitoryRoleWithPolicy = async () => {
   try {
     const roleArn = await createRabbitoryRole();
-    if (roleArn) {
-      await attachRabbitoryPolicies();
-    } else {
-      console.error("Role creation failed, policies not attached.");
-    }
+    await attachRabbitoryPolicies();
+    return roleArn;
   } catch (error) {
     console.error("Error in creating role and attaching policies:", error);
+    throw error;
   }
 };

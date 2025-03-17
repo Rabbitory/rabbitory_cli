@@ -1,7 +1,7 @@
 import { DynamoDBClient, DeleteTableCommand } from "@aws-sdk/client-dynamodb";
 
-const client = new DynamoDBClient({ region: 'us-east-1' });
-const tableName = 'RabbitoryTable';
+const client = new DynamoDBClient({ region: "us-east-1" });
+const tableName = "RabbitoryTable";
 
 export const deleteTable = async (tableName: string) => {
   try {
@@ -9,12 +9,10 @@ export const deleteTable = async (tableName: string) => {
     const result = await client.send(command);
     console.log(`Table "${tableName}" deleted successfully.`, result);
   } catch (err) {
-    if (err.name === 'ResourceNotFoundException') {
+    if (err.name === "ResourceNotFoundException") {
       console.log(`Table "${tableName}" does not exist.`);
     } else {
-      console.error('Error deleting table:', err);
+      console.error("Error deleting table:", err);
     }
   }
 };
-
-deleteTable(tableName);

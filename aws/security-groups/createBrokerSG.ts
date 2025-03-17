@@ -3,7 +3,6 @@ import {
   DescribeVpcsCommand,
   CreateSecurityGroupCommand,
   AuthorizeSecurityGroupIngressCommand,
-  AuthorizeSecurityGroupEgressCommand,
 } from "@aws-sdk/client-ec2";
 
 const REGION = "us-east-2";
@@ -44,7 +43,8 @@ const createBrokerSecurityGroup = async (vpcId: string): Promise<string> => {
     });
 
     const createSGResponse = await ec2Client.send(createSGCommand);
-    if (!createSGResponse.GroupId) throw new Error("Security Group creation failed");
+    if (!createSGResponse.GroupId)
+      throw new Error("Security Group creation failed");
 
     console.log(`Security Group Created: ${createSGResponse.GroupId}`);
     return createSGResponse.GroupId;
@@ -54,11 +54,18 @@ const createBrokerSecurityGroup = async (vpcId: string): Promise<string> => {
   }
 };
 
-const authorizeIngressTraffic = async (securityGroupId: string): Promise<void> => {
+const authorizeIngressTraffic = async (
+  securityGroupId: string,
+): Promise<void> => {
   try {
     const ingressRules = [
       { IpProtocol: "tcp", FromPort: 5672, ToPort: 5672, CidrIp: "0.0.0.0/0" }, // RabbitMQ
-      { IpProtocol: "tcp", FromPort: 15672, ToPort: 15672, CidrIp: "0.0.0.0/0" }, // RabbitMQ management UI
+      {
+        IpProtocol: "tcp",
+        FromPort: 15672,
+        ToPort: 15672,
+        CidrIp: "0.0.0.0/0",
+      }, // RabbitMQ management UI
       { IpProtocol: "tcp", FromPort: 80, ToPort: 80, CidrIp: "0.0.0.0/0" }, // HTTP
       { IpProtocol: "tcp", FromPort: 443, ToPort: 443, CidrIp: "0.0.0.0/0" }, // HTTPS
       { IpProtocol: "tcp", FromPort: 22, ToPort: 22, CidrIp: "0.0.0.0/0" }, // SSH
@@ -77,26 +84,6 @@ const authorizeIngressTraffic = async (securityGroupId: string): Promise<void> =
   }
 };
 
-// const authorizeEgressTraffic = async (securityGroupId: string): Promise<void> => {
-//   try {
-//     const authorizeEgressCommand = new AuthorizeSecurityGroupEgressCommand({
-//       GroupId: securityGroupId,
-//       IpPermissions: [
-//         {
-//           IpProtocol: "-1", // Allow all outbound traffic
-//           IpRanges: [{ CidrIp: "0.0.0.0/0" }],
-//         },
-//       ],
-//     });
-
-//     await ec2Client.send(authorizeEgressCommand);
-//     console.log("Egress rules set up successfully for BrokerSecurityGroup");
-//   } catch (error) {
-//     console.error("Error authorizing egress rules:", error);
-//     throw error;
-//   }
-// };
-
 export const setupBrokerSG = async (): Promise<string> => {
   try {
     const vpcId = await getVpcId();
@@ -104,12 +91,12 @@ export const setupBrokerSG = async (): Promise<string> => {
     await authorizeIngressTraffic(securityGroupId);
     // await authorizeEgressTraffic(securityGroupId);
 
-    console.log("Security group setup completed successfully for BrokerSecurityGroup.");
+    console.log(
+      "Security group setup completed successfully for BrokerSecurityGroup.",
+    );
     return securityGroupId;
   } catch (err) {
     console.error("Error setting up RabbitMQSecurityGroup:", err);
     throw err;
   }
 };
-
-setupBrokerSG();

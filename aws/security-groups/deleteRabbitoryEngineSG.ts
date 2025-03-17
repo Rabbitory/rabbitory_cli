@@ -1,17 +1,21 @@
-import { 
-  EC2Client, 
-  DescribeSecurityGroupsCommand, 
-  DeleteSecurityGroupCommand 
+import {
+  EC2Client,
+  DescribeSecurityGroupsCommand,
+  DeleteSecurityGroupCommand,
 } from "@aws-sdk/client-ec2";
 
 const REGION = "us-east-2";
 const ec2Client = new EC2Client({ region: REGION });
 
-const getSecurityGroupId = async (groupName: string): Promise<string | null> => {
+const getSecurityGroupId = async (
+  groupName: string,
+): Promise<string | null> => {
   try {
-    const command = new DescribeSecurityGroupsCommand({ GroupNames: [groupName] });
+    const command = new DescribeSecurityGroupsCommand({
+      GroupNames: [groupName],
+    });
     const response = await ec2Client.send(command);
-    
+
     if (!response.SecurityGroups || response.SecurityGroups.length === 0) {
       console.log(`No security group found with name: ${groupName}`);
       return null;
@@ -43,16 +47,14 @@ const deleteRabbitoryEngineSG = async (): Promise<void> => {
   try {
     const groupName = "RabbitoryEngineSG";
     const securityGroupId = await getSecurityGroupId(groupName);
-    
+
     if (!securityGroupId) {
       console.log("No security group found to delete.");
       return;
     }
-    
+
     await deleteSecurityGroup(securityGroupId);
   } catch (error) {
     console.error("Failed to delete RabbitoryEngineSG:", error);
   }
 };
-
-deleteRabbitoryEngineSG();

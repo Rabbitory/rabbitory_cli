@@ -1,8 +1,8 @@
-import { 
-  IAMClient, 
-  ListAttachedRolePoliciesCommand, 
-  DetachRolePolicyCommand, 
-  DeleteRoleCommand 
+import {
+  IAMClient,
+  ListAttachedRolePoliciesCommand,
+  DetachRolePolicyCommand,
+  DeleteRoleCommand,
 } from "@aws-sdk/client-iam";
 import { ROLE_NAME } from "./createRabbitoryRole";
 
@@ -11,7 +11,9 @@ const client = new IAMClient({ region: REGION });
 
 const detachAllPolicies = async () => {
   try {
-    const listCommand = new ListAttachedRolePoliciesCommand({ RoleName: ROLE_NAME });
+    const listCommand = new ListAttachedRolePoliciesCommand({
+      RoleName: ROLE_NAME,
+    });
     const response = await client.send(listCommand);
 
     if (response.AttachedPolicies) {
@@ -42,5 +44,3 @@ export const deleteRabbitoryRole = async () => {
     console.error("Error deleting role:", error);
   }
 };
-
-deleteRabbitoryRole();

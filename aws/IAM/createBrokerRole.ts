@@ -1,8 +1,8 @@
-import { 
-  IAMClient, 
-  CreateRoleCommand, 
-  AttachRolePolicyCommand, 
-  CreateRoleResponse 
+import {
+  IAMClient,
+  CreateRoleCommand,
+  AttachRolePolicyCommand,
+  CreateRoleResponse,
 } from "@aws-sdk/client-iam";
 
 const REGION = "us-east-1";
@@ -47,7 +47,7 @@ const createBrokerRole = async (): Promise<string | null> => {
 const attachDynamoDBPolicy = async () => {
   try {
     const policyArn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess";
-    
+
     const command = new AttachRolePolicyCommand({
       RoleName: ROLE_NAME,
       PolicyArn: policyArn,
@@ -66,5 +66,3 @@ export const setupBrokerRoleWithPolicy = async () => {
     await attachDynamoDBPolicy();
   }
 };
-
-setupBrokerRoleWithPolicy();
