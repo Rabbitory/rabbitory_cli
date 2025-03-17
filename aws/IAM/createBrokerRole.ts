@@ -60,11 +60,11 @@ const attachDynamoDBPolicy = async () => {
   }
 };
 
-export const setupRoleWithPolicy = async () => {
+export const setupBrokerRoleWithPolicy = async () => {
   const roleArn = await createBrokerRole();
   if (roleArn) {
     await attachDynamoDBPolicy();
   }
 };
 
-setupRoleWithPolicy();
+setupBrokerRoleWithPolicy();
