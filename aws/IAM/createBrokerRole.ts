@@ -1,6 +1,11 @@
-import { CreateRoleCommand, IAMClient, CreateRoleResponse } from "@aws-sdk/client-iam";
+import { 
+  IAMClient, 
+  CreateRoleCommand, 
+  AttachRolePolicyCommand, 
+  CreateRoleResponse 
+} from "@aws-sdk/client-iam";
 
-const REGION = 'us-east-1';
+const REGION = "us-east-1";
 const client = new IAMClient({ region: REGION });
 
 export const ROLE_NAME = "RMQBrokerRole";
@@ -21,7 +26,7 @@ const ROLE_REQUEST = {
   RoleName: ROLE_NAME,
 };
 
-export const createBrokerRole = async (): Promise<string | null> => {
+const createBrokerRole = async (): Promise<string | null> => {
   try {
     const command = new CreateRoleCommand(ROLE_REQUEST);
     const response: CreateRoleResponse = await client.send(command);
@@ -35,8 +40,31 @@ export const createBrokerRole = async (): Promise<string | null> => {
     }
   } catch (error) {
     console.error("Error creating role:", error);
-    return null; // Return null in case of error
+    return null;
   }
 };
 
-createBrokerRole();
+const attachDynamoDBPolicy = async () => {
+  try {
+    const policyArn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess";
+    
+    const command = new AttachRolePolicyCommand({
+      RoleName: ROLE_NAME,
+      PolicyArn: policyArn,
+    });
+
+    await client.send(command);
+    console.log(`Policy attached successfully: ${policyArn}`);
+  } catch (error) {
+    console.error("Error attaching policy:", error);
+  }
+};
+
+export const setupRoleWithPolicy = async () => {
+  const roleArn = await createBrokerRole();
+  if (roleArn) {
+    await attachDynamoDBPolicy();
+  }
+};
+
+setupRoleWithPolicy();
