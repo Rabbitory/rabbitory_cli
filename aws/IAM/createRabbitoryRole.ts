@@ -21,7 +21,7 @@ const ROLE_REQUEST = {
   RoleName: ROLE_NAME,
 };
 
-export const createRole = async (): Promise<string | null> => {
+export const createRabbitoryRole = async (): Promise<string | null> => {
   try {
     const command = new CreateRoleCommand(ROLE_REQUEST);
     const response: CreateRoleResponse = await client.send(command);
