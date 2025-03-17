@@ -11,5 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-iam": "^3.758.0"
-  }
+  },
+  "type": "module"
 }
