@@ -5,6 +5,7 @@ const REGION = 'us-east-1';
 const client = new IAMClient({ region: REGION });
 
 // REMINDER: place in order if order matters
+// REMINDER: edit polices to follow least privilege later on
 const policies = [
   // "arn:aws:iam::aws:policy/AmazonS3FullAccess",
   "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
