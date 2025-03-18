@@ -33,6 +33,3 @@ export const getInstanceByName = async (instanceName: string) => {
   console.log(instanceIds);
   return instanceIds;
 };
-
-getInstanceByName('RabbitoryDashboard');
-
