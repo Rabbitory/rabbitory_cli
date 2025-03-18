@@ -2,7 +2,7 @@ import { EC2Client, RunInstancesCommand } from "@aws-sdk/client-ec2";
 
 import type { RunInstancesCommandInput } from "@aws-sdk/client-ec2";
 
-const REGION = "us-east-2";
+const REGION = "us-east-1";
 const NODE_VERSION = "23.9";
 
 const ec2Client = new EC2Client({ region: REGION });
@@ -32,12 +32,12 @@ pm2 save
 
 export const createDashboard = async (
   securityGroupId: string,
-  roleArn: string,
+  IPN: string,
 ) => {
   const encodedUserData = Buffer.from(userData).toString("base64");
 
   const params: RunInstancesCommandInput = {
-    ImageId: "ami-0cb91c7de36eed2cb", // Ubuntu 24.04 LTS | Region specific
+    ImageId: "ami-084568db4383264d4", // Ubuntu 24.04 LTS | Region specific
     InstanceType: "t2.micro",
     MinCount: 1,
     MaxCount: 1,
@@ -49,9 +49,9 @@ export const createDashboard = async (
     ],
 
     UserData: encodedUserData,
-    SecurityGroupIds: [securityGroupId], // Security group ID must be made earlier in setup
+    SecurityGroupIds: [securityGroupId],
     IamInstanceProfile: {
-      Name: "RabbitoryRole",
+      Name: IPN,
     },
   };
 

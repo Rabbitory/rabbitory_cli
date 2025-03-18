@@ -123,3 +123,5 @@ export const createRabbitoryEngineIAM = async (): Promise<string> => {
     throw error;
   }
 };
+
+// createRabbitoryEngineIAM();

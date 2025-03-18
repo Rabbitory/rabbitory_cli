@@ -6,7 +6,10 @@ import {
   DeleteInstanceProfileCommand,
   DeleteRoleCommand,
 } from "@aws-sdk/client-iam";
-import { ROLE_NAME, INSTANCE_PROFILE_NAME } from "./createRabbitoryRole";
+// import { ROLE_NAME, INSTANCE_PROFILE_NAME } from "./createRabbitoryRole";
+
+const ROLE_NAME = "RabbitoryRole";
+const INSTANCE_PROFILE_NAME = "RabbitoryInstanceProfile"
 
 const REGION = "us-east-1";
 const client = new IAMClient({ region: REGION });
@@ -46,6 +49,7 @@ const removeRoleFromInstanceProfile = async () => {
       InstanceProfileName: INSTANCE_PROFILE_NAME,
       RoleName: ROLE_NAME,
     });
+
     await client.send(removeRoleCommand);
     console.log(`Role ${ROLE_NAME} removed from instance profile.`);
   } catch (error: unknown) {
@@ -75,7 +79,7 @@ const deleteInstanceProfile = async () => {
   }
 };
 
-export const deleteBrokerRole = async () => {
+export const deleteRabbitoryRole = async () => {
   try {
     await removeRoleFromInstanceProfile();
     await deleteInstanceProfile();
@@ -88,3 +92,5 @@ export const deleteBrokerRole = async () => {
     console.error("Error deleting role:", error);
   }
 };
+
+// deleteRabbitoryRole();
