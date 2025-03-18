@@ -6,7 +6,6 @@ import {
   DeleteInstanceProfileCommand,
   DeleteRoleCommand,
 } from "@aws-sdk/client-iam";
-// import { ROLE_NAME, INSTANCE_PROFILE_NAME } from "./createRabbitoryRole";
 
 const ROLE_NAME = "RabbitoryRole";
 const INSTANCE_PROFILE_NAME = "RabbitoryInstanceProfile"
