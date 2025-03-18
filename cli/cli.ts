@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import { deploy } from "./deploy";
+import { destroy } from "./destroy";
 
 const program = new Command();
 
@@ -12,5 +13,10 @@ program
   .command("deploy")
   .description("deploy Rabbitory to AWS")
   .action(async () => deploy());
+
+program
+  .command("destroy")
+  .description("destroy Rabbitory architecture")
+  .action(async () => destroy());
 
 program.parse();
