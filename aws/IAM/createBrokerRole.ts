@@ -29,21 +29,16 @@ const ROLE_REQUEST = {
   RoleName: ROLE_NAME,
 };
 
-const createBrokerRole = async (): Promise<string | null> => {
+const createBrokerRole = async (): Promise<void> => {
   try {
     const command = new CreateRoleCommand(ROLE_REQUEST);
     const response: CreateRoleResponse = await client.send(command);
 
-    if (response.Role && response.Role.Arn) {
-      console.log("Role created successfully:", response.Role.Arn);
-      return response.Role.Arn; // Return the ARN
-    } else {
-      console.error("Error: Role or Role ARN is undefined");
-      return null;
+    if (!response.Role?.Arn) {
+      throw new Error("Role or Role ARN is undefined");
     }
   } catch (error) {
-    console.error("Error creating role:", error);
-    return null;
+    throw new Error(`Failed to create role: ${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -55,54 +50,41 @@ const attachDynamoDBPolicy = async () => {
       PolicyArn: policyArn,
     });
     await client.send(command);
-    console.log(`Policy attached successfully: ${policyArn}`);
   } catch (error) {
-    console.error("Error attaching policy:", error);
+    throw new Error(`Failed to attach one or more policies: ${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
-const createInstanceProfile = async (): Promise<string | null> => {
+const createInstanceProfile = async (): Promise<string> => {
   try {
-    const createProfileCommand = new CreateInstanceProfileCommand({
+    const command = new CreateInstanceProfileCommand({
       InstanceProfileName: INSTANCE_PROFILE_NAME,
     });
-    await client.send(createProfileCommand);
-    console.log(`Instance profile ${INSTANCE_PROFILE_NAME} created successfully`);
+    await client.send(command);
     return INSTANCE_PROFILE_NAME;
   } catch (error) {
-    console.error("Error creating instance profile:", error);
-    return null;
+    throw new Error(`Failed to create instance profile: ${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
-const addRoleToInstanceProfile = async (): Promise<boolean> => {
+const addRoleToInstanceProfile = async (): Promise<void> => {
   try {
-    const addRoleCommand = new AddRoleToInstanceProfileCommand({
+    const command = new AddRoleToInstanceProfileCommand({
       InstanceProfileName: INSTANCE_PROFILE_NAME,
       RoleName: ROLE_NAME,
     });
-    await client.send(addRoleCommand);
-    console.log(`Role ${ROLE_NAME} added to instance profile ${INSTANCE_PROFILE_NAME}`);
-    return true;
+    await client.send(command);
   } catch (error) {
-    console.error("Error adding role to instance profile:", error);
-    return false;
+    throw new Error(`Failed to add role to instance profile: ${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
 export const createRMQBrokerIAM = async (): Promise<string> => {
   try {
-    const roleArn = await createBrokerRole();
-    if (!roleArn) throw new Error("Role creation failed");
-
+    await createBrokerRole();
     await attachDynamoDBPolicy();
-
     const instanceProfile = await createInstanceProfile();
-    if (!instanceProfile) throw new Error("Instance profile creation failed");
-
-    const roleAdded = await addRoleToInstanceProfile();
-    if (!roleAdded) throw new Error("Failed to add role to instance profile");
-
+    await addRoleToInstanceProfile();
     return instanceProfile;
   } catch (error) {
     console.error("Error in setting up role, policies, or instance profile:", error);

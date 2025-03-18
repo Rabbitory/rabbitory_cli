@@ -10,8 +10,8 @@ import {
 const REGION = 'us-east-1';
 const client = new IAMClient({ region: REGION });
 
-export const ROLE_NAME = "RabbitoryRole";
-export const INSTANCE_PROFILE_NAME = "RabbitoryInstanceProfile";
+const ROLE_NAME = "RabbitoryRole";
+const INSTANCE_PROFILE_NAME = "RabbitoryInstanceProfile";
 
 const ROLE_REQUEST = {
   AssumeRolePolicyDocument: JSON.stringify({
