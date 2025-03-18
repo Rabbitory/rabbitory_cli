@@ -75,7 +75,7 @@ const deleteInstanceProfile = async () => {
   }
 };
 
-export const deleteRabbitoryRole = async () => {
+export const deleteBrokerRole = async () => {
   try {
     await removeRoleFromInstanceProfile();
     await deleteInstanceProfile();
