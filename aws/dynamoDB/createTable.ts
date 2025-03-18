@@ -14,10 +14,14 @@ const tableExists = async (tableName: string) => {
     console.log(`Table "${tableName}" already exists.`);
     return true;
   } catch (err) {
-    if (err.name !== "ResourceNotFoundException") {
-      console.error("Error checking table existence:", err);
+    if (err instanceof Error) {
+      if (err.name !== "ResourceNotFoundException") {
+        console.error("Error checking table existence:", err);
+      } else {
+        return false;
+      }
     } else {
-      return false;
+      console.error("Unknown error:", err);
     }
   }
 };
