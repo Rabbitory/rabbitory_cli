@@ -9,10 +9,14 @@ export const deleteTable = async (tableName: string) => {
     const result = await client.send(command);
     console.log(`Table "${tableName}" deleted successfully.`, result);
   } catch (err) {
-    if (err.name === "ResourceNotFoundException") {
-      console.log(`Table "${tableName}" does not exist.`);
+    if (err instanceof Error) {
+      if (err.name === "ResourceNotFoundException") {
+        console.log(`Table "${tableName}" does not exist.`);
+      } else {
+        console.error("Error deleting table:", err);
+      }
     } else {
-      console.error("Error deleting table:", err);
+      console.log("Unknown error:", err);
     }
   }
 };
