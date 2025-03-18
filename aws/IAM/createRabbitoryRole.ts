@@ -1,16 +1,18 @@
-import {
-  CreateRoleCommand,
-  AttachRolePolicyCommand,
-  IAMClient,
-  CreateRoleResponse,
+import { 
+  CreateRoleCommand, 
+  AttachRolePolicyCommand, 
+  CreateInstanceProfileCommand,
+  AddRoleToInstanceProfileCommand,
+  IAMClient, 
+  CreateRoleResponse 
 } from "@aws-sdk/client-iam";
 
-const REGION = "us-east-1";
+const REGION = 'us-east-1';
 const client = new IAMClient({ region: REGION });
 
 export const ROLE_NAME = "RabbitoryRole";
+export const INSTANCE_PROFILE_NAME = "RabbitoryInstanceProfile";
 
-// Role creation request
 const ROLE_REQUEST = {
   AssumeRolePolicyDocument: JSON.stringify({
     Version: "2012-10-17",
@@ -45,25 +47,25 @@ const createRabbitoryRole = async (): Promise<string | null> => {
   }
 };
 
-const policies = [
-  "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
-  "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
-];
-
-const attachPolicy = async (policyArn: string) => {
-  try {
-    const command = new AttachRolePolicyCommand({
-      RoleName: ROLE_NAME,
-      PolicyArn: policyArn,
-    });
-    await client.send(command);
-    console.log(`Policy ${policyArn} attached successfully`);
-  } catch (error) {
-    console.error(`Error attaching policy ${policyArn}:`, error);
-  }
-};
-
 const attachRabbitoryPolicies = async () => {
+  const policies = [
+    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
+    "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
+  ];
+  
+  const attachPolicy = async (policyArn: string) => {
+    try {
+      const command = new AttachRolePolicyCommand({
+        RoleName: ROLE_NAME,
+        PolicyArn: policyArn,
+      });
+      await client.send(command);
+      console.log(`Policy ${policyArn} attached successfully`);
+    } catch (error) {
+      console.error(`Error attaching policy ${policyArn}:`, error);
+    }
+  };
+  
   try {
     for (const policy of policies) {
       await attachPolicy(policy);
@@ -73,13 +75,51 @@ const attachRabbitoryPolicies = async () => {
   }
 };
 
-export const setupRabbitoryRoleWithPolicy = async () => {
+const createInstanceProfile = async (): Promise<string | null> => {
+  try {
+    const createProfileCommand = new CreateInstanceProfileCommand({
+      InstanceProfileName: INSTANCE_PROFILE_NAME,
+    });
+    await client.send(createProfileCommand);
+    console.log(`Instance profile ${INSTANCE_PROFILE_NAME} created successfully`);
+    return INSTANCE_PROFILE_NAME;
+  } catch (error) {
+    console.error("Error creating instance profile:", error);
+    return null;
+  }
+};
+
+const addRoleToInstanceProfile = async (): Promise<boolean> => {
+  try {
+    const addRoleCommand = new AddRoleToInstanceProfileCommand({
+      InstanceProfileName: INSTANCE_PROFILE_NAME,
+      RoleName: ROLE_NAME,
+    });
+    await client.send(addRoleCommand);
+    console.log(`Role ${ROLE_NAME} added to instance profile ${INSTANCE_PROFILE_NAME}`);
+    return true;
+  } catch (error) {
+    console.error("Error adding role to instance profile:", error);
+    return false;
+  }
+};
+
+export const setupRabbitoryRoleWithPolicy = async (): Promise<string> => {
   try {
     const roleArn = await createRabbitoryRole();
+    if (!roleArn) throw new Error("Role creation failed");
+
     await attachRabbitoryPolicies();
-    return roleArn;
+    
+    const instanceProfile = await createInstanceProfile();
+    if (!instanceProfile) throw new Error("Instance profile creation failed");
+
+    const roleAdded = await addRoleToInstanceProfile();
+    if (!roleAdded) throw new Error("Failed to add role to instance profile");
+
+    return instanceProfile;
   } catch (error) {
-    console.error("Error in creating role and attaching policies:", error);
+    console.error("Error in setting up role, policies, or instance profile:", error);
     throw error;
   }
 };
