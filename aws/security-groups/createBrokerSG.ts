@@ -59,16 +59,11 @@ const authorizeIngressTraffic = async (
 ): Promise<void> => {
   try {
     const ingressRules = [
-      { IpProtocol: "tcp", FromPort: 5672, ToPort: 5672, CidrIp: "0.0.0.0/0" }, // RabbitMQ
-      {
-        IpProtocol: "tcp",
-        FromPort: 15672,
-        ToPort: 15672,
-        CidrIp: "0.0.0.0/0",
-      }, // RabbitMQ management UI
-      { IpProtocol: "tcp", FromPort: 80, ToPort: 80, CidrIp: "0.0.0.0/0" }, // HTTP
-      { IpProtocol: "tcp", FromPort: 443, ToPort: 443, CidrIp: "0.0.0.0/0" }, // HTTPS
-      { IpProtocol: "tcp", FromPort: 22, ToPort: 22, CidrIp: "0.0.0.0/0" }, // SSH
+      { IpProtocol: "tcp", FromPort: 5672, ToPort: 5672, IpRanges: [{ CidrIp: "0.0.0.0/0" }] }, // RabbitMQ
+      { IpProtocol: "tcp", FromPort: 15672, ToPort: 15672, IpRanges: [{ CidrIp: "0.0.0.0/0" }] }, // RabbitMQ management UI
+      { IpProtocol: "tcp", FromPort: 80, ToPort: 80, IpRanges: [{ CidrIp: "0.0.0.0/0" }] }, // HTTP
+      { IpProtocol: "tcp", FromPort: 443, ToPort: 443, IpRanges: [{ CidrIp: "0.0.0.0/0" }] }, // HTTPS
+      { IpProtocol: "tcp", FromPort: 22, ToPort: 22, IpRanges: [{ CidrIp: "0.0.0.0/0" }] }, // SSH
     ];
 
     const authorizeIngressCommand = new AuthorizeSecurityGroupIngressCommand({
@@ -89,7 +84,6 @@ export const setupBrokerSG = async (): Promise<string> => {
     const vpcId = await getVpcId();
     const securityGroupId = await createBrokerSecurityGroup(vpcId);
     await authorizeIngressTraffic(securityGroupId);
-    // await authorizeEgressTraffic(securityGroupId);
 
     console.log(
       "Security group setup completed successfully for BrokerSecurityGroup.",
