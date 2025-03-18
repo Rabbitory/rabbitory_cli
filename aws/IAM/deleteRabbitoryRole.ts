@@ -6,12 +6,10 @@ import {
   DeleteInstanceProfileCommand,
   DeleteRoleCommand,
 } from "@aws-sdk/client-iam";
-import { ROLE_NAME } from "./createRabbitoryRole";
+import { ROLE_NAME, INSTANCE_PROFILE_NAME } from "./createRabbitoryRole";
 
 const REGION = "us-east-1";
 const client = new IAMClient({ region: REGION });
-
-const INSTANCE_PROFILE_NAME = "RabbitoryInstanceProfile"; // Ensure this matches the creation file
 
 const isAwsError = (error: unknown): error is { name: string; message: string } => {
   return typeof error === "object" && error !== null && "name" in error && "message" in error;
