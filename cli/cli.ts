@@ -35,8 +35,8 @@ program
       const brokerSecurityGroupId = await setupBrokerSG();
 
       // WAIT FOR IPNs TO BE PROPAGATED TO AWS
-      console.log("Waiting 10 seconds for IAM instance profile to propagate...");
-      await new Promise((resolve) => setTimeout(resolve, 10000)); // 10-second delay
+      console.log("Waiting 5 seconds for IAM instance profile to propagate...");
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // 5-second delay
 
       // CREATE RABBITORY EC2
       await createDashboard(rabbitorySecurityGroupId, rabbitoryIPN);
