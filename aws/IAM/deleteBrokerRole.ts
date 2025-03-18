@@ -2,12 +2,21 @@ import {
   IAMClient, 
   ListAttachedRolePoliciesCommand, 
   DetachRolePolicyCommand, 
-  DeleteRoleCommand 
+  DeleteRoleCommand,
+  DeleteInstanceProfileCommand,
+  RemoveRoleFromInstanceProfileCommand
 } from "@aws-sdk/client-iam";
-import { ROLE_NAME } from "./createBrokerRole";
+
+
+const ROLE_NAME = "RMQBrokerRole";
+const INSTANCE_PROFILE_NAME = "RMQBrokerInstanceProfile"
 
 const REGION = "us-east-1";
 const client = new IAMClient({ region: REGION });
+
+const isAwsError = (error: unknown): error is { name: string; message: string } => {
+  return typeof error === "object" && error !== null && "name" in error && "message" in error;
+};
 
 const detachAllPolicies = async () => {
   try {
@@ -32,9 +41,48 @@ const detachAllPolicies = async () => {
   }
 };
 
+const removeRoleFromInstanceProfile = async () => {
+  try {
+    const removeRoleCommand = new RemoveRoleFromInstanceProfileCommand({
+      InstanceProfileName: INSTANCE_PROFILE_NAME,
+      RoleName: ROLE_NAME,
+    });
+
+    await client.send(removeRoleCommand);
+    console.log(`Role ${ROLE_NAME} removed from instance profile.`);
+  } catch (error: unknown) {
+    if (isAwsError(error) && error.name === "NoSuchEntityException") {
+      console.warn("Role is not attached to any instance profile. Skipping.");
+    } else {
+      console.error("Error removing role from instance profile:", error);
+      throw error;
+    }
+  }
+};
+
+const deleteInstanceProfile = async () => {
+  try {
+    const deleteProfileCommand = new DeleteInstanceProfileCommand({
+      InstanceProfileName: INSTANCE_PROFILE_NAME,
+    });
+    await client.send(deleteProfileCommand);
+    console.log(`Instance profile ${INSTANCE_PROFILE_NAME} deleted successfully.`);
+  } catch (error: unknown) {
+    if (isAwsError(error) && error.name === "NoSuchEntityException") {
+      console.warn("Instance profile does not exist. Skipping deletion.");
+    } else {
+      console.error("Error deleting instance profile:", error);
+      throw error;
+    }
+  }
+};
+
 export const deleteBrokerRole = async () => {
   try {
-    await detachAllPolicies(); // Ensure policies are detached before deleting
+    await removeRoleFromInstanceProfile();
+    await deleteInstanceProfile();
+    await detachAllPolicies();
+    
     const deleteCommand = new DeleteRoleCommand({ RoleName: ROLE_NAME });
     await client.send(deleteCommand);
     console.log(`Role ${ROLE_NAME} deleted successfully.`);
@@ -42,5 +90,3 @@ export const deleteBrokerRole = async () => {
     console.error("Error deleting role:", error);
   }
 };
-
-// deleteBrokerRole();
