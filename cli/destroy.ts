@@ -1,5 +1,4 @@
 import { deleteTable } from "../aws/dynamoDB/removeTable";
-import { deleteBrokerSG } from "../aws/security-groups/deleteBrokerSG";
 import { deleteRabbitoryEngineSG } from "../aws/security-groups/deleteRabbitoryEngineSG";
 import { deleteBrokerRole } from "../aws/IAM/deleteBrokerRole";
 import { deleteRabbitoryRole } from "../aws/IAM/deleteRabbitoryRole";
@@ -19,9 +18,7 @@ export const destroy = async () => {
     console.log(`No EC2 instance with name "${instanceName} exists`);
   }
 
-  await deleteBrokerSG();
   await deleteRabbitoryEngineSG();
   await deleteBrokerRole();
   await deleteRabbitoryRole();
-
 }

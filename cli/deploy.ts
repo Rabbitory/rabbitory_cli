@@ -1,7 +1,7 @@
 import { createRabbitoryEngineIAM } from "../aws/IAM/createRabbitoryRole";
 import { createRMQBrokerIAM } from "../aws/IAM/createBrokerRole";
 import { setupRabbitorySG } from "../aws/security-groups/createRabbitoryEngineSG";
-import { setupBrokerSG } from "../aws/security-groups/createBrokerSG";
+import { setupBrokerSG } from "../../testing/createBrokerSG";
 import { createDashboard } from "../aws/EC2/createDashboard";
 import { createTable } from "../aws/dynamoDB/createTable";
 
@@ -20,7 +20,7 @@ export const deploy = async () => {
     console.log(" --- Successfully created RMQBroker IAM role and instance profile:", brokerIPN);
 
     // CREATE SECURITY GROUPS
-    const brokerSecurityGroupId = await setupBrokerSG();
+    // const brokerSecurityGroupId = await setupBrokerSG();
     const rabbitorySecurityGroupId = await setupRabbitorySG();
 
     // WAIT FOR IPNs TO BE PROPAGATED TO AWS
