@@ -19,6 +19,7 @@ export const destroy = async () => {
     console.log(`No EC2 instance with name "${instanceName} exists`);
   }
 
+  await new Promise((resolve) => setTimeout(resolve, 10000)); // 10-second delay
   await deleteBrokerSG();
   await deleteRabbitoryEngineSG();
   await deleteBrokerRole();
