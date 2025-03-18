@@ -18,9 +18,6 @@ export const getInstanceByName = async (instanceName: string) => {
     reservation.Instances?.map(instance => instance.InstanceId)
   ) || []).filter((id) => id !== undefined);
 
-  console.log(instanceIds);
   return instanceIds;
 };
-
-getInstanceByName("RabbitoryDashboard")
 

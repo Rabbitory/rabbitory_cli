@@ -14,7 +14,7 @@ export const destroy = async () => {
   await deleteTable(tableName);
 
   if (instanceIds.length > 0) {
-    await deleteInstance(instanceIds[0]);
+    await deleteInstance(instanceIds[instanceIds.length - 1]);
   } else {
     console.log(`No EC2 instance with name "${instanceName} exists`);
   }
