@@ -59,10 +59,10 @@ const createRabbitoryEngineSG = async (vpcId: string): Promise<string> => {
 const authorizeIngressTraffic = async (securityGroupId: string): Promise<void> => {
   try {
     const ingressRules = [
-      { IpProtocol: "tcp", FromPort: 22, ToPort: 22, CidrIp: "0.0.0.0/0" }, // SSH
-      { IpProtocol: "tcp", FromPort: 80, ToPort: 80, CidrIp: "0.0.0.0/0" }, // HTTP
-      { IpProtocol: "tcp", FromPort: 443, ToPort: 443, CidrIp: "0.0.0.0/0" }, // HTTPS
-      { IpProtocol: "tcp", FromPort: 3000, ToPort: 3000, CidrIp: "0.0.0.0/0" }, // Next.js app on port 3000
+      { IpProtocol: "tcp", FromPort: 22, ToPort: 22, IpRanges: [{ CidrIp: "0.0.0.0/0" }] }, // SSH
+      { IpProtocol: "tcp", FromPort: 80, ToPort: 80, IpRanges: [{ CidrIp: "0.0.0.0/0" }] }, // HTTP
+      { IpProtocol: "tcp", FromPort: 443, ToPort: 443, IpRanges: [{ CidrIp: "0.0.0.0/0" }] }, // HTTPS
+      { IpProtocol: "tcp", FromPort: 3000, ToPort: 3000, IpRanges: [{ CidrIp: "0.0.0.0/0" }] }, // Next.js app on port 3000
     ];
 
     const authorizeIngressCommand = new AuthorizeSecurityGroupIngressCommand({
@@ -81,9 +81,9 @@ const authorizeIngressTraffic = async (securityGroupId: string): Promise<void> =
 const authorizeEgressTraffic = async (securityGroupId: string): Promise<void> => {
   try {
     const egressRules = [
-      { IpProtocol: "tcp", FromPort: 80, ToPort: 80, CidrIp: "0.0.0.0/0" },  // HTTP
-      { IpProtocol: "tcp", FromPort: 443, ToPort: 443, CidrIp: "0.0.0.0/0" }, // HTTPS
-      { IpProtocol: "tcp", FromPort: 3000, ToPort: 3000, CidrIp: "0.0.0.0/0" }, // Next.js app on port 3000
+      { IpProtocol: "tcp", FromPort: 80, ToPort: 80, IpRanges: [{ CidrIp: "0.0.0.0/0" }] },  // HTTP
+      { IpProtocol: "tcp", FromPort: 443, ToPort: 443, IpRanges: [{ CidrIp: "0.0.0.0/0" }] }, // HTTPS
+      { IpProtocol: "tcp", FromPort: 3000, ToPort: 3000, IpRanges: [{ CidrIp: "0.0.0.0/0" }] }, // Next.js app on port 3000
     ];
 
     const authorizeEgressCommand = new AuthorizeSecurityGroupEgressCommand({
