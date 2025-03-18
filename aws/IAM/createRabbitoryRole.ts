@@ -104,7 +104,7 @@ const addRoleToInstanceProfile = async (): Promise<boolean> => {
   }
 };
 
-export const setupRabbitoryRoleWithPolicy = async (): Promise<string> => {
+export const setupRabbitoryEngineIAM = async (): Promise<string> => {
   try {
     const roleArn = await createRabbitoryRole();
     if (!roleArn) throw new Error("Role creation failed");
