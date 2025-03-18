@@ -9,12 +9,12 @@ import { getInstanceByName } from "./getInstanceByName";
 export const destroy = async () => {
   const tableName = "RabbitoryTable";
   const instanceName = "RabbitoryDashboard";
-  const instanceIds: string[] = await getInstanceByName(instanceName);
+  const instanceIds: string[] | undefined = await getInstanceByName(instanceName);
 
   await deleteTable(tableName);
 
-  if (instanceIds.length > 0) {
-    await deleteInstance(instanceIds[instanceIds.length - 1]);
+  if (instanceIds !== undefined && instanceIds.length > 0) {
+    await deleteInstance(instanceIds[0]);
   } else {
     console.log(`No EC2 instance with name "${instanceName} exists`);
   }

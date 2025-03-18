@@ -13,11 +13,26 @@ export const getInstanceByName = async (instanceName: string) => {
   });
 
   const data = await ec2Client.send(command);
+  const reservations = data.Reservations;
+  let instanceIds;
 
-  const instanceIds = (data.Reservations?.flatMap(reservation =>
-    reservation.Instances?.map(instance => instance.InstanceId)
-  ) || []).filter((id) => id !== undefined);
+  if (reservations !== undefined && reservations.length > 0) {
+    instanceIds = (reservations).reduce<string[]>((ids, reservation) => {
+      if (reservation.Instances !== undefined && reservation.Instances.length > 0) {
+        const runningInstanceIds = (reservation.Instances || [])
+          .filter(instance => instance.State?.Name === 'running')
+          .map(instance => instance.InstanceId)
+          .filter(id => id !== undefined);
+        return [...ids, ...runningInstanceIds];
+      } else {
+        return ids;
+      }
+    }, [])
+  }
 
+  console.log(instanceIds);
   return instanceIds;
 };
+
+getInstanceByName('RabbitoryDashboard');
 
