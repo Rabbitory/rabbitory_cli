@@ -2,8 +2,7 @@ import {
   EC2Client, 
   DescribeVpcsCommand, 
   CreateSecurityGroupCommand, 
-  AuthorizeSecurityGroupIngressCommand, 
-  AuthorizeSecurityGroupEgressCommand 
+  AuthorizeSecurityGroupIngressCommand
 } from "@aws-sdk/client-ec2";
 
 const REGION = "us-east-1";
@@ -22,10 +21,13 @@ const getVpcId = async (): Promise<string> => {
     if (defaultVpc?.VpcId) {
        // Get the default VPC if available
       return defaultVpc.VpcId;
+    } else if (!response.Vpcs[0].VpcId) {
+      // Check if there is a first available VPC, if not throw error
+      throw new Error("No VPC ID found in the first available VPC.");
     } else {
       // Fallback: Return the first available VPC
       console.warn("No default VPC found, using the first available VPC.");
-      return response.Vpcs[0].VpcId!;
+      return response.Vpcs[0].VpcId;
     }
   } catch (error) {
     throw new Error(`Failed to retrieve VPC ID: ${error instanceof Error ? error.message : String(error)}`);
