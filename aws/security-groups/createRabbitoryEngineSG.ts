@@ -18,19 +18,17 @@ const getVpcId = async (): Promise<string> => {
       throw new Error("No VPCs found in the region.");
     }
 
-    // Get the default VPC if available
     const defaultVpc = response.Vpcs.find((vpc) => vpc.IsDefault);
     if (defaultVpc?.VpcId) {
-      console.log(`Found default VPC ID.`);
+       // Get the default VPC if available
       return defaultVpc.VpcId;
+    } else {
+      // Fallback: Return the first available VPC
+      console.warn("No default VPC found, using the first available VPC.");
+      return response.Vpcs[0].VpcId!;
     }
-
-    // Fallback: Return the first available VPC
-    console.warn("No default VPC found, using the first available VPC.");
-    return response.Vpcs[0].VpcId!;
   } catch (error) {
-    console.error("Error retrieving VPC ID:", error);
-    throw error;
+    throw new Error(`Failed to retrieve VPC ID: ${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -47,12 +45,9 @@ const createRabbitoryEngineSG = async (vpcId: string): Promise<string> => {
 
     const createSGResponse = await ec2Client.send(createSGCommand);
     if (!createSGResponse.GroupId) throw new Error("Security Group creation failed");
-
-    console.log(`Security Group Created: ${createSGResponse.GroupId}`);
     return createSGResponse.GroupId;
   } catch (error) {
-    console.error("Error creating security group:", error);
-    throw error;
+    throw new Error(`Failed to create security group: ${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -71,31 +66,8 @@ const authorizeIngressTraffic = async (securityGroupId: string): Promise<void> =
     });
 
     await ec2Client.send(authorizeIngressCommand);
-    console.log("Ingress rules set up successfully for RabbitoryEngineSG");
   } catch (error) {
-    console.error("Error authorizing ingress rules:", error);
-    throw error;
-  }
-};
-
-const authorizeEgressTraffic = async (securityGroupId: string): Promise<void> => {
-  try {
-    const egressRules = [
-      { IpProtocol: "tcp", FromPort: 80, ToPort: 80, CidrIp: "0.0.0.0/0" },  // HTTP
-      { IpProtocol: "tcp", FromPort: 443, ToPort: 443, CidrIp: "0.0.0.0/0" }, // HTTPS
-      { IpProtocol: "tcp", FromPort: 3000, ToPort: 3000, CidrIp: "0.0.0.0/0" }, // Next.js app on port 3000
-    ];
-
-    const authorizeEgressCommand = new AuthorizeSecurityGroupEgressCommand({
-      GroupId: securityGroupId,
-      IpPermissions: egressRules,
-    });
-
-    await ec2Client.send(authorizeEgressCommand);
-    console.log("Egress rules set up successfully for RabbitoryEngineSG");
-  } catch (error) {
-    console.error("Error authorizing egress rules:", error);
-    throw error;
+    throw new Error(`Failed to authorize ingress traffic: ${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -104,12 +76,8 @@ export const setupRabbitorySG = async (): Promise<string> => {
     const vpcId = await getVpcId();
     const securityGroupId = await createRabbitoryEngineSG(vpcId);
     await authorizeIngressTraffic(securityGroupId);
-    await authorizeEgressTraffic(securityGroupId);
-    
-    console.log("Security group setup completed successfully for RabbitoryEngineSG.");
     return securityGroupId;
   } catch (err) {
-    console.error("Error setting up RabbitoryEngineSG:", err);
-    throw err;
+    throw new Error(`Error setting up RabbitoryEngineSG: ${err instanceof Error ? err.message : String(err)}`);
   }
 };
