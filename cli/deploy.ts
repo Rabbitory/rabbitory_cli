@@ -20,8 +20,8 @@ export const deploy = async () => {
     console.log(" --- Successfully created RMQBroker IAM role and instance profile:", brokerIPN);
 
     // CREATE SECURITY GROUPS
-    const rabbitorySecurityGroupId = await setupRabbitorySG();
     const brokerSecurityGroupId = await setupBrokerSG();
+    const rabbitorySecurityGroupId = await setupRabbitorySG();
 
     // WAIT FOR IPNs TO BE PROPAGATED TO AWS
     console.log("Waiting 5 seconds for IAM instance profile to propagate...");
