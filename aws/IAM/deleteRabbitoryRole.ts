@@ -91,5 +91,3 @@ export const deleteRabbitoryRole = async () => {
     console.error("Error deleting role:", error);
   }
 };
-
-// deleteRabbitoryRole();
