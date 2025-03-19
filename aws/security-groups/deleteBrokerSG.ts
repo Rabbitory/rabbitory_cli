@@ -39,7 +39,7 @@ const deleteSecurityGroup = async (groupId: string): Promise<void> => {
   }
 };
 
-const deleteBrokerSG = async (): Promise<void> => {
+export const deleteBrokerSG = async (): Promise<void> => {
   try {
     const groupName = "BrokerSecurityGroup";
     const securityGroupId = await getSecurityGroupId(groupName);
@@ -54,5 +54,3 @@ const deleteBrokerSG = async (): Promise<void> => {
     console.error("Failed to delete BrokerSecurityGroup:", error);
   }
 };
-
-deleteBrokerSG();

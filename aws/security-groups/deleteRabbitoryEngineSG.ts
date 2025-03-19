@@ -43,7 +43,7 @@ const deleteSecurityGroup = async (groupId: string): Promise<void> => {
   }
 };
 
-const deleteRabbitoryEngineSG = async (): Promise<void> => {
+export const deleteRabbitoryEngineSG = async (): Promise<void> => {
   try {
     const groupName = "RabbitoryEngineSG";
     const securityGroupId = await getSecurityGroupId(groupName);
