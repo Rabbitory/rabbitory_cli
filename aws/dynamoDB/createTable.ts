@@ -8,28 +8,23 @@ const REGION = "us-east-1";
 const client = new DynamoDBClient({ region: REGION });
 
 // might want to extract to own file if needed elsewhere
-const tableExists = async (tableName: string) => {
+const tableExists = async (tableName: string): Promise<boolean> => {
   try {
     await client.send(new DescribeTableCommand({ TableName: tableName }));
-    console.log(`Table "${tableName}" already exists.`);
-    return true;
+    return true; // Table exists
   } catch (err) {
-    if (err instanceof Error) {
-      if (err.name !== "ResourceNotFoundException") {
-        console.error("Error checking table existence:", err);
-      } else {
-        return false;
-      }
-    } else {
-      console.error("Unknown error:", err);
+    if (err instanceof Error && err.name !== "ResourceNotFoundException") {
+      throw new Error(`Error checking table existence: ${err.message}`);
     }
+    return false; // Table does not exist
   }
 };
 
 export const createTable = async () => {
   const tableName = "RabbitoryTable";
 
-  if (await tableExists(tableName)) return;
+  const exists = await tableExists(tableName);
+  if (exists) return;
 
   const command = new CreateTableCommand({
     TableName: tableName,
@@ -45,9 +40,8 @@ export const createTable = async () => {
   });
 
   try {
-    const result = await client.send(command);
-    console.log("Table created:", result);
+    await client.send(command);
   } catch (err) {
-    console.error("Error creating table:", err);
+    throw new Error(`Error creating table: ${err instanceof Error ? err.message : String(err)}`);
   }
 };
