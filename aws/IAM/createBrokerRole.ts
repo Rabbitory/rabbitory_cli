@@ -78,13 +78,12 @@ const addRoleToInstanceProfile = async (): Promise<void> => {
   }
 };
 
-export const createRMQBrokerIAM = async (): Promise<string> => {
+export const createRMQBrokerIAM = async (): Promise<void> => {
   try {
     await createBrokerRole();
     await attachDynamoDBPolicy();
-    const instanceProfile = await createInstanceProfile();
+    await createInstanceProfile();
     await addRoleToInstanceProfile();
-    return instanceProfile;
   } catch (error) {
     throw new Error(`Error setting up IAM components: ${error}`);
   }

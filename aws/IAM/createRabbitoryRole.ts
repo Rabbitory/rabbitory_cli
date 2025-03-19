@@ -87,13 +87,12 @@ const addRoleToInstanceProfile = async (): Promise<void> => {
   }
 };
 
-export const createRabbitoryEngineIAM = async (): Promise<string> => {
+export const createRabbitoryEngineIAM = async (): Promise<void> => {
   try {
     await createRabbitoryRole();
     await attachRabbitoryPolicies();
-    const instanceProfile = await createInstanceProfile();
+    await createInstanceProfile();
     await addRoleToInstanceProfile();
-    return instanceProfile;
   } catch (error) {
     throw new Error(`IAM setup failed: ${error instanceof Error ? error.message : String(error)}`);
   }

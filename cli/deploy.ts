@@ -1,7 +1,6 @@
 import { createRabbitoryEngineIAM } from "../aws/IAM/createRabbitoryRole";
 import { createRMQBrokerIAM } from "../aws/IAM/createBrokerRole";
 import { setupRabbitorySG } from "../aws/security-groups/createRabbitoryEngineSG";
-import { setupBrokerSG } from "../../testing/createBrokerSG";
 import { createDashboard } from "../aws/EC2/createDashboard";
 import { createTable } from "../aws/dynamoDB/createTable";
 

@@ -29,10 +29,7 @@ eval "$(pm2 startup | grep 'sudo env')"
 pm2 save
 `;
 
-export const createDashboard = async (
-  securityGroupId: string,
-  IPN: string,
-) => {
+export const createDashboard = async (securityGroupId: string) => {
   const encodedUserData = Buffer.from(userData).toString("base64");
 
   const params: RunInstancesCommandInput = {
@@ -50,7 +47,7 @@ export const createDashboard = async (
     UserData: encodedUserData,
     SecurityGroupIds: [securityGroupId],
     IamInstanceProfile: {
-      Name: IPN,
+      Name: "RabbitoryInstanceProfile",
     },
   };
 
