@@ -3,7 +3,7 @@ import { DynamoDBClient, DeleteTableCommand } from "@aws-sdk/client-dynamodb";
 const client = new DynamoDBClient({ region: "us-east-1" });
 const tableName = "RabbitoryTable";
 
-export const deleteTable = async (tableName: string) => {
+export const deleteTable = async () => {
   try {
     const command = new DeleteTableCommand({ TableName: tableName });
     const result = await client.send(command);

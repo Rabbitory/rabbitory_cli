@@ -6,11 +6,11 @@ import { deleteInstance } from "../aws/EC2/deleteInstance";
 import { getInstanceByName } from "./getInstanceByName";
 
 export const destroy = async () => {
-  const tableName = "RabbitoryTable";
+  // const tableName = "RabbitoryTable";
   const instanceName = "RabbitoryDashboard";
   const instanceIds: string[] | undefined = await getInstanceByName(instanceName);
 
-  await deleteTable(tableName);
+  await deleteTable();
 
   if (instanceIds !== undefined && instanceIds.length > 0) {
     await deleteInstance(instanceIds[0]);
