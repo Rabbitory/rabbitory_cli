@@ -14,6 +14,7 @@
     "@aws-sdk/client-dynamodb": "^3.767.0",
     "@aws-sdk/client-ec2": "^3.767.0",
     "@aws-sdk/client-iam": "^3.758.0",
+    "@aws-sdk/util-waiter": "^3.370.0",
     "chalk": "^5.4.1",
     "commander": "^13.1.0",
     "typescript": "^5.8.2"
