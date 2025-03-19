@@ -1,4 +1,4 @@
-import { deleteTable } from "../aws/dynamoDB/removeTable";
+import { deleteTable } from "../aws/dynamoDB/deleteTable";
 import { deleteRabbitoryEngineSG } from "../aws/security-groups/deleteRabbitoryEngineSG";
 import { deleteBrokerRole } from "../aws/IAM/deleteBrokerRole";
 import { deleteRabbitoryRole } from "../aws/IAM/deleteRabbitoryRole";
