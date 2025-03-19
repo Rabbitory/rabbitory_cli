@@ -62,13 +62,12 @@ const attachRabbitoryPolicies = async (): Promise<void> => {
 };
 
 
-const createInstanceProfile = async (): Promise<string> => {
+const createInstanceProfile = async (): Promise<void> => {
   try {
     const command = new CreateInstanceProfileCommand({
       InstanceProfileName: INSTANCE_PROFILE_NAME,
     });
     await client.send(command);
-    return INSTANCE_PROFILE_NAME;
   } catch (error) {
     throw new Error(`Failed to create instance profile: ${error instanceof Error ? error.message : String(error)}`);
   }

@@ -8,18 +8,12 @@ import { runWithSpinner } from "./spinner"; // Importing the spinner utility
 
 export const deploy = async () => {
   try {
-    await runWithSpinner('Setting up Rabbitory Engine IAM', createRabbitoryEngineIAM, 'Created Rabbitory Engine IAM role and instance profile');
-    
-    await runWithSpinner('Setting up RMQ Broker IAM', createRMQBrokerIAM, 'Created RMQBroker IAM role and instance profile');
-
-    const rabbitorySecurityGroupId = await runWithSpinner('Setting up Rabbitory Engine Security Group', setupRabbitorySG, 'Created Rabbitory Engine security group');
-
-    // console.log("Waiting 5 seconds for IAM instance profile to propagate...");
-    // await new Promise((resolve) => setTimeout(resolve, 5000)); // 5-second delay
-
-    await runWithSpinner('Creating Rabbitory Engine EC2 instance', () => createDashboard(rabbitorySecurityGroupId), 'Created Rabbitory Engine EC2 instance');
-
-    await runWithSpinner('Creating DynamoDB Table', createTable, 'Created DynamoDB Table');
+    await runWithSpinner('Setting up Rabbitory Engine IAM...', createRabbitoryEngineIAM, 'Created Rabbitory Engine IAM role and instance profile');
+    await runWithSpinner('Setting up RMQ Broker IAM...', createRMQBrokerIAM, 'Created RMQBroker IAM role and instance profile');
+    await runWithSpinner('Waiting for IAM instance profile to propagate...', () => new Promise((resolve) => setTimeout(resolve, 5000)), 'IAM instance profile propagated');
+    const rabbitorySecurityGroupId = await runWithSpinner('Setting up Rabbitory Engine Security Group...', setupRabbitorySG, 'Created Rabbitory Engine security group');
+    await runWithSpinner('Creating Rabbitory Engine EC2 instance...', () => createDashboard(rabbitorySecurityGroupId), 'Created Rabbitory Engine EC2 instance');
+    await runWithSpinner('Creating DynamoDB Table..', createTable, 'Created DynamoDB Table');
 
     // LOG RABBITORY LOGO HERE
   } catch (error) {
