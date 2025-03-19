@@ -44,10 +44,9 @@ const createBrokerRole = async (): Promise<void> => {
 
 const attachDynamoDBPolicy = async () => {
   try {
-    const policyArn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess";
     const command = new AttachRolePolicyCommand({
       RoleName: ROLE_NAME,
-      PolicyArn: policyArn,
+      PolicyArn: "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
     });
     await client.send(command);
   } catch (error) {
@@ -87,7 +86,6 @@ export const createRMQBrokerIAM = async (): Promise<string> => {
     await addRoleToInstanceProfile();
     return instanceProfile;
   } catch (error) {
-    console.error("Error in setting up role, policies, or instance profile:", error);
-    throw error;
+    throw new Error(`Error setting up IAM components: ${error}`);
   }
 };
