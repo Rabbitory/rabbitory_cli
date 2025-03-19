@@ -30,7 +30,7 @@ const getVpcId = async (): Promise<string> => {
       return response.Vpcs[0].VpcId;
     }
   } catch (error) {
-    throw new Error(`Failed to retrieve VPC ID: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(`Failed to retrieve VPC ID\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -49,7 +49,7 @@ const createRabbitoryEngineSG = async (vpcId: string): Promise<string> => {
     if (!createSGResponse.GroupId) throw new Error("Security Group creation failed");
     return createSGResponse.GroupId;
   } catch (error) {
-    throw new Error(`Failed to create security group: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(`Failed to create security group\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -69,7 +69,7 @@ const authorizeIngressTraffic = async (securityGroupId: string): Promise<void> =
 
     await ec2Client.send(authorizeIngressCommand);
   } catch (error) {
-    throw new Error(`Failed to authorize ingress traffic: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(`Failed to authorize ingress traffic\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -80,6 +80,6 @@ export const setupRabbitorySG = async (): Promise<string> => {
     await authorizeIngressTraffic(securityGroupId);
     return securityGroupId;
   } catch (err) {
-    throw new Error(`Error setting up RabbitoryEngineSG: ${err instanceof Error ? err.message : String(err)}`);
+    throw new Error(`Error setting up RabbitoryEngine security group\n${err instanceof Error ? err.message : String(err)}`);
   }
 };

@@ -58,6 +58,6 @@ export const createDashboard = async (securityGroupId: string) => {
     }
     return data;
   } catch (err) {
-    throw new Error(`Error creating instance: ${err instanceof Error ? err.message : String(err)}`);
+    throw new Error(`Error creating instance\n${err instanceof Error ? err.message : String(err)}`);
   }
 };

@@ -14,7 +14,7 @@ const tableExists = async (tableName: string): Promise<boolean> => {
     return true; // Table exists
   } catch (err) {
     if (err instanceof Error && err.name !== "ResourceNotFoundException") {
-      throw new Error(`Error checking table existence: ${err.message}`);
+      throw new Error(`Error checking table existence\n${err.message}`);
     }
     return false; // Table does not exist
   }
@@ -42,6 +42,6 @@ export const createTable = async () => {
   try {
     await client.send(command);
   } catch (err) {
-    throw new Error(`Error creating table: ${err instanceof Error ? err.message : String(err)}`);
+    throw new Error(`Error creating table\n${err instanceof Error ? err.message : String(err)}`);
   }
 };

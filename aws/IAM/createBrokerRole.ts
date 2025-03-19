@@ -38,7 +38,7 @@ const createBrokerRole = async (): Promise<void> => {
       throw new Error("Role or Role ARN is undefined");
     }
   } catch (error) {
-    throw new Error(`Failed to create role: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(`Failed to create role\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -50,7 +50,7 @@ const attachDynamoDBPolicy = async () => {
     });
     await client.send(command);
   } catch (error) {
-    throw new Error(`Failed to attach one or more policies: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(`Failed to attach one or more policies\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -62,7 +62,7 @@ const createInstanceProfile = async (): Promise<string> => {
     await client.send(command);
     return INSTANCE_PROFILE_NAME;
   } catch (error) {
-    throw new Error(`Failed to create instance profile: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(`Failed to create instance profile\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -74,7 +74,7 @@ const addRoleToInstanceProfile = async (): Promise<void> => {
     });
     await client.send(command);
   } catch (error) {
-    throw new Error(`Failed to add role to instance profile: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(`Failed to add role to instance profile\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -85,6 +85,6 @@ export const createRMQBrokerIAM = async (): Promise<void> => {
     await createInstanceProfile();
     await addRoleToInstanceProfile();
   } catch (error) {
-    throw new Error(`Error setting up IAM components: ${error}`);
+    throw new Error(`Error setting up IAM components\n${error}`);
   }
 };
