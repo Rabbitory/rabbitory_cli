@@ -1,5 +1,4 @@
 import { EC2Client, RunInstancesCommand } from "@aws-sdk/client-ec2";
-
 import type { RunInstancesCommandInput } from "@aws-sdk/client-ec2";
 
 const REGION = "us-east-1";
@@ -57,10 +56,11 @@ export const createDashboard = async (
 
   try {
     const data = await ec2Client.send(new RunInstancesCommand(params));
-    if (!data.Instances) throw new Error("No instances found");
-    console.log("Dashboard instance created:", data.Instances[0].InstanceId);
+    if (!data.Instances || data.Instances.length === 0) {
+      throw new Error("No instances were created");
+    }
     return data;
   } catch (err) {
-    console.error("Error creating instance:", err);
+    throw new Error(`Error creating instance: ${err instanceof Error ? err.message : String(err)}`);
   }
 };
