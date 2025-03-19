@@ -67,7 +67,6 @@ const createInstanceProfile = async (): Promise<string> => {
     const command = new CreateInstanceProfileCommand({
       InstanceProfileName: INSTANCE_PROFILE_NAME,
     });
-
     await client.send(command);
     return INSTANCE_PROFILE_NAME;
   } catch (error) {
@@ -82,7 +81,6 @@ const addRoleToInstanceProfile = async (): Promise<void> => {
       InstanceProfileName: INSTANCE_PROFILE_NAME,
       RoleName: ROLE_NAME,
     });
-
     await client.send(command);
   } catch (error) {
     throw new Error(`Failed to add role to instance profile: ${error instanceof Error ? error.message : String(error)}`);
