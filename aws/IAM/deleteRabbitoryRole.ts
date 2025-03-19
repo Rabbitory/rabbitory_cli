@@ -35,13 +35,13 @@ const detachAllPolicies = async () => {
       }
     }
   } catch (error: unknown) {
-    if (error instanceof Error) {
+    if (isAwsError(error)) {
       throw new Error(`Error detaching policies for role ${ROLE_NAME}\n${error.message}`);
-    }
-    throw new Error(`Unknown error detaching policies for role ${ROLE_NAME}\n${String(error)}`);
+    } else {
+      throw new Error(`Unknown error detaching policies for role ${ROLE_NAME}\n${String(error)}`);
+    } 
   }
 };
-
 
 const removeRoleFromInstanceProfile = async () => {
   try {
