@@ -49,7 +49,7 @@ const removeRoleFromInstanceProfile = async () => {
     await client.send(removeRoleCommand);
   } catch (error: unknown) {
     if (isAwsError(error) && error.name === "NoSuchEntityException") {
-      console.warn(`Role ${ROLE_NAME} is not attached to any instance profile. Skipping.`);
+      return; // return if role is not attached to instance
     } else {
       throw new Error(`Error removing role ${ROLE_NAME} from instance profile\n${error instanceof Error ? error.message : String(error)}`);
     }
@@ -64,7 +64,7 @@ const deleteInstanceProfile = async () => {
     await client.send(deleteProfileCommand);
   } catch (error: unknown) {
     if (isAwsError(error) && error.name === "NoSuchEntityException") {
-      console.warn(`Instance profile ${INSTANCE_PROFILE_NAME} does not exist. Skipping deletion.`);
+      return; // return if instance profile does not exist
     } else {
       throw new Error(`Error deleting instance profile ${INSTANCE_PROFILE_NAME}\n${error instanceof Error ? error.message : String(error)}`);
     }
