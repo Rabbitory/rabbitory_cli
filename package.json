@@ -16,6 +16,7 @@
     "@aws-sdk/client-iam": "^3.758.0",
     "@aws-sdk/util-waiter": "^3.370.0",
     "commander": "^13.1.0",
+    "enquirer": "^2.4.1",
     "typescript": "^5.8.2"
   },
   "devDependencies": {
