@@ -1,40 +1,23 @@
+// deploy.ts
 import { createRabbitoryEngineIAM } from "../aws/IAM/createRabbitoryRole";
 import { createRMQBrokerIAM } from "../aws/IAM/createBrokerRole";
 import { setupRabbitorySG } from "../aws/security-groups/createRabbitoryEngineSG";
-import { setupBrokerSG } from "../aws/security-groups/createBrokerSG";
 import { createDashboard } from "../aws/EC2/createDashboard";
 import { createTable } from "../aws/dynamoDB/createTable";
+import { runWithSpinner } from "./spinner";
+import chalk from "chalk";
 
 export const deploy = async () => {
-  // Confirm that AWS CLI is installed
-  // Confirm that user account is linked to AWS
-  // Run IAM script
-
-
   try {
-    // CREATE IAM ROLES 
-    const rabbitoryIPN = await createRabbitoryEngineIAM();
-    console.log(" --- Successfully created Rabbitory Engine IAM role and instance profile:", rabbitoryIPN);
+    await runWithSpinner('Setting up Rabbitory Engine IAM...', createRabbitoryEngineIAM, 'Created Rabbitory Engine IAM role and instance profile');
+    await runWithSpinner('Setting up RMQ Broker IAM...', createRMQBrokerIAM, 'Created RMQBroker IAM role and instance profile');
+    await runWithSpinner('Waiting for IAM instance profile to propagate...', () => new Promise((resolve) => setTimeout(resolve, 5000)), 'IAM instance profile propagated');
+    const rabbitorySecurityGroupId = await runWithSpinner('Setting up Rabbitory Engine Security Group...', setupRabbitorySG, 'Created Rabbitory Engine security group');
+    await runWithSpinner('Creating Rabbitory Engine EC2 instance...', () => createDashboard(rabbitorySecurityGroupId), 'Created Rabbitory Engine EC2 instance');
+    await runWithSpinner('Creating DynamoDB Table..', createTable, 'Created DynamoDB Table');
 
-    const brokerIPN = await createRMQBrokerIAM();
-    console.log(" --- Successfully created RMQBroker IAM role and instance profile:", brokerIPN);
-
-    // CREATE SECURITY GROUPS
-    const brokerSecurityGroupId = await setupBrokerSG();
-    const rabbitorySecurityGroupId = await setupRabbitorySG();
-
-    // WAIT FOR IPNs TO BE PROPAGATED TO AWS
-    console.log("Waiting 5 seconds for IAM instance profile to propagate...");
-    await new Promise((resolve) => setTimeout(resolve, 5000)); // 5-second delay
-
-    // CREATE RABBITORY EC2
-    await createDashboard(rabbitorySecurityGroupId, rabbitoryIPN);
-
-    // CREATE DYNAMODB + TABLE
-    await createTable();
-
+    // LOG RABBITORY LOGO HERE
   } catch (error) {
-    console.error("Rabbitory deployment faild:", error);
-    // process.exit(1);
-  }
-}
+    console.error(chalk.redBright("\nRabbitory deployment failed\n"), error, "\n");
+  } 
+};
