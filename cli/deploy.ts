@@ -4,6 +4,7 @@ import { setupRabbitorySG } from "../aws/security-groups/createRabbitoryEngineSG
 import { setupBrokerSG } from "../aws/security-groups/createBrokerSG";
 import { createDashboard } from "../aws/EC2/createDashboard";
 import { createTable } from "../aws/dynamoDB/createTable";
+import { setupAws } from "./setupAws";
 
 export const deploy = async () => {
   // Confirm that AWS CLI is installed
@@ -13,6 +14,8 @@ export const deploy = async () => {
 
   try {
     // CREATE IAM ROLES 
+    setupAws();
+
     const rabbitoryIPN = await createRabbitoryEngineIAM();
     console.log(" --- Successfully created Rabbitory Engine IAM role and instance profile:", rabbitoryIPN);
 
