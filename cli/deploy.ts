@@ -1,10 +1,10 @@
-// deploy.ts
 import { createRabbitoryEngineIAM } from "../aws/IAM/createRabbitoryRole";
 import { createRMQBrokerIAM } from "../aws/IAM/createBrokerRole";
 import { setupRabbitorySG } from "../aws/security-groups/createRabbitoryEngineSG";
 import { createDashboard } from "../aws/EC2/createDashboard";
 import { createTable } from "../aws/dynamoDB/createTable";
 import { runWithSpinner } from "./spinner";
+import { logo } from "./logo";
 import chalk from "chalk";
 
 export const deploy = async () => {
@@ -16,8 +16,8 @@ export const deploy = async () => {
     await runWithSpinner('Creating Rabbitory Engine EC2 instance...', () => createDashboard(rabbitorySecurityGroupId), 'Created Rabbitory Engine EC2 instance');
     await runWithSpinner('Creating DynamoDB Table..', createTable, 'Created DynamoDB Table');
 
-    // LOG RABBITORY LOGO HERE
+    console.log(logo);
   } catch (error) {
     console.error(chalk.redBright("\nRabbitory deployment failed\n"), error, "\n");
-  } 
+  }
 };
