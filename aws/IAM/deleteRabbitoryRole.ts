@@ -15,6 +15,7 @@ const client = new IAMClient({ region: REGION });
 const isAwsError = (error: unknown): error is { name: string; message: string } => {
   return typeof error === "object" && error !== null && "name" in error && "message" in error;
 };
+const isNotFoundError = (error: unknown) => isAwsError(error) && error.name === "NoSuchEntityException";
 
 const detachAllPolicies = async () => {
   try {
@@ -35,11 +36,8 @@ const detachAllPolicies = async () => {
       }
     }
   } catch (error: unknown) {
-    if (isAwsError(error)) {
-      throw new Error(`Error detaching policies for role ${ROLE_NAME}\n${error.message}`);
-    } else {
-      throw new Error(`Unknown error detaching policies for role ${ROLE_NAME}\n${String(error)}`);
-    } 
+    if (isNotFoundError(error)) return; // Role does not exist, nothing to detach
+    throw new Error(`Error detaching policies for role ${ROLE_NAME}\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -52,11 +50,8 @@ const removeRoleFromInstanceProfile = async () => {
 
     await client.send(removeRoleCommand);
   } catch (error: unknown) {
-    if (isAwsError(error) && error.name === "NoSuchEntityException") {
-      return; // return if role is not attached to instance
-    } else {
-      throw new Error(`Error removing role ${ROLE_NAME} from instance profile\n${error instanceof Error ? error.message : String(error)}`);
-    }
+    if (isNotFoundError(error)) return; // Role is not attached, nothing to remove
+    throw new Error(`Error removing role ${ROLE_NAME} from instance profile\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -67,11 +62,8 @@ const deleteInstanceProfile = async () => {
     });
     await client.send(deleteProfileCommand);
   } catch (error: unknown) {
-    if (isAwsError(error) && error.name === "NoSuchEntityException") {
-      return; // return if instance profile does not exist
-    } else {
-      throw new Error(`Error deleting instance profile ${INSTANCE_PROFILE_NAME}\n${error instanceof Error ? error.message : String(error)}`);
-    }
+    if (isNotFoundError(error)) return; // Instance profile does not exist, nothing to delete
+    throw new Error(`Error deleting instance profile ${INSTANCE_PROFILE_NAME}\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
@@ -81,13 +73,13 @@ export const deleteRabbitoryRole = async () => {
     await deleteInstanceProfile();
     await detachAllPolicies();
 
-    const deleteCommand = new DeleteRoleCommand({ RoleName: ROLE_NAME });
-    await client.send(deleteCommand);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      throw new Error(`Error deleting role ${ROLE_NAME}\n${error.message}`);
-    } else {
-      throw new Error(`Unknown error deleting role ${ROLE_NAME}\n${String(error)}`);
+    try {
+      await client.send(new DeleteRoleCommand({ RoleName: ROLE_NAME }));
+    } catch (error: unknown) {
+      if (isNotFoundError(error)) return; // Role does not exist, nothing to delete
+      throw error; // Re-throw other errors
     }
+  } catch (error: unknown) {
+    throw new Error(`Error deleting role ${ROLE_NAME}\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
