@@ -10,8 +10,8 @@ import {
 const REGION = 'us-east-1';
 const client = new IAMClient({ region: REGION });
 
-export const ROLE_NAME = "RabbitoryRole";
-export const INSTANCE_PROFILE_NAME = "RabbitoryInstanceProfile";
+const ROLE_NAME = "RabbitoryRole";
+const INSTANCE_PROFILE_NAME = "RabbitoryInstanceProfile";
 
 const ROLE_REQUEST = {
   AssumeRolePolicyDocument: JSON.stringify({
@@ -29,97 +29,70 @@ const ROLE_REQUEST = {
   RoleName: ROLE_NAME,
 };
 
-const createRabbitoryRole = async (): Promise<string | null> => {
+const createRabbitoryRole = async (): Promise<void> => {
   try {
     const command = new CreateRoleCommand(ROLE_REQUEST);
     const response: CreateRoleResponse = await client.send(command);
 
-    if (response.Role && response.Role.Arn) {
-      console.log("Role created successfully:", response.Role.Arn);
-      return response.Role.Arn; // Return the ARN
-    } else {
-      console.error("Error: Role or Role ARN is undefined");
-      return null;
+    if (!response.Role?.Arn) {
+      throw new Error("Role or Role ARN is undefined");
     }
   } catch (error) {
-    console.error("Error creating role:", error);
-    return null; // Return null in case of error
+    throw new Error(`Failed to create role\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
-const attachRabbitoryPolicies = async () => {
+const attachRabbitoryPolicies = async (): Promise<void> => {
   const policies = [
     "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
     "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
   ];
-  
-  const attachPolicy = async (policyArn: string) => {
-    try {
+
+  try {
+    for (const policyArn of policies) {
       const command = new AttachRolePolicyCommand({
         RoleName: ROLE_NAME,
         PolicyArn: policyArn,
       });
       await client.send(command);
-      console.log(`Policy ${policyArn} attached successfully`);
-    } catch (error) {
-      console.error(`Error attaching policy ${policyArn}:`, error);
-    }
-  };
-  
-  try {
-    for (const policy of policies) {
-      await attachPolicy(policy);
     }
   } catch (error) {
-    console.error("Error attaching policies:", error);
+    throw new Error(`Failed to attach one or more policies\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
-const createInstanceProfile = async (): Promise<string | null> => {
+
+const createInstanceProfile = async (): Promise<void> => {
   try {
-    const createProfileCommand = new CreateInstanceProfileCommand({
+    const command = new CreateInstanceProfileCommand({
       InstanceProfileName: INSTANCE_PROFILE_NAME,
     });
-    await client.send(createProfileCommand);
-    console.log(`Instance profile ${INSTANCE_PROFILE_NAME} created successfully`);
-    return INSTANCE_PROFILE_NAME;
+    await client.send(command);
   } catch (error) {
-    console.error("Error creating instance profile:", error);
-    return null;
+    throw new Error(`Failed to create instance profile\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
-const addRoleToInstanceProfile = async (): Promise<boolean> => {
+
+const addRoleToInstanceProfile = async (): Promise<void> => {
   try {
-    const addRoleCommand = new AddRoleToInstanceProfileCommand({
+    const command = new AddRoleToInstanceProfileCommand({
       InstanceProfileName: INSTANCE_PROFILE_NAME,
       RoleName: ROLE_NAME,
     });
-    await client.send(addRoleCommand);
-    console.log(`Role ${ROLE_NAME} added to instance profile ${INSTANCE_PROFILE_NAME}`);
-    return true;
+    await client.send(command);
   } catch (error) {
-    console.error("Error adding role to instance profile:", error);
-    return false;
+    throw new Error(`Failed to add role to instance profile\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
-export const createRabbitoryEngineIAM = async (): Promise<string> => {
+export const createRabbitoryEngineIAM = async (): Promise<void> => {
   try {
-    const roleArn = await createRabbitoryRole();
-    if (!roleArn) throw new Error("Role creation failed");
-
+    await createRabbitoryRole();
     await attachRabbitoryPolicies();
-    
-    const instanceProfile = await createInstanceProfile();
-    if (!instanceProfile) throw new Error("Instance profile creation failed");
-
-    const roleAdded = await addRoleToInstanceProfile();
-    if (!roleAdded) throw new Error("Failed to add role to instance profile");
-
-    return instanceProfile;
+    await createInstanceProfile();
+    await addRoleToInstanceProfile();
   } catch (error) {
-    console.error("Error in setting up role, policies, or instance profile:", error);
-    throw error;
+    throw new Error(`IAM setup failed\n${error instanceof Error ? error.message : String(error)}`);
   }
 };

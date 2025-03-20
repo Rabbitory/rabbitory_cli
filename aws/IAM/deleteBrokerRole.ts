@@ -7,10 +7,8 @@ import {
   RemoveRoleFromInstanceProfileCommand
 } from "@aws-sdk/client-iam";
 
-
 const ROLE_NAME = "RMQBrokerRole";
-const INSTANCE_PROFILE_NAME = "RMQBrokerInstanceProfile"
-
+const INSTANCE_PROFILE_NAME = "RMQBrokerInstanceProfile";
 const REGION = "us-east-1";
 const client = new IAMClient({ region: REGION });
 
@@ -31,13 +29,14 @@ const detachAllPolicies = async () => {
             PolicyArn: policy.PolicyArn,
           });
           await client.send(detachCommand);
-          console.log(`Detached policy: ${policy.PolicyArn}`);
         }
       }
     }
-  } catch (error) {
-    console.error("Error detaching policies:", error);
-    throw error;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(`Error detaching policies for role ${ROLE_NAME}\n${error.message}`);
+    }
+    throw new Error(`Unknown error detaching policies for role ${ROLE_NAME}\n${String(error)}`);
   }
 };
 
@@ -47,15 +46,12 @@ const removeRoleFromInstanceProfile = async () => {
       InstanceProfileName: INSTANCE_PROFILE_NAME,
       RoleName: ROLE_NAME,
     });
-
     await client.send(removeRoleCommand);
-    console.log(`Role ${ROLE_NAME} removed from instance profile.`);
   } catch (error: unknown) {
     if (isAwsError(error) && error.name === "NoSuchEntityException") {
-      console.warn("Role is not attached to any instance profile. Skipping.");
+      console.warn(`Role ${ROLE_NAME} is not attached to any instance profile. Skipping.`);
     } else {
-      console.error("Error removing role from instance profile:", error);
-      throw error;
+      throw new Error(`Error removing role ${ROLE_NAME} from instance profile\n${error instanceof Error ? error.message : String(error)}`);
     }
   }
 };
@@ -66,13 +62,11 @@ const deleteInstanceProfile = async () => {
       InstanceProfileName: INSTANCE_PROFILE_NAME,
     });
     await client.send(deleteProfileCommand);
-    console.log(`Instance profile ${INSTANCE_PROFILE_NAME} deleted successfully.`);
   } catch (error: unknown) {
     if (isAwsError(error) && error.name === "NoSuchEntityException") {
-      console.warn("Instance profile does not exist. Skipping deletion.");
+      console.warn(`Instance profile ${INSTANCE_PROFILE_NAME} does not exist. Skipping deletion.`);
     } else {
-      console.error("Error deleting instance profile:", error);
-      throw error;
+      throw new Error(`Error deleting instance profile ${INSTANCE_PROFILE_NAME}\n${error instanceof Error ? error.message : String(error)}`);
     }
   }
 };
@@ -82,11 +76,12 @@ export const deleteBrokerRole = async () => {
     await removeRoleFromInstanceProfile();
     await deleteInstanceProfile();
     await detachAllPolicies();
-    
     const deleteCommand = new DeleteRoleCommand({ RoleName: ROLE_NAME });
     await client.send(deleteCommand);
-    console.log(`Role ${ROLE_NAME} deleted successfully.`);
-  } catch (error) {
-    console.error("Error deleting role:", error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(`Error deleting role ${ROLE_NAME}\n${error.message}`);
+    }
+    throw new Error(`Unknown error deleting role ${ROLE_NAME}\n${String(error)}`);
   }
 };
