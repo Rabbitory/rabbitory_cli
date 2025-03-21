@@ -1,4 +1,4 @@
-import { EC2Client, RunInstancesCommand } from "@aws-sdk/client-ec2";
+import { EC2Client, RunInstancesCommand, waitUntilInstanceRunning } from "@aws-sdk/client-ec2";
 import type { RunInstancesCommandInput } from "@aws-sdk/client-ec2";
 
 const NODE_VERSION = "23.9";
@@ -54,6 +54,15 @@ export const createDashboard = async (securityGroupId: string, region: string) =
     const data = await client.send(new RunInstancesCommand(params));
     if (!data.Instances || data.Instances.length === 0) {
       throw new Error("No instances were created");
+    }
+
+    const instanceId = data.Instances[0].InstanceId;
+
+    if (typeof instanceId === 'string') {
+      await waitUntilInstanceRunning(
+        { client: client, maxWaitTime: 240 },
+        { InstanceIds: [instanceId] }
+      )
     }
     return data;
   } catch (err) {
