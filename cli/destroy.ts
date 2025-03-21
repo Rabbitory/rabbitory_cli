@@ -3,14 +3,14 @@ import { deleteRabbitoryEngineSG } from "../aws/security-groups/deleteRabbitoryE
 import { deleteBrokerRole } from "../aws/IAM/deleteBrokerRole";
 import { deleteRabbitoryRole } from "../aws/IAM/deleteRabbitoryRole";
 import { deleteInstance } from "../aws/EC2/deleteInstance";
-import { getInstanceByName } from "./getInstanceByName";
+import { getRunningInstanceIdsByName } from "./getRunningInstanceIdsByName";
 import { runWithSpinner } from "./spinner";
 import chalk from "chalk";
 
 export const destroy = async () => {
   try {
     const instanceName = "RabbitoryDashboard";
-    const instanceIds: string[] | undefined = await getInstanceByName(instanceName);
+    const instanceIds: string[] | undefined = await getRunningInstanceIdsByName(instanceName);
 
     await runWithSpinner('Deleting DynamoDB Table...', deleteTable, 'Deleted DynamoDB Table');
 
