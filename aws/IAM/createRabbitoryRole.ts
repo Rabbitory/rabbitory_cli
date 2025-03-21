@@ -1,14 +1,11 @@
-import { 
-  CreateRoleCommand, 
-  AttachRolePolicyCommand, 
+import {
+  CreateRoleCommand,
+  AttachRolePolicyCommand,
   CreateInstanceProfileCommand,
   AddRoleToInstanceProfileCommand,
-  IAMClient, 
-  CreateRoleResponse 
+  IAMClient,
+  CreateRoleResponse
 } from "@aws-sdk/client-iam";
-
-const REGION = 'us-east-1';
-const client = new IAMClient({ region: REGION });
 
 const ROLE_NAME = "RabbitoryRole";
 const INSTANCE_PROFILE_NAME = "RabbitoryInstanceProfile";
@@ -29,7 +26,7 @@ const ROLE_REQUEST = {
   RoleName: ROLE_NAME,
 };
 
-const createRabbitoryRole = async (): Promise<void> => {
+const createRabbitoryRole = async (client: IAMClient): Promise<void> => {
   try {
     const command = new CreateRoleCommand(ROLE_REQUEST);
     const response: CreateRoleResponse = await client.send(command);
@@ -42,7 +39,7 @@ const createRabbitoryRole = async (): Promise<void> => {
   }
 };
 
-const attachRabbitoryPolicies = async (): Promise<void> => {
+const attachRabbitoryPolicies = async (client: IAMClient): Promise<void> => {
   const policies = [
     "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
     "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
@@ -62,7 +59,7 @@ const attachRabbitoryPolicies = async (): Promise<void> => {
 };
 
 
-const createInstanceProfile = async (): Promise<void> => {
+const createInstanceProfile = async (client: IAMClient): Promise<void> => {
   try {
     const command = new CreateInstanceProfileCommand({
       InstanceProfileName: INSTANCE_PROFILE_NAME,
@@ -74,7 +71,7 @@ const createInstanceProfile = async (): Promise<void> => {
 };
 
 
-const addRoleToInstanceProfile = async (): Promise<void> => {
+const addRoleToInstanceProfile = async (client: IAMClient): Promise<void> => {
   try {
     const command = new AddRoleToInstanceProfileCommand({
       InstanceProfileName: INSTANCE_PROFILE_NAME,
@@ -86,12 +83,14 @@ const addRoleToInstanceProfile = async (): Promise<void> => {
   }
 };
 
-export const createRabbitoryEngineIAM = async (): Promise<void> => {
+export const createRabbitoryEngineIAM = async (region: string): Promise<void> => {
+  const client = new IAMClient({ region: region });
+
   try {
-    await createRabbitoryRole();
-    await attachRabbitoryPolicies();
-    await createInstanceProfile();
-    await addRoleToInstanceProfile();
+    await createRabbitoryRole(client);
+    await attachRabbitoryPolicies(client);
+    await createInstanceProfile(client);
+    await addRoleToInstanceProfile(client);
   } catch (error) {
     throw new Error(`IAM setup failed\n${error instanceof Error ? error.message : String(error)}`);
   }

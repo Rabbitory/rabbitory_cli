@@ -5,10 +5,8 @@ import {
   CreateInstanceProfileCommand,
   AddRoleToInstanceProfileCommand,
   CreateRoleResponse,
+  IAM,
 } from "@aws-sdk/client-iam";
-
-const REGION = "us-east-1";
-const client = new IAMClient({ region: REGION });
 
 export const ROLE_NAME = "RMQBrokerRole";
 export const INSTANCE_PROFILE_NAME = "RMQBrokerInstanceProfile";
@@ -29,7 +27,7 @@ const ROLE_REQUEST = {
   RoleName: ROLE_NAME,
 };
 
-const createBrokerRole = async (): Promise<void> => {
+const createBrokerRole = async (client: IAMClient): Promise<void> => {
   try {
     const command = new CreateRoleCommand(ROLE_REQUEST);
     const response: CreateRoleResponse = await client.send(command);
@@ -42,7 +40,7 @@ const createBrokerRole = async (): Promise<void> => {
   }
 };
 
-const attachDynamoDBPolicy = async () => {
+const attachDynamoDBPolicy = async (client: IAMClient) => {
   try {
     const command = new AttachRolePolicyCommand({
       RoleName: ROLE_NAME,
@@ -54,7 +52,7 @@ const attachDynamoDBPolicy = async () => {
   }
 };
 
-const createInstanceProfile = async (): Promise<string> => {
+const createInstanceProfile = async (client: IAMClient): Promise<string> => {
   try {
     const command = new CreateInstanceProfileCommand({
       InstanceProfileName: INSTANCE_PROFILE_NAME,
@@ -66,7 +64,7 @@ const createInstanceProfile = async (): Promise<string> => {
   }
 };
 
-const addRoleToInstanceProfile = async (): Promise<void> => {
+const addRoleToInstanceProfile = async (client: IAMClient): Promise<void> => {
   try {
     const command = new AddRoleToInstanceProfileCommand({
       InstanceProfileName: INSTANCE_PROFILE_NAME,
@@ -78,12 +76,14 @@ const addRoleToInstanceProfile = async (): Promise<void> => {
   }
 };
 
-export const createRMQBrokerIAM = async (): Promise<void> => {
+export const createRMQBrokerIAM = async (region: string): Promise<void> => {
+  const client = new IAMClient({ region: region });
+
   try {
-    await createBrokerRole();
-    await attachDynamoDBPolicy();
-    await createInstanceProfile();
-    await addRoleToInstanceProfile();
+    await createBrokerRole(client);
+    await attachDynamoDBPolicy(client);
+    await createInstanceProfile(client);
+    await addRoleToInstanceProfile(client);
   } catch (error) {
     throw new Error(`Error setting up IAM components\n${error}`);
   }
