@@ -1,7 +1,7 @@
-import { 
-  IAMClient, 
-  ListAttachedRolePoliciesCommand, 
-  DetachRolePolicyCommand, 
+import {
+  IAMClient,
+  ListAttachedRolePoliciesCommand,
+  DetachRolePolicyCommand,
   DeleteRoleCommand,
   DeleteInstanceProfileCommand,
   RemoveRoleFromInstanceProfileCommand
@@ -9,15 +9,12 @@ import {
 
 const ROLE_NAME = "RMQBrokerRole";
 const INSTANCE_PROFILE_NAME = "RMQBrokerInstanceProfile";
-const REGION = "us-east-1";
-const client = new IAMClient({ region: REGION });
-
 const isAwsError = (error: unknown): error is { name: string; message: string } => {
   return typeof error === "object" && error !== null && "name" in error && "message" in error;
 };
 const isNotFoundError = (error: unknown) => isAwsError(error) && error.name === "NoSuchEntityException";
 
-const detachAllPolicies = async () => {
+const detachAllPolicies = async (client: IAMClient) => {
   try {
     const listCommand = new ListAttachedRolePoliciesCommand({ RoleName: ROLE_NAME });
     const response = await client.send(listCommand);
@@ -39,7 +36,7 @@ const detachAllPolicies = async () => {
   }
 };
 
-const removeRoleFromInstanceProfile = async () => {
+const removeRoleFromInstanceProfile = async (client: IAMClient) => {
   try {
     const removeRoleCommand = new RemoveRoleFromInstanceProfileCommand({
       InstanceProfileName: INSTANCE_PROFILE_NAME,
@@ -52,7 +49,7 @@ const removeRoleFromInstanceProfile = async () => {
   }
 };
 
-const deleteInstanceProfile = async () => {
+const deleteInstanceProfile = async (client: IAMClient) => {
   try {
     const deleteProfileCommand = new DeleteInstanceProfileCommand({
       InstanceProfileName: INSTANCE_PROFILE_NAME,
@@ -64,11 +61,13 @@ const deleteInstanceProfile = async () => {
   }
 };
 
-export const deleteBrokerRole = async () => {
+export const deleteBrokerRole = async (region: string) => {
+  const client = new IAMClient({ region: region });
+
   try {
-    await removeRoleFromInstanceProfile();
-    await deleteInstanceProfile();
-    await detachAllPolicies();
+    await removeRoleFromInstanceProfile(client);
+    await deleteInstanceProfile(client);
+    await detachAllPolicies(client);
 
     try {
       await client.send(new DeleteRoleCommand({ RoleName: ROLE_NAME }));

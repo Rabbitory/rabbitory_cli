@@ -1,8 +1,8 @@
 import { EC2Client, DescribeInstancesCommand } from "@aws-sdk/client-ec2";
 
-const ec2Client = new EC2Client({ region: "us-east-1" });
 
-export const getRunningInstanceIdsByName = async (instanceName: string) => {
+export const getRunningInstanceIdsByName = async (instanceName: string, region: string) => {
+  const ec2Client = new EC2Client({ region: region });
   const command = new DescribeInstancesCommand({
     Filters: [
       {
