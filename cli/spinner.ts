@@ -1,4 +1,3 @@
-// spinner.ts
 import ora from 'ora';
 import chalk from 'chalk';
 
@@ -8,8 +7,9 @@ export const runWithSpinner = async (
   successMsg: string
 ) => {
   const spinner = ora({
-    text: chalk.red(waitingMsg),
-    color: 'red',
+    text: chalk.white(waitingMsg),
+    color: 'white',
+    spinner: 'dots',
   }).start();
 
   try {

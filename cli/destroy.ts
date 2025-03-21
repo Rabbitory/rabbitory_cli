@@ -16,8 +16,6 @@ export const destroy = async () => {
 
     if (instanceIds !== undefined && instanceIds.length > 0) {
       await runWithSpinner('Terminating EC2 instance...', () => deleteInstance(instanceIds[0]), 'Terminated EC2 instance');
-    } else {
-      console.log(`No EC2 instance with name "${instanceName}" exists`);
     }
 
     await runWithSpinner('Deleting Rabbitory Engine Security Group...', deleteRabbitoryEngineSG, 'Deleted Rabbitory Engine Security Group');

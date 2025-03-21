@@ -6,6 +6,7 @@ import { createDashboard } from "../aws/EC2/createDashboard";
 import { createTable } from "../aws/dynamoDB/createTable";
 import { runWithSpinner } from "./spinner";
 import chalk from "chalk";
+import { destroy } from "./destroy";
 
 export const deploy = async () => {
   try {
@@ -19,5 +20,9 @@ export const deploy = async () => {
     // LOG RABBITORY LOGO HERE
   } catch (error) {
     console.error(chalk.redBright("\nRabbitory deployment failed\n"), error, "\n");
+    console.log('Rolling back your deployment...');
+    await destroy();
+    console.log('\nDeployment successfully rolled back.');
+    console.log(chalk.red('\nPlease check errors to determine reason for deployment failure, and then try running `rabbitory deploy` again.\n'));
   } 
 };
