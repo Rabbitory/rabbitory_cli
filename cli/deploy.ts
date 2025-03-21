@@ -10,14 +10,14 @@ import chalk from "chalk";
 
 export const deploy = async () => {
   try {
-    await getRegion();
-    // await runWithSpinner('Setting up Rabbitory Engine IAM...', createRabbitoryEngineIAM, 'Created Rabbitory Engine IAM role and instance profile');
-    // await runWithSpinner('Setting up RMQ Broker IAM...', createRMQBrokerIAM, 'Created RMQBroker IAM role and instance profile');
-    // await runWithSpinner('Waiting for IAM instance profile to propagate...', () => new Promise((resolve) => setTimeout(resolve, 5000)), 'IAM instance profile propagated');
-    // const rabbitorySecurityGroupId = await runWithSpinner('Setting up Rabbitory Engine Security Group...', setupRabbitorySG, 'Created Rabbitory Engine security group');
-    // await runWithSpinner('Creating Rabbitory Engine EC2 instance...', () => createDashboard(rabbitorySecurityGroupId), 'Created Rabbitory Engine EC2 instance');
-    // await runWithSpinner('Creating DynamoDB Table..', createTable, 'Created DynamoDB Table');
-    //
+    const region = await getRegion();
+    await runWithSpinner('Setting up Rabbitory Engine IAM...', () => createRabbitoryEngineIAM(region), 'Created Rabbitory Engine IAM role and instance profile');
+    await runWithSpinner('Setting up RMQ Broker IAM...', () => createRMQBrokerIAM(region), 'Created RMQBroker IAM role and instance profile');
+    await runWithSpinner('Waiting for IAM instance profile to propagate...', () => new Promise((resolve) => setTimeout(resolve, 5000)), 'IAM instance profile propagated');
+    const rabbitorySecurityGroupId = await runWithSpinner('Setting up Rabbitory Engine Security Group...', () => setupRabbitorySG(region), 'Created Rabbitory Engine security group');
+    await runWithSpinner('Creating Rabbitory Engine EC2 instance...', () => createDashboard(rabbitorySecurityGroupId, region), 'Created Rabbitory Engine EC2 instance');
+    await runWithSpinner('Creating DynamoDB Table..', () => createTable(region), 'Created DynamoDB Table');
+
     console.log(chalk.red(logo));
   } catch (error) {
     console.error(chalk.redBright("\nRabbitory deployment failed\n"), error, "\n");

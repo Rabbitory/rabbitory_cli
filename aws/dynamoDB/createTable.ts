@@ -4,11 +4,8 @@ import {
   DescribeTableCommand,
 } from "@aws-sdk/client-dynamodb";
 
-const REGION = "us-east-1";
-const client = new DynamoDBClient({ region: REGION });
-
 // might want to extract to own file if needed elsewhere
-const tableExists = async (tableName: string): Promise<boolean> => {
+const tableExists = async (tableName: string, client: DynamoDBClient): Promise<boolean> => {
   try {
     await client.send(new DescribeTableCommand({ TableName: tableName }));
     return true; // Table exists
@@ -20,10 +17,12 @@ const tableExists = async (tableName: string): Promise<boolean> => {
   }
 };
 
-export const createTable = async () => {
+export const createTable = async (region: string) => {
+  const client = new DynamoDBClient({ region: region });
+
   const tableName = "RabbitoryTable";
 
-  const exists = await tableExists(tableName);
+  const exists = await tableExists(tableName, client);
   if (exists) return;
 
   const command = new CreateTableCommand({

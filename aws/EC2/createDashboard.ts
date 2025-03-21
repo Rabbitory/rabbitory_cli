@@ -1,10 +1,7 @@
 import { EC2Client, RunInstancesCommand } from "@aws-sdk/client-ec2";
 import type { RunInstancesCommandInput } from "@aws-sdk/client-ec2";
 
-const REGION = "us-east-1";
 const NODE_VERSION = "23.9";
-
-const ec2Client = new EC2Client({ region: REGION });
 
 const repoUrl = "https://github.com/Rabbitory/rabbitory_dashboard.git";
 
@@ -29,7 +26,9 @@ eval "$(pm2 startup | grep 'sudo env')"
 pm2 save
 `;
 
-export const createDashboard = async (securityGroupId: string) => {
+export const createDashboard = async (securityGroupId: string, region: string) => {
+  const client = new EC2Client({ region: region });
+
   const encodedUserData = Buffer.from(userData).toString("base64");
 
   const params: RunInstancesCommandInput = {
@@ -52,7 +51,7 @@ export const createDashboard = async (securityGroupId: string) => {
   };
 
   try {
-    const data = await ec2Client.send(new RunInstancesCommand(params));
+    const data = await client.send(new RunInstancesCommand(params));
     if (!data.Instances || data.Instances.length === 0) {
       throw new Error("No instances were created");
     }

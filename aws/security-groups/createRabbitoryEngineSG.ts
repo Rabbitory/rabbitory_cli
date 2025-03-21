@@ -1,17 +1,14 @@
-import { 
-  EC2Client, 
-  DescribeVpcsCommand, 
-  CreateSecurityGroupCommand, 
+import {
+  EC2Client,
+  DescribeVpcsCommand,
+  CreateSecurityGroupCommand,
   AuthorizeSecurityGroupIngressCommand
 } from "@aws-sdk/client-ec2";
 
-const REGION = "us-east-1";
-const ec2Client = new EC2Client({ region: REGION });
-
-const getVpcId = async (): Promise<string> => {
+const getVpcId = async (client: EC2Client): Promise<string> => {
   try {
     const command = new DescribeVpcsCommand({});
-    const response = await ec2Client.send(command);
+    const response = await client.send(command);
 
     if (!response.Vpcs || response.Vpcs.length === 0) {
       throw new Error("No VPCs found in the region.");
@@ -19,7 +16,7 @@ const getVpcId = async (): Promise<string> => {
 
     const defaultVpc = response.Vpcs.find((vpc) => vpc.IsDefault);
     if (defaultVpc?.VpcId) {
-       // Get the default VPC if available
+      // Get the default VPC if available
       return defaultVpc.VpcId;
     } else if (!response.Vpcs[0].VpcId) {
       // Check if there is a first available VPC, if not throw error
@@ -34,7 +31,7 @@ const getVpcId = async (): Promise<string> => {
   }
 };
 
-const createRabbitoryEngineSG = async (vpcId: string): Promise<string> => {
+const createRabbitoryEngineSG = async (vpcId: string, client: EC2Client): Promise<string> => {
   try {
     const securityGroupName = "RabbitoryEngineSG";
     const description = "Security group for Rabbitory Engine EC2";
@@ -45,7 +42,7 @@ const createRabbitoryEngineSG = async (vpcId: string): Promise<string> => {
       VpcId: vpcId,
     });
 
-    const createSGResponse = await ec2Client.send(createSGCommand);
+    const createSGResponse = await client.send(createSGCommand);
     if (!createSGResponse.GroupId) throw new Error("Security Group creation failed");
     return createSGResponse.GroupId;
   } catch (error) {
@@ -53,7 +50,7 @@ const createRabbitoryEngineSG = async (vpcId: string): Promise<string> => {
   }
 };
 
-const authorizeIngressTraffic = async (securityGroupId: string): Promise<void> => {
+const authorizeIngressTraffic = async (securityGroupId: string, client: EC2Client): Promise<void> => {
   try {
     const ingressRules = [
       { IpProtocol: "tcp", FromPort: 22, ToPort: 22, IpRanges: [{ CidrIp: "0.0.0.0/0" }] }, // SSH
@@ -67,17 +64,19 @@ const authorizeIngressTraffic = async (securityGroupId: string): Promise<void> =
       IpPermissions: ingressRules,
     });
 
-    await ec2Client.send(authorizeIngressCommand);
+    await client.send(authorizeIngressCommand);
   } catch (error) {
     throw new Error(`Failed to authorize ingress traffic\n${error instanceof Error ? error.message : String(error)}`);
   }
 };
 
-export const setupRabbitorySG = async (): Promise<string> => {
+export const setupRabbitorySG = async (region: string): Promise<string> => {
+  const client = new EC2Client({ region: region });
+
   try {
-    const vpcId = await getVpcId();
-    const securityGroupId = await createRabbitoryEngineSG(vpcId);
-    await authorizeIngressTraffic(securityGroupId);
+    const vpcId = await getVpcId(client);
+    const securityGroupId = await createRabbitoryEngineSG(vpcId, client);
+    await authorizeIngressTraffic(securityGroupId, client);
     return securityGroupId;
   } catch (err) {
     throw new Error(`Error setting up RabbitoryEngine security group\n${err instanceof Error ? err.message : String(err)}`);
