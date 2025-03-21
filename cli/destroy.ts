@@ -5,12 +5,13 @@ import { deleteRabbitoryRole } from "../aws/IAM/deleteRabbitoryRole";
 import { deleteInstance } from "../aws/EC2/deleteInstance";
 import { getRunningInstanceIdsByName } from "./getRunningInstanceIdsByName";
 import { runWithSpinner } from "./spinner";
+import { getRegion } from "./getRegion";
 import chalk from "chalk";
 
 export const destroy = async () => {
   try {
     const instanceName = "RabbitoryDashboard";
-    const region = "ca-central-1";
+    const region: string = await getRegion();
     const instanceIds: string[] | undefined = await getRunningInstanceIdsByName(instanceName, region);
     const instanceId: string | undefined = (instanceIds !== undefined && instanceIds.length > 0) ? instanceIds[0] : undefined;
 

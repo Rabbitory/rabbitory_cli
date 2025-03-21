@@ -74,11 +74,8 @@ export const setupRabbitorySG = async (region: string): Promise<string> => {
   const client = new EC2Client({ region: region });
 
   try {
-    console.log('getting vpcId')
     const vpcId = await getVpcId(client);
-    console.log('getting security group id')
     const securityGroupId = await createRabbitoryEngineSG(vpcId, client);
-    console.log('authorizing ingress traffic')
     await authorizeIngressTraffic(securityGroupId, client);
     return securityGroupId;
   } catch (err) {
