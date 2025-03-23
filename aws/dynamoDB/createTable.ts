@@ -29,11 +29,11 @@ export const createTable = async (region: string) => {
     TableName: tableName,
     KeySchema: [
       { AttributeName: "MessageType", KeyType: "HASH" },
-      { AttributeName: "MessageID", KeyType: "RANGE" },
+      // { AttributeName: "MessageID", KeyType: "RANGE" },
     ],
     AttributeDefinitions: [
       { AttributeName: "MessageType", AttributeType: "S" },
-      { AttributeName: "MessageID", AttributeType: "S" },
+      // { AttributeName: "MessageID", AttributeType: "S" },
     ],
     BillingMode: "PAY_PER_REQUEST",
   });
