@@ -5,7 +5,7 @@ import {
   EC2,
 } from "@aws-sdk/client-ec2";
 
-const GROUP_NAME = "RabbitoryEngineSG";
+const GROUP_NAME = "RabbitorySG";
 
 const isAwsError = (error: unknown): error is { name: string; message: string } => {
   return typeof error === "object" && error !== null && "name" in error && "message" in error;
@@ -34,7 +34,7 @@ const deleteSecurityGroup = async (groupId: string, client: EC2Client): Promise<
   }
 };
 
-export const deleteRabbitoryEngineSG = async (region: string): Promise<void> => {
+export const deleteRabbitorySG = async (region: string): Promise<void> => {
   const client = new EC2Client({ region: region });
 
   try {
@@ -42,6 +42,6 @@ export const deleteRabbitoryEngineSG = async (region: string): Promise<void> => 
     if (!securityGroupId) return; // return if no sg exists
     await deleteSecurityGroup(securityGroupId, client);
   } catch (error: unknown) {
-    throw new Error(`Failed to delete RabbitoryEngineSG\n${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(`Failed to delete RabbitorySG\n${error instanceof Error ? error.message : String(error)}`);
   }
 };

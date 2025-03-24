@@ -79,6 +79,6 @@ export const createRabbitorySG = async (region: string): Promise<string> => {
     await authorizeIngressTraffic(securityGroupId, client);
     return securityGroupId;
   } catch (err) {
-    throw new Error(`Error setting up RabbitoryEngine security group\n${err instanceof Error ? err.message : String(err)}`);
+    throw new Error(`Error setting up Rabbitory security group\n${err instanceof Error ? err.message : String(err)}`);
   }
 };
