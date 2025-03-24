@@ -16,7 +16,7 @@ export const deploy = async () => {
     await runWithSpinner('Setting up RMQ Broker IAM...', () => createRMQBrokerIAM(region), 'Created RMQBroker IAM role and instance profile');
     await runWithSpinner('Waiting for IAM instance profile to propagate...', () => new Promise((resolve) => setTimeout(resolve, 5000)), 'IAM instance profile propagated');
     const rabbitorySecurityGroupId = await runWithSpinner('Setting up Rabbitory Security Group...', () => createRabbitorySG(region), 'Created Rabbitory security group');
-    await runWithSpinner('Creating Rabbitory EC2 instance...', () => createControlPanel(rabbitorySecurityGroupId, region), 'Created Rabbitory EC2 instance');
+    await runWithSpinner('Creating Rabbitory Control Panel EC2 instance...', () => createControlPanel(rabbitorySecurityGroupId, region), 'Created Rabbitory EC2 instance');
     await runWithSpinner('Creating DynamoDB Table..', () => createTable(region), 'Created DynamoDB Table');
 
     console.log(chalk.red(logo));
