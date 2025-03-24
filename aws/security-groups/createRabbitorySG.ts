@@ -31,10 +31,10 @@ const getVpcId = async (client: EC2Client): Promise<string> => {
   }
 };
 
-const createRabbitoryEngineSG = async (vpcId: string, client: EC2Client): Promise<string> => {
+const initializeRabbitorySG = async (vpcId: string, client: EC2Client): Promise<string> => {
   try {
-    const securityGroupName = "RabbitoryEngineSG";
-    const description = "Security group for Rabbitory Engine EC2";
+    const securityGroupName = "RabbitorySG";
+    const description = "Security group for Rabbitory Control Panel EC2";
 
     const createSGCommand = new CreateSecurityGroupCommand({
       GroupName: securityGroupName,
@@ -70,15 +70,15 @@ const authorizeIngressTraffic = async (securityGroupId: string, client: EC2Clien
   }
 };
 
-export const setupRabbitorySG = async (region: string): Promise<string> => {
+export const createRabbitorySG = async (region: string): Promise<string> => {
   const client = new EC2Client({ region: region });
 
   try {
     const vpcId = await getVpcId(client);
-    const securityGroupId = await createRabbitoryEngineSG(vpcId, client);
+    const securityGroupId = await initializeRabbitorySG(vpcId, client);
     await authorizeIngressTraffic(securityGroupId, client);
     return securityGroupId;
   } catch (err) {
-    throw new Error(`Error setting up RabbitoryEngine security group\n${err instanceof Error ? err.message : String(err)}`);
+    throw new Error(`Error setting up Rabbitory security group\n${err instanceof Error ? err.message : String(err)}`);
   }
 };

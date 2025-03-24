@@ -83,7 +83,7 @@ const addRoleToInstanceProfile = async (client: IAMClient): Promise<void> => {
   }
 };
 
-export const createRabbitoryEngineIAM = async (region: string): Promise<void> => {
+export const createRabbitoryIAM = async (region: string): Promise<void> => {
   const client = new IAMClient({ region: region });
 
   try {

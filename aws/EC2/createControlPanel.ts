@@ -3,7 +3,7 @@ import type { RunInstancesCommandInput } from "@aws-sdk/client-ec2";
 
 const NODE_VERSION = "23.9";
 
-const repoUrl = "https://github.com/Rabbitory/rabbitory_dashboard.git";
+const repoUrl = "https://github.com/Rabbitory/rabbitory_control_panel.git";
 
 const userData = `#!/bin/bash
 sudo apt update
@@ -16,12 +16,12 @@ nvm install ${NODE_VERSION}
 nvm use ${NODE_VERSION}
 
 git clone ${repoUrl}
-cd rabbitory_dashboard
+cd rabbitory_control_panel
 npm install
 npm run build
 
 npm install -g pm2
-pm2 start npm --name "rabbitory_dashboard" -- start
+pm2 start npm --name "rabbitory_control_panel" -- start
 eval "$(pm2 startup | grep 'sudo env')"
 pm2 save
 `;
@@ -64,7 +64,7 @@ const getImageId = (region: string) => {
       throw new Error(`Invalid region: ${region}`);
   }
 }
-export const createDashboard = async (securityGroupId: string, region: string) => {
+export const createControlPanel = async (securityGroupId: string, region: string) => {
   const client = new EC2Client({ region: region });
 
   const encodedUserData = Buffer.from(userData).toString("base64");
@@ -78,7 +78,7 @@ export const createDashboard = async (securityGroupId: string, region: string) =
     TagSpecifications: [
       {
         ResourceType: "instance",
-        Tags: [{ Key: "Name", Value: "RabbitoryDashboard" }],
+        Tags: [{ Key: "Name", Value: "RabbitoryControlPanel" }],
       },
     ],
 
