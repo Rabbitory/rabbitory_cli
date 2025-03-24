@@ -20,7 +20,7 @@ const tableExists = async (tableName: string, client: DynamoDBClient): Promise<b
 export const createTable = async (region: string) => {
   const client = new DynamoDBClient({ region: region });
 
-  const tableName = "RabbitoryTable";
+  const tableName = "RabbitoryInstancesMetadata";
 
   const exists = await tableExists(tableName, client);
   if (exists) return;
@@ -28,12 +28,10 @@ export const createTable = async (region: string) => {
   const command = new CreateTableCommand({
     TableName: tableName,
     KeySchema: [
-      { AttributeName: "MessageType", KeyType: "HASH" },
-      // { AttributeName: "MessageID", KeyType: "RANGE" },
+      { AttributeName: "instanceId", KeyType: "HASH" },
     ],
     AttributeDefinitions: [
-      { AttributeName: "MessageType", AttributeType: "S" },
-      // { AttributeName: "MessageID", AttributeType: "S" },
+      { AttributeName: "instanceId", AttributeType: "S" },
     ],
     BillingMode: "PAY_PER_REQUEST",
   });
