@@ -1,4 +1,8 @@
-import { EC2Client, RunInstancesCommand, waitUntilInstanceRunning } from "@aws-sdk/client-ec2";
+import {
+  EC2Client,
+  RunInstancesCommand,
+  waitUntilInstanceRunning,
+} from "@aws-sdk/client-ec2";
 import type { RunInstancesCommandInput } from "@aws-sdk/client-ec2";
 
 const NODE_VERSION = "23.9";
@@ -19,7 +23,6 @@ git clone ${repoUrl}
 cd rabbitory_control_panel
 npm install
 npm run build
-
 npm install -g pm2
 pm2 start npm --name "rabbitory_control_panel" -- start
 eval "$(pm2 startup | grep 'sudo env')"
@@ -59,12 +62,15 @@ const getImageId = (region: string) => {
     case "eu-west-3":
       return "ami-0ae30afba46710143";
     case "sa-east-1":
-      return "ami-0d866da98d63e2b42"
+      return "ami-0d866da98d63e2b42";
     default:
       throw new Error(`Invalid region: ${region}`);
   }
-}
-export const createControlPanel = async (securityGroupId: string, region: string) => {
+};
+export const createControlPanel = async (
+  securityGroupId: string,
+  region: string
+) => {
   const client = new EC2Client({ region: region });
 
   const encodedUserData = Buffer.from(userData).toString("base64");
@@ -97,14 +103,18 @@ export const createControlPanel = async (securityGroupId: string, region: string
 
     const instanceId = data.Instances[0].InstanceId;
 
-    if (typeof instanceId === 'string') {
+    if (typeof instanceId === "string") {
       await waitUntilInstanceRunning(
         { client: client, maxWaitTime: 240 },
         { InstanceIds: [instanceId] }
-      )
+      );
     }
     return data;
   } catch (err) {
-    throw new Error(`Error creating instance\n${err instanceof Error ? err.message : String(err)}`);
+    throw new Error(
+      `Error creating instance\n${
+        err instanceof Error ? err.message : String(err)
+      }`
+    );
   }
 };
