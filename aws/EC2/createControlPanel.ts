@@ -71,7 +71,7 @@ export const createControlPanel = async (securityGroupId: string, region: string
   const imageId = getImageId(region);
 
   const params: RunInstancesCommandInput = {
-    ImageId: imageId, // Ubuntu 24.04 LTS | Region specific
+    ImageId: imageId,
     InstanceType: "t2.micro",
     MinCount: 1,
     MaxCount: 1,
@@ -81,13 +81,18 @@ export const createControlPanel = async (securityGroupId: string, region: string
         Tags: [{ Key: "Name", Value: "RabbitoryControlPanel" }],
       },
     ],
-
     UserData: encodedUserData,
-    SecurityGroupIds: [securityGroupId],
-    IamInstanceProfile: {
-      Name: "RabbitoryInstanceProfile",
-    },
+    IamInstanceProfile: { Name: "RabbitoryInstanceProfile" },
+  
+    NetworkInterfaces: [
+      {
+        DeviceIndex: 0,
+        AssociatePublicIpAddress: true,
+        Groups: [securityGroupId],
+      },
+    ],
   };
+  
 
   try {
     const data = await client.send(new RunInstancesCommand(params));
@@ -104,7 +109,7 @@ export const createControlPanel = async (securityGroupId: string, region: string
       )
     }
    
-    return instanceId; // Return only the instance ID
+    return instanceId;
   } catch (err) {
     throw new Error(`Error creating instance\n${err instanceof Error ? err.message : String(err)}`);
   }
