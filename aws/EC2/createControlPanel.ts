@@ -61,7 +61,7 @@ rm package-lock.json
 # Install dependencies and build the app
 npm install
 echo "installed dependencies with npm!"
-npm run build
+sudo npm run build
 echo "built next file"
 
 # Install PM2 globally
@@ -73,7 +73,9 @@ pm2 start npm --name "rabbitory_control_panel" -- start
 echo "started pm2"
 
 # Set PM2 to start on system reboot (Ubuntu user)
-pm2 startup systemd -u ubuntu --hp /home/ubuntu
+# pm2 startup systemd -u ubuntu --hp /home/ubuntu
+pm2 start npm --name "rabbitory_control_panel" -- start
+eval "$(pm2 startup | grep 'sudo env')"
 pm2 save`;
 
 const getImageId = (region: string) => {
