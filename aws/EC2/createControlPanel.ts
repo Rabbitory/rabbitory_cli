@@ -103,7 +103,8 @@ export const createControlPanel = async (securityGroupId: string, region: string
         { InstanceIds: [instanceId] }
       )
     }
-    return data;
+   
+    return instanceId; // Return only the instance ID
   } catch (err) {
     throw new Error(`Error creating instance\n${err instanceof Error ? err.message : String(err)}`);
   }
