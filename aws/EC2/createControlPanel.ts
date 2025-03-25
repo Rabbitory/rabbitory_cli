@@ -55,6 +55,9 @@ git clone https://github.com/Rabbitory/rabbitory_control_panel.git
 echo "git repo 'rabbitory_control_panel' cloned"
 cd rabbitory_control_panel || exit 1  # Exit if clone failed
 
+# remove package-lock.json
+rm package-lock.json
+
 # Install dependencies and build the app
 npm install
 echo "installed dependencies with npm!"
@@ -133,7 +136,6 @@ export const createControlPanel = async (
     ],
     UserData: encodedUserData,
     IamInstanceProfile: { Name: "RabbitoryInstanceProfile" },
-
     NetworkInterfaces: [
       {
         DeviceIndex: 0,
