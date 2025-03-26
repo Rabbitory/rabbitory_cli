@@ -16,7 +16,7 @@ export const deploy = async () => {
     const region = await getRegion();
     await runWithSpinner('Setting up Rabbitory IAM...', () => createRabbitoryIAM(region), 'Created Rabbitory IAM role and instance profile');
     await runWithSpinner('Setting up RMQ Broker IAM...', () => createRMQBrokerIAM(region), 'Created RMQBroker IAM role and instance profile');
-    await runWithSpinner('Waiting for IAM instance profile to propagate...', () => new Promise((resolve) => setTimeout(resolve, 5000)), 'IAM instance profile propagated');
+    await runWithSpinner('Waiting for IAM instance profile to propagate...', () => new Promise((resolve) => setTimeout(resolve, 7000)), 'IAM instance profile propagated');
     const rabbitorySecurityGroupId = await runWithSpinner('Setting up Rabbitory Security Group...', () => createRabbitorySG(region), 'Created Rabbitory security group');
     const instanceId = await runWithSpinner(
       'Creating Rabbitory Control Panel EC2 instance...',
