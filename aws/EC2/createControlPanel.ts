@@ -92,9 +92,15 @@ const getImageId = (region: string) => {
       return "ami-0ae30afba46710143";
     case "sa-east-1":
       return "ami-0d866da98d63e2b42";
+      return "ami-0d866da98d63e2b42";
     default:
       throw new Error(`Invalid region: ${region}`);
   }
+};
+export const createControlPanel = async (
+  securityGroupId: string,
+  region: string
+) => {
 };
 export const createControlPanel = async (
   securityGroupId: string,
@@ -136,14 +142,21 @@ export const createControlPanel = async (
     const instanceId = data.Instances[0].InstanceId;
 
     if (typeof instanceId === "string") {
+    if (typeof instanceId === "string") {
       await waitUntilInstanceRunning(
         { client: client, maxWaitTime: 240 },
         { InstanceIds: [instanceId] }
+      );
       );
     }
 
     return instanceId;
   } catch (err) {
+    throw new Error(
+      `Error creating instance\n${
+        err instanceof Error ? err.message : String(err)
+      }`
+    );
     throw new Error(
       `Error creating instance\n${
         err instanceof Error ? err.message : String(err)

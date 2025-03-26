@@ -41,8 +41,10 @@ const createRabbitoryRole = async (client: IAMClient): Promise<void> => {
 
 const attachRabbitoryPolicies = async (client: IAMClient): Promise<void> => {
   const policies = [
+    "arn:aws:iam::aws:policy/AmazonSSMFullAccess",
     "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
     "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
+    "arn:aws:iam::aws:policy/IAMFullAccess",
   ];
 
   try {
