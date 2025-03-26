@@ -38,12 +38,12 @@ const userData = `#!/bin/bash
 # exec > >(tee /var/log/user-data.log | logger -t user-data -s 2>/dev/console) 2>&1
 
 # Update and install basic dependencies
-apt update -y
-apt install -y curl git
+apt-get update -y
+apt-get install -y curl git
 
 # Install Node.js (Node 23.x) via NodeSource
 curl -fsSL https://deb.nodesource.com/setup_23.x | bash -
-apt install -y nodejs
+apt-get install -y nodejs
 
 # Verify Node and npm versions
 echo "Node version: $(node -v)"
