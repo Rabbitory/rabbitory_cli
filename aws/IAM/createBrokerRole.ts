@@ -42,7 +42,7 @@ const createBrokerRole = async (client: IAMClient): Promise<void> => {
 
 const attachRMQBrokerPolicies = async (client: IAMClient): Promise<void> => {
   const policies = [
-    "arn:aws:iam::aws:policy/AmazonSSMFullAccess",
+    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
     "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
   ];
 
