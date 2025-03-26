@@ -5,28 +5,57 @@ import {
 } from "@aws-sdk/client-ec2";
 import type { RunInstancesCommandInput } from "@aws-sdk/client-ec2";
 
-const NODE_VERSION = "23.9";
+//const NODE_VERSION = "23.9";
 
-const repoUrl = "https://github.com/Rabbitory/rabbitory_control_panel.git";
+//const repoUrl = "https://github.com/Rabbitory/rabbitory_control_panel.git";
 
 const userData = `#!/bin/bash
-sudo apt update
-sudo apt install -y npm
+# --- Root-level commands ---
+apt-get update -y
+apt-get install -y curl git
+# Create a minimal .bashrc for the ubuntu user if it doesn't exist
+if [ ! -f /home/ubuntu/.bashrc ]; then
+  touch /home/ubuntu/.bashrc
+fi
+# Switch to the ubuntu user to install nvm and Node.js
+su - ubuntu -c '
+export HOME=/home/ubuntu
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
-export NVM_DIR="/usr/local/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-nvm install ${NODE_VERSION}
-nvm use ${NODE_VERSION}
-
-git clone ${repoUrl}
-cd rabbitory_control_panel
-npm install
-npm run build
-npm install -g pm2
-pm2 start npm --name "rabbitory_control_panel" -- start
-eval "$(pm2 startup | grep 'sudo env')"
+export NVM_DIR="/home/ubuntu/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+nvm install 23
+nvm use 23
+echo "Node version: $(node -v)"
+echo "npm version: $(npm -v)"
+'
+# --- Repository Setup (as root) ---
+cd /home/ubuntu
+if [ ! -d "rabbitory_control_panel" ]; then
+  su - ubuntu -c 'git clone https://github.com/Rabbitory/rabbitory_control_panel.git'
+  echo "git repo 'rabbitory_control_panel' cloned"
+fi
+cd rabbitory_control_panel || exit 1
+rm -f package-lock.json
+chown -R ubuntu:ubuntu /home/ubuntu/rabbitory_control_panel
+# --- Switch to ubuntu for App Build and PM2 Setup ---
+su - ubuntu -c '
+export NVM_DIR="/home/ubuntu/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+cd /home/ubuntu/rabbitory_control_panel &&
+npm install &&
+echo "Installed dependencies with npm!" &&
+npm run build &&
+echo "Built Next.js app" &&
+npm install -g pm2 &&
+echo "Installed PM2" &&
+pm2 start npm --name "rabbitory_control_panel" -- start &&
+echo "Started PM2" &&
 pm2 save
+'
+# --- Configure PM2 to start on reboot ---
+# Compute the Node.js binary directory as the ubuntu user by sourcing nvm
+NODE_DIR=$(sudo -u ubuntu bash -c 'export NVM_DIR="/home/ubuntu/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"; command -v node | xargs dirname')
+sudo env PATH=$PATH:$NODE_DIR pm2 startup systemd -u ubuntu --hp /home/ubuntu
 `;
 
 const getImageId = (region: string) => {
@@ -63,9 +92,15 @@ const getImageId = (region: string) => {
       return "ami-0ae30afba46710143";
     case "sa-east-1":
       return "ami-0d866da98d63e2b42";
+      return "ami-0d866da98d63e2b42";
     default:
       throw new Error(`Invalid region: ${region}`);
   }
+};
+export const createControlPanel = async (
+  securityGroupId: string,
+  region: string
+) => {
 };
 export const createControlPanel = async (
   securityGroupId: string,
@@ -77,8 +112,8 @@ export const createControlPanel = async (
   const imageId = getImageId(region);
 
   const params: RunInstancesCommandInput = {
-    ImageId: imageId, // Ubuntu 24.04 LTS | Region specific
-    InstanceType: "t2.micro",
+    ImageId: imageId,
+    InstanceType: "t3.small", // t3.small
     MinCount: 1,
     MaxCount: 1,
     TagSpecifications: [
@@ -87,12 +122,15 @@ export const createControlPanel = async (
         Tags: [{ Key: "Name", Value: "RabbitoryControlPanel" }],
       },
     ],
-
     UserData: encodedUserData,
-    SecurityGroupIds: [securityGroupId],
-    IamInstanceProfile: {
-      Name: "RabbitoryInstanceProfile",
-    },
+    IamInstanceProfile: { Name: "RabbitoryInstanceProfile" },
+    NetworkInterfaces: [
+      {
+        DeviceIndex: 0,
+        AssociatePublicIpAddress: true,
+        Groups: [securityGroupId],
+      },
+    ],
   };
 
   try {
@@ -104,13 +142,21 @@ export const createControlPanel = async (
     const instanceId = data.Instances[0].InstanceId;
 
     if (typeof instanceId === "string") {
+    if (typeof instanceId === "string") {
       await waitUntilInstanceRunning(
         { client: client, maxWaitTime: 240 },
         { InstanceIds: [instanceId] }
       );
+      );
     }
-    return data;
+
+    return instanceId;
   } catch (err) {
+    throw new Error(
+      `Error creating instance\n${
+        err instanceof Error ? err.message : String(err)
+      }`
+    );
     throw new Error(
       `Error creating instance\n${
         err instanceof Error ? err.message : String(err)
