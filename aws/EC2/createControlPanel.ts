@@ -31,6 +31,8 @@ const repoUrl = "https://github.com/Rabbitory/rabbitory_control_panel.git";
 // pm2 save
 // `;
 
+
+// WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
 const userData = `#!/bin/bash
 # Redirect all output to a log file for debugging
 # exec > >(tee /var/log/user-data.log | logger -t user-data -s 2>/dev/console) 2>&1
@@ -55,13 +57,16 @@ git clone https://github.com/Rabbitory/rabbitory_control_panel.git
 echo "git repo 'rabbitory_control_panel' cloned"
 cd rabbitory_control_panel || exit 1  # Exit if clone failed
 
+# Fix file ownership
+sudo chown -R ubuntu:ubuntu /home/ubuntu/rabbitory_control_panel
+
 # remove package-lock.json
 rm package-lock.json
 
 # Install dependencies and build the app
 npm install
 echo "installed dependencies with npm!"
-sudo npm run build
+npm run build
 echo "built next file"
 
 # Install PM2 globally
@@ -73,9 +78,8 @@ pm2 start npm --name "rabbitory_control_panel" -- start
 echo "started pm2"
 
 # Set PM2 to start on system reboot (Ubuntu user)
-# pm2 startup systemd -u ubuntu --hp /home/ubuntu
-pm2 start npm --name "rabbitory_control_panel" -- start
-eval "$(pm2 startup | grep 'sudo env')"
+pm2 startup systemd -u ubuntu --hp /home/ubuntu
+sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
 pm2 save`;
 
 const getImageId = (region: string) => {
