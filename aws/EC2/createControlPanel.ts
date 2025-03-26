@@ -5,82 +5,58 @@ import {
 } from "@aws-sdk/client-ec2";
 import type { RunInstancesCommandInput } from "@aws-sdk/client-ec2";
 
-const NODE_VERSION = "23.9";
+//const NODE_VERSION = "23.9";
 
-const repoUrl = "https://github.com/Rabbitory/rabbitory_control_panel.git";
+//const repoUrl = "https://github.com/Rabbitory/rabbitory_control_panel.git";
 
-// const userData = `#!/bin/bash
-// sudo apt update
-// sudo apt install -y npm
-// curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
-// export NVM_DIR="/usr/local/nvm"
-// [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-// # curl script
-// nvm install ${NODE_VERSION}
-// nvm use ${NODE_VERSION}
-
-// git clone ${repoUrl}
-// cd rabbitory_control_panel
-// npm install
-// npm run build
-
-// npm install -g pm2
-// pm2 start npm --name "rabbitory_control_panel" -- start
-// eval "$(pm2 startup | grep 'sudo env')"
-// pm2 save
-// `;
-
-
-// WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
 const userData = `#!/bin/bash
-# Redirect all output to a log file for debugging
-# exec > >(tee /var/log/user-data.log | logger -t user-data -s 2>/dev/console) 2>&1
-
-# Update and install basic dependencies
+# --- Root-level commands ---
 apt-get update -y
 apt-get install -y curl git
-
-# Install Node.js (Node 23.x) via NodeSource
-curl -fsSL https://deb.nodesource.com/setup_23.x | bash -
-apt-get install -y nodejs
-
-# Verify Node and npm versions
+# Create a minimal .bashrc for the ubuntu user if it doesn't exist
+if [ ! -f /home/ubuntu/.bashrc ]; then
+  touch /home/ubuntu/.bashrc
+fi
+# Switch to the ubuntu user to install nvm and Node.js
+su - ubuntu -c '
+export HOME=/home/ubuntu
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+export NVM_DIR="/home/ubuntu/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+nvm install 23
+nvm use 23
 echo "Node version: $(node -v)"
 echo "npm version: $(npm -v)"
-
-# Set the home directory as the working directory
+'
+# --- Repository Setup (as root) ---
 cd /home/ubuntu
-
-# Clone your repo
-git clone https://github.com/Rabbitory/rabbitory_control_panel.git
-echo "git repo 'rabbitory_control_panel' cloned"
-cd rabbitory_control_panel || exit 1  # Exit if clone failed
-
-# Fix file ownership
-sudo chown -R ubuntu:ubuntu /home/ubuntu/rabbitory_control_panel
-
-# remove package-lock.json
-rm package-lock.json
-
-# Install dependencies and build the app
-npm install
-echo "installed dependencies with npm!"
-npm run build
-echo "built next file"
-
-# Install PM2 globally
-npm install -g pm2
-echo "installed pm2"
-
-# Start the app with PM2
-pm2 start npm --name "rabbitory_control_panel" -- start
-echo "started pm2"
-
-# Set PM2 to start on system reboot (Ubuntu user)
-pm2 startup systemd -u ubuntu --hp /home/ubuntu
-sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
-pm2 save`;
+if [ ! -d "rabbitory_control_panel" ]; then
+  su - ubuntu -c 'git clone https://github.com/Rabbitory/rabbitory_control_panel.git'
+  echo "git repo 'rabbitory_control_panel' cloned"
+fi
+cd rabbitory_control_panel || exit 1
+rm -f package-lock.json
+chown -R ubuntu:ubuntu /home/ubuntu/rabbitory_control_panel
+# --- Switch to ubuntu for App Build and PM2 Setup ---
+su - ubuntu -c '
+export NVM_DIR="/home/ubuntu/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+cd /home/ubuntu/rabbitory_control_panel &&
+npm install &&
+echo "Installed dependencies with npm!" &&
+npm run build &&
+echo "Built Next.js app" &&
+npm install -g pm2 &&
+echo "Installed PM2" &&
+pm2 start npm --name "rabbitory_control_panel" -- start &&
+echo "Started PM2" &&
+pm2 save
+'
+# --- Configure PM2 to start on reboot ---
+# Compute the Node.js binary directory as the ubuntu user by sourcing nvm
+NODE_DIR=$(sudo -u ubuntu bash -c 'export NVM_DIR="/home/ubuntu/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"; command -v node | xargs dirname')
+sudo env PATH=$PATH:$NODE_DIR pm2 startup systemd -u ubuntu --hp /home/ubuntu
+`;
 
 const getImageId = (region: string) => {
   switch (region) {
