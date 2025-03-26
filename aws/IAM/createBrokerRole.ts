@@ -40,13 +40,20 @@ const createBrokerRole = async (client: IAMClient): Promise<void> => {
   }
 };
 
-const attachDynamoDBPolicy = async (client: IAMClient) => {
+const attachRMQBrokerPolicies = async (client: IAMClient): Promise<void> => {
+  const policies = [
+    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+  ];
+
   try {
-    const command = new AttachRolePolicyCommand({
-      RoleName: ROLE_NAME,
-      PolicyArn: "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
-    });
-    await client.send(command);
+    for (const policyArn of policies) {
+      const command = new AttachRolePolicyCommand({
+        RoleName: ROLE_NAME,
+        PolicyArn: policyArn,
+      });
+      await client.send(command);
+    }
   } catch (error) {
     throw new Error(`Failed to attach one or more policies\n${error instanceof Error ? error.message : String(error)}`);
   }
@@ -81,7 +88,7 @@ export const createRMQBrokerIAM = async (region: string): Promise<void> => {
 
   try {
     await createBrokerRole(client);
-    await attachDynamoDBPolicy(client);
+    await attachRMQBrokerPolicies(client);
     await createInstanceProfile(client);
     await addRoleToInstanceProfile(client);
   } catch (error) {
