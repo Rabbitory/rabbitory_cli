@@ -3,7 +3,7 @@ import chalk from 'chalk';
 
 export const runWithSpinner = async <T>(
   waitingMsg: string, 
-  callbackFn: () => Promise<T>, 
+  callbackFn: () => Promise<any>, 
   successMsg: string
 ): Promise<T> => {
   const spinner = ora({
