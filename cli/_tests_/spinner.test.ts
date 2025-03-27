@@ -15,11 +15,11 @@ jest.mock('ora', () => {
   }));
 });
 
-jest.mock('chalk', () => ({
-  white: jest.fn().mockImplementation((msg: string) => msg),
-  green: jest.fn().mockImplementation((msg: string) => `green ${msg}`),
-  bgRed: jest.fn().mockImplementation((msg: string) => `bgRed ${msg}`),
-}));
+// jest.mock('chalk', () => ({
+//   white: jest.fn().mockImplementation((msg: string) => msg),
+//   green: jest.fn().mockImplementation((msg: string) => `green ${msg}`),
+//   bgRed: jest.fn().mockImplementation((msg: string) => `bgRed ${msg}`),
+// }));
 
 describe('runWithSpinner', () => {
   beforeEach(() => {
