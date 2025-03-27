@@ -5,7 +5,6 @@ import {
   CreateInstanceProfileCommand,
   AddRoleToInstanceProfileCommand,
   CreateRoleResponse,
-  IAM,
 } from "@aws-sdk/client-iam";
 
 export const ROLE_NAME = "RMQBrokerRole";

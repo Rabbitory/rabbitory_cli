@@ -125,7 +125,7 @@ const getImageId = (region: string) => {
 export const createControlPanel = async (
   securityGroupId: string,
   region: string
-) => {
+): Promise<string> => {
   const client = new EC2Client({ region: region });
 
   const encodedUserData = Buffer.from(userData).toString("base64");
@@ -156,19 +156,18 @@ export const createControlPanel = async (
 
   try {
     const data = await client.send(new RunInstancesCommand(params));
-    if (!data.Instances || data.Instances.length === 0) {
-      throw new Error("No instances were created");
+    
+    if (!data.Instances?.length || !data.Instances[0].InstanceId) {
+      throw new Error("No instances were created or instance ID is missing");
     }
 
-    const instanceId = data.Instances[0].InstanceId;
+    const instanceId: string = data.Instances[0].InstanceId;
 
-    if (typeof instanceId === "string") {
-      await waitUntilInstanceRunning(
-        { client: client, maxWaitTime: 240 },
-        { InstanceIds: [instanceId] }
-      );
-    }
-
+    await waitUntilInstanceRunning(
+      { client, maxWaitTime: 240 },
+      { InstanceIds: [instanceId] }
+    );
+    
     return instanceId;
   } catch (err) {
     throw new Error(
