@@ -1,5 +1,5 @@
 import ora from 'ora';
-import chalk from 'chalk';
+// import chalk from 'chalk';
 
 export const runWithSpinner = async <T>(
   waitingMsg: string, 
