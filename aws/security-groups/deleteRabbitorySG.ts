@@ -2,7 +2,6 @@ import {
   EC2Client,
   DescribeSecurityGroupsCommand,
   DeleteSecurityGroupCommand,
-  EC2,
 } from "@aws-sdk/client-ec2";
 
 const GROUP_NAME = "RabbitorySG";

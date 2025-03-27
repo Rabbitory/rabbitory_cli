@@ -1,11 +1,11 @@
 import ora from 'ora';
 import chalk from 'chalk';
 
-export const runWithSpinner = async (
+export const runWithSpinner = async <T>(
   waitingMsg: string, 
-  callbackFn: () => Promise<any>, 
+  callbackFn: () => Promise<T>, 
   successMsg: string
-) => {
+): Promise<T> => {
   const spinner = ora({
     text: chalk.white(waitingMsg),
     color: 'white',
