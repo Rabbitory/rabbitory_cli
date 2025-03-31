@@ -28,60 +28,6 @@ import type { RunInstancesCommandInput } from "@aws-sdk/client-ec2";
 // eval "$(pm2 startup | grep 'sudo env')"
 // pm2 save
 // `;
-const userData = `#!/bin/bash
-# --- Root-level commands ---
-apt-get update -y
-apt-get install -y curl git
-
-# Create a minimal .bashrc for the ubuntu user if it doesn't exist
-if [ ! -f /home/ubuntu/.bashrc ]; then
-  touch /home/ubuntu/.bashrc
-fi
-
-# Switch to the ubuntu user to install nvm and Node.js
-su - ubuntu -c '
-export HOME=/home/ubuntu
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
-export NVM_DIR="/home/ubuntu/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-nvm install 23
-nvm use 23
-echo "Node version: $(node -v)"
-echo "npm version: $(npm -v)"
-'
-
-# --- Repository Setup (as root) ---
-cd /home/ubuntu
-if [ ! -d "rabbitory_control_panel" ]; then
-  su - ubuntu -c 'git clone https://github.com/Rabbitory/rabbitory_control_panel.git'
-  echo "git repo 'rabbitory_control_panel' cloned"
-fi
-
-cd rabbitory_control_panel || exit 1
-rm -f package-lock.json
-chown -R ubuntu:ubuntu /home/ubuntu/rabbitory_control_panel
-
-# --- Switch to ubuntu for App Build and PM2 Setup ---
-su - ubuntu -c '
-export NVM_DIR="/home/ubuntu/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-cd /home/ubuntu/rabbitory_control_panel &&
-npm install &&
-echo "Installed dependencies with npm!" &&
-npm run build &&
-echo "Built Next.js app" &&
-npm install -g pm2 &&
-echo "Installed PM2" &&
-pm2 start npm --name "rabbitory_control_panel" -- start &&
-echo "Started PM2" &&
-pm2 save
-'
-
-# --- Configure PM2 to start on reboot ---
-# Compute the Node.js binary directory as the ubuntu user by sourcing nvm
-NODE_DIR=$(sudo -u ubuntu bash -c 'export NVM_DIR="/home/ubuntu/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"; command -v node | xargs dirname')
-sudo env PATH=$PATH:$NODE_DIR pm2 startup systemd -u ubuntu --hp /home/ubuntu
-`;
 
 const getImageId = (region: string) => {
   switch (region) {
@@ -124,9 +70,69 @@ const getImageId = (region: string) => {
 
 export const createControlPanel = async (
   securityGroupId: string,
-  region: string
+  region: string,
 ): Promise<string> => {
   const client = new EC2Client({ region: region });
+
+  const userData = `#!/bin/bash
+  # --- Root-level commands ---
+  apt-get update -y
+  apt-get install -y curl git
+
+  # Create a minimal .bashrc for the ubuntu user if it doesn't exist
+  if [ ! -f /home/ubuntu/.bashrc ]; then
+    touch /home/ubuntu/.bashrc
+  fi
+
+  # Switch to the ubuntu user to install nvm and Node.js
+  su - ubuntu -c '
+  export HOME=/home/ubuntu
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+  export NVM_DIR="/home/ubuntu/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+  nvm install 23
+  nvm use 23
+  echo "Node version: $(node -v)"
+  echo "npm version: $(npm -v)"
+  '
+
+  # --- Repository Setup (as root) ---
+  cd /home/ubuntu
+  if [ ! -d "rabbitory_control_panel" ]; then
+    su - ubuntu -c 'git clone https://github.com/Rabbitory/rabbitory_control_panel.git'
+    echo "git repo 'rabbitory_control_panel' cloned"
+  fi
+
+  cd rabbitory_control_panel || exit 1
+  rm -f package-lock.json
+
+  cat <<EOF > .env
+  REGION=${region}
+  EOF
+
+  chown -R ubuntu:ubuntu /home/ubuntu/rabbitory_control_panel
+
+  # --- Switch to ubuntu for App Build and PM2 Setup ---
+  su - ubuntu -c '
+  export NVM_DIR="/home/ubuntu/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+  cd /home/ubuntu/rabbitory_control_panel &&
+  npm install &&
+  echo "Installed dependencies with npm!" &&
+  npm run build &&
+  echo "Built Next.js app" &&
+  npm install -g pm2 &&
+  echo "Installed PM2" &&
+  pm2 start npm --name "rabbitory_control_panel" -- start &&
+  echo "Started PM2" &&
+  pm2 save
+  '
+
+  # --- Configure PM2 to start on reboot ---
+  # Compute the Node.js binary directory as the ubuntu user by sourcing nvm
+  NODE_DIR=$(sudo -u ubuntu bash -c 'export NVM_DIR="/home/ubuntu/.nvm"; [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"; command -v node | xargs dirname')
+  sudo env PATH=$PATH:$NODE_DIR pm2 startup systemd -u ubuntu --hp /home/ubuntu
+  `.replace(/^\s+/gm, "");
 
   const encodedUserData = Buffer.from(userData).toString("base64");
   const imageId = getImageId(region);
@@ -156,7 +162,7 @@ export const createControlPanel = async (
 
   try {
     const data = await client.send(new RunInstancesCommand(params));
-    
+
     if (!data.Instances?.length || !data.Instances[0].InstanceId) {
       throw new Error("No instances were created or instance ID is missing");
     }
@@ -165,15 +171,15 @@ export const createControlPanel = async (
 
     await waitUntilInstanceRunning(
       { client, maxWaitTime: 240 },
-      { InstanceIds: [instanceId] }
+      { InstanceIds: [instanceId] },
     );
-    
+
     return instanceId;
   } catch (err) {
     throw new Error(
       `Error creating instance\n${
         err instanceof Error ? err.message : String(err)
-      }`
+      }`,
     );
   }
 };
