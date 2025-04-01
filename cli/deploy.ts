@@ -9,13 +9,14 @@ import { getRegion } from "./getRegion";
 import { logo } from "./logo";
 import chalk from "chalk";
 import { destroy } from "./destroy";
-
+import { waitForInstanceRunning } from "../aws/EC2/waitForInstanceRunning";
+import { waitForAppToBeReady } from "./waitForAppToBeReady";
 
 export const deploy = async () => {
   try {
     const region = await getRegion();
-    await runWithSpinner('Setting up Rabbitory IAM...', () => createRabbitoryIAM(region), 'Created Rabbitory IAM role and instance profile');
-    await runWithSpinner('Setting up RMQ Broker IAM...', () => createRMQBrokerIAM(region), 'Created RMQBroker IAM role and instance profile');
+    await runWithSpinner('Setting up Rabbitory Contol Panel IAM...', () => createRabbitoryIAM(region), 'Created Rabbitory Control Panel IAM role and instance profile');
+    await runWithSpinner('Setting up Rabbitmq Broker IAM...', () => createRMQBrokerIAM(region), 'Created Rabbitmq Broker IAM role and instance profile');
     await runWithSpinner('Waiting for IAM instance profile to propagate...', () => new Promise((resolve) => setTimeout(resolve, 7000)), 'IAM instance profile propagated');
     const rabbitorySecurityGroupId = await runWithSpinner('Setting up Rabbitory Security Group...', () => createRabbitorySG(region), 'Created Rabbitory security group');
     const instanceId = await runWithSpinner(
@@ -24,14 +25,14 @@ export const deploy = async () => {
       'Created Rabbitory EC2 instance'
     );
     await runWithSpinner('Creating DynamoDB Table..', () => createTable(region), 'Created DynamoDB Table');
-    // Get the public endpoint
-    const dashboardUrl = await getRabbitoryEndpoint(instanceId, region);
-    if (dashboardUrl) {
-      console.log(chalk.green(`\nRabbitory dashboard is available at: ${dashboardUrl}\n`));
-    } else {
-      console.log(chalk.yellow("\nRabbitory dashboard is not yet available. Please check the instance later.\n"));
-    }
     
+    // wait for ec2 to be running
+    await runWithSpinner('Waiting for EC2 instance to be in running state...', () => waitForInstanceRunning(instanceId, region), 'EC2 instance is running');
+  
+    // wait for next app to be up
+    const dashboardUrl = await runWithSpinner('Waiting for application to be ready...', () => waitForAppToBeReady(instanceId, region), 'Application is ready');
+
+    console.log(chalk.white(`\nRabbitory Control Panel is available at: ${chalk.cyan(dashboardUrl)}\n`));
     console.log(chalk.red(logo));
   } catch (error) {
     console.error(chalk.redBright("\nRabbitory deployment failed\n"), error, "\n");
