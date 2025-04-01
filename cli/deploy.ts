@@ -30,8 +30,8 @@ export const deploy = async () => {
     await runWithSpinner('Waiting for EC2 instance to be in running state...', () => waitForInstanceRunning(instanceId, region), 'EC2 instance is running');
   
     // wait for next app to be up
-    const dashboardUrl = await runWithSpinner('Waiting for application to be ready...', () => waitForAppToBeReady(instanceId, region), 'Application is ready');
-
+    const dashboardUrl = await waitForAppToBeReady(instanceId, region);
+    console.log(chalk.green('✔ Application is ready'));
     console.log(chalk.white(`\nRabbitory Control Panel is available at: ${chalk.cyan(dashboardUrl)}\n`));
     console.log(chalk.red(logo));
   } catch (error) {
