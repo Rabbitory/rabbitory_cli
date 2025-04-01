@@ -2,7 +2,6 @@ import { createRabbitoryIAM } from "../aws/IAM/createRabbitoryRole";
 import { createRMQBrokerIAM } from "../aws/IAM/createBrokerRole";
 import { createRabbitorySG } from "../aws/security-groups/createRabbitorySG";
 import { createControlPanel } from "../aws/EC2/createControlPanel";
-import { getRabbitoryEndpoint } from "../aws/EC2/getRabbitoryEndpoint";
 import { createTable } from "../aws/dynamoDB/createTable";
 import { runWithSpinner } from "./spinner";
 import { getRegion } from "./getRegion";

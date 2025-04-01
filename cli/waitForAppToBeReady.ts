@@ -10,7 +10,6 @@ export const waitForAppToBeReady = async (instanceId: string, region: string): P
     throw new Error(`Failed to retrieve endpoint for instance ${instanceId} in region ${region}`);
   }
   
-  // Create a progress bar instance
   const progressBar = new cliProgress.SingleBar({
     format: 'Waiting for application to be ready... [{bar}] {percentage}% | ETA: {eta_formatted}',
     barCompleteChar: '\u2588',
@@ -18,12 +17,13 @@ export const waitForAppToBeReady = async (instanceId: string, region: string): P
     hideCursor: true,
   });
   
-  // Calculate total iterations based on the polling interval and maximum wait time
   const totalIterations = Math.ceil(MAX_WAIT_TIME_MS / POLL_INTERVAL_MS);
   progressBar.start(totalIterations, 0);
 
   const startTime = Date.now();
   let iteration = 0;
+
+  const DEBUG = false; // Change to true for debugging
   
   while (Date.now() - startTime < MAX_WAIT_TIME_MS) {
     try {
@@ -38,7 +38,7 @@ export const waitForAppToBeReady = async (instanceId: string, region: string): P
         return endpoint;
       }
     } catch (error) {
-      // Silently ignore errors in polling (or log to a debug log if needed)
+      if (DEBUG) console.error("Error checking app status:", error);
     }
     
     iteration++;
