@@ -8,7 +8,6 @@ import { getRegion } from "./getRegion";
 import { logo } from "./logo";
 import chalk from "chalk";
 import { destroy } from "./destroy";
-import { waitForInstanceRunning } from "../aws/EC2/waitForInstanceRunning";
 import { waitForAppToBeReady } from "./waitForAppToBeReady";
 
 export const deploy = async () => {
@@ -24,11 +23,6 @@ export const deploy = async () => {
       'Created Rabbitory EC2 instance'
     );
     await runWithSpinner('Creating DynamoDB Table..', () => createTable(region), 'Created DynamoDB Table');
-    
-    // wait for ec2 to be running
-    await runWithSpinner('Waiting for EC2 instance to be in running state...', () => waitForInstanceRunning(instanceId, region), 'EC2 instance is running');
-  
-    // wait for next app to be up
     const dashboardUrl = await waitForAppToBeReady(instanceId, region);
     console.log(chalk.green('✔ Application is ready'));
     console.log(chalk.white(`\nRabbitory Control Panel is available at: ${chalk.cyan(dashboardUrl)}\n`));

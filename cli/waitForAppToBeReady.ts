@@ -1,5 +1,6 @@
 import { getRabbitoryEndpoint } from "../aws/EC2/getRabbitoryEndpoint";
 import cliProgress from 'cli-progress';
+import chalk from 'chalk';
 
 const MAX_WAIT_TIME_MS = 6 * 60 * 1000; // 6 minutes
 const POLL_INTERVAL_MS = 15000; // 15 seconds
@@ -11,7 +12,7 @@ export const waitForAppToBeReady = async (instanceId: string, region: string): P
   }
   
   const progressBar = new cliProgress.SingleBar({
-    format: 'Waiting for application to be ready... [{bar}] {percentage}% | ETA: {eta_formatted}',
+    format: `${chalk.green('Waiting for application to be ready...')} [{bar}] {percentage}% | ETA: {eta_formatted}`,
     barCompleteChar: '\u2588',
     barIncompleteChar: '\u2591',
     hideCursor: true,
