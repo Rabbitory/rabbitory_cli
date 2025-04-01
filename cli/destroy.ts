@@ -10,6 +10,35 @@ import { getRegion } from "./getRegion";
 import chalk from "chalk";
 import { fetchAllRegions } from "./fetchAllRegions";
 
+const deleteAllBrokerInstances = async (regions: string[]) => {
+  for (const region of regions) {
+    const brokerIds = await getInstanceIdsByPublisher("Rabbitory", region);
+    if (brokerIds !== undefined) {
+      for (const brokerId of brokerIds) {
+        await deleteInstance(brokerId, region);
+      }
+    }
+  }
+}
+
+const deleteAllSecurityGroups = async (regions: string[]) => {
+  for (const region of regions) {
+    await deleteRabbitorySG(region);
+  }
+}
+
+const deleteAllBrokerRoles = async (regions: string[]) => {
+  for (const region of regions) {
+    await deleteBrokerRole(region);
+  }
+}
+
+const deleteAllRabbitoryRoles = async (regions: string[]) => {
+  for (const region of regions) {
+    await deleteRabbitoryRole(region);
+  }
+}
+
 export const destroy = async () => {
   try {
     const controlPanelName = "RabbitoryControlPanel";
@@ -45,32 +74,28 @@ export const destroy = async () => {
       );
     }
 
-    for (const region of regions) {
-      const brokerIds = await getInstanceIdsByPublisher("Rabbitory", region);
+    await runWithSpinner(
+      "Deleting RabbitMQ Broker Instances...",
+      () => deleteAllBrokerInstances(regions),
+      "Deleted RabbitMQ Broker Instances",
+    );
 
-      await runWithSpinner(
-        "Deleting RabbitMQ Broker Instances...",
-        () => Promise.all(brokerIds?.map((id) => deleteInstance(id, region)) || []),
-        "Deleted RabbitMQ Broker Instances",
-      );
+    await runWithSpinner(
+      "Deleting Rabbitory security group...",
+      () => deleteAllSecurityGroups(regions),
+      "Deleted Rabbitory security group",
+    );
 
-      await runWithSpinner(
-        "Deleting Rabbitory security group...",
-        () => deleteRabbitorySG(region),
-        "Deleted Rabbitory security group",
-      );
-
-      await runWithSpinner(
-        "Deleting RMQ Broker IAM role...",
-        () => deleteBrokerRole(region),
-        "Deleted RMQ Broker IAM role",
-      );
-      await runWithSpinner(
-        "Deleting Rabbitory IAM role...",
-        () => deleteRabbitoryRole(region),
-        "Deleted Rabbitory IAM role",
-      );
-    }
+    await runWithSpinner(
+      "Deleting RMQ Broker IAM role...",
+      () => deleteAllBrokerRoles(regions),
+      "Deleted RMQ Broker IAM role",
+    );
+    await runWithSpinner(
+      "Deleting Rabbitory IAM role...",
+      () => deleteAllRabbitoryRoles(regions),
+      "Deleted Rabbitory IAM role",
+    );
   } catch (error) {
     console.error(
       chalk.redBright("\nRabbitory destruction failed\n"),
