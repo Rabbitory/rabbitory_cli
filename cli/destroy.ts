@@ -27,18 +27,6 @@ const deleteAllSecurityGroups = async (regions: string[]) => {
   }
 }
 
-const deleteAllBrokerRoles = async (regions: string[]) => {
-  for (const region of regions) {
-    await deleteBrokerRole(region);
-  }
-}
-
-const deleteAllRabbitoryRoles = async (regions: string[]) => {
-  for (const region of regions) {
-    await deleteRabbitoryRole(region);
-  }
-}
-
 export const destroy = async () => {
   try {
     const controlPanelName = "RabbitoryControlPanel";
@@ -88,12 +76,12 @@ export const destroy = async () => {
 
     await runWithSpinner(
       "Deleting RMQ Broker IAM role...",
-      () => deleteAllBrokerRoles(regions),
+      () => deleteBrokerRole(primaryRegion),
       "Deleted RMQ Broker IAM role",
     );
     await runWithSpinner(
       "Deleting Rabbitory IAM role...",
-      () => deleteAllRabbitoryRoles(regions),
+      () => deleteRabbitoryRole(primaryRegion),
       "Deleted Rabbitory IAM role",
     );
   } catch (error) {
