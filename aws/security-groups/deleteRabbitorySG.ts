@@ -8,8 +8,10 @@ const getRabbitorySGIds = async (client: EC2Client): Promise<string[]> => {
   try {
     const command = new DescribeSecurityGroupsCommand({});
     const response = await client.send(command);
+    const regex = /(^rabbitmq(-[a-z]+){4}$|^rabbitory)/i
     return response.SecurityGroups?.reduce<string[]>((ids, sg) => {
-      if (sg.GroupId && sg.GroupName?.toLowerCase().includes('rabbit')) {
+      const groupName = sg.GroupName?.toLowerCase();
+      if (sg.GroupId && groupName && regex.test(groupName)) {
         ids.push(sg.GroupId);
       }
       return ids;
