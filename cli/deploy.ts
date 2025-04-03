@@ -4,11 +4,11 @@ import { createRabbitorySG } from "../aws/security-groups/createRabbitorySG";
 import { createControlPanel } from "../aws/EC2/createControlPanel";
 import { createTable } from "../aws/dynamoDB/createTable";
 import { runWithSpinner } from "./spinner";
-import { getRegion } from "./getRegion";
+import { getRegion } from "./promptUserForRegion";
 import { logo } from "./logo";
 import chalk from "chalk";
 import { destroy } from "./destroy";
-import { waitForAppToBeReady } from "./waitForAppToBeReady";
+import { waitForAppToBeReady } from "./getReadyRabbitoryUrl";
 
 export const deploy = async () => {
   try {
