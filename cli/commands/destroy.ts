@@ -9,10 +9,9 @@ import { runWithSpinner } from "../utils/spinner";
 import { promptUserForRegion } from "../utils/promptUserForRegion";
 import chalk from "chalk";
 import { getAllEC2Regions } from "../../aws/EC2/getAllEC2Regions";
+import { getRegion } from "../utils/region";
 
-/**
- * Deletes all broker instances in the given regions.
- */
+
 const deleteAllBrokerInstances = async (regions: string[]) => {
   try {
     await Promise.all(
@@ -40,9 +39,6 @@ const deleteAllBrokerInstances = async (regions: string[]) => {
   }
 };
 
-/**
- * Deletes all security groups in the given regions.
- */
 const deleteAllSecurityGroups = async (regions: string[]) => {
   try {
     await Promise.all(
@@ -61,15 +57,14 @@ const deleteAllSecurityGroups = async (regions: string[]) => {
 
 export const destroy = async () => {
   try {
-    const controlPanelName = "RabbitoryControlPanel";
-
-    let primaryRegion: string;
     try {
-      primaryRegion = await promptUserForRegion();
+      await promptUserForRegion();
     } catch (error) {
       throw new Error(`Failed to get primary region: ${error}`);
     }
 
+    const controlPanelName = "RabbitoryControlPanel";
+    const primaryRegion = getRegion();
     let regions: string[];
     try {
       regions = await getAllEC2Regions();

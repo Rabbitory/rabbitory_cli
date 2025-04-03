@@ -19,7 +19,7 @@ export const deploy = async () => {
     const rabbitorySecurityGroupId = await runWithSpinner('Setting up Rabbitory Security Group...', () => createRabbitorySG(region), 'Created Rabbitory security group');
     const instanceId = await runWithSpinner(
       'Creating Rabbitory Control Panel EC2 instance...',
-      () => createControlPanel(rabbitorySecurityGroupId, region),
+      () => createControlPanel(rabbitorySecurityGroupId),
       'Created Rabbitory EC2 instance'
     );
     await runWithSpinner('Creating DynamoDB Table..', () => createTable(region), 'Created DynamoDB Table');

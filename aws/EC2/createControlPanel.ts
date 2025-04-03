@@ -1,6 +1,7 @@
 import { RunInstancesCommand, waitUntilInstanceRunning } from "@aws-sdk/client-ec2";
 import type { RunInstancesCommandInput } from "@aws-sdk/client-ec2";
 import { getEC2Client  } from "./getEC2Client";
+import { getRegion } from "../../cli/utils/region";
 
 const getImageId = (region: string) => {
   switch (region) {
@@ -42,11 +43,10 @@ const getImageId = (region: string) => {
 };
 
 export const createControlPanel = async (
-  securityGroupId: string,
-  region: string,
+  securityGroupId: string
 ): Promise<string> => {
-  const client = await getEC2Client();
-
+  const client = getEC2Client();
+  const region = getRegion();
   const userData = `#!/bin/bash
   # --- Root-level commands ---
   apt-get update -y

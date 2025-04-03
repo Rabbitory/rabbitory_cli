@@ -1,3 +1,4 @@
+import { getIAMClient } from "./getIAMClient";
 import {
   IAMClient,
   CreateRoleCommand,
@@ -82,8 +83,8 @@ const addRoleToInstanceProfile = async (client: IAMClient): Promise<void> => {
   }
 };
 
-export const createRMQBrokerIAM = async (region: string): Promise<void> => {
-  const client = new IAMClient({ region: region });
+export const createRMQBrokerIAM = async (): Promise<void> => {
+  const client = getIAMClient();
 
   try {
     await createBrokerRole(client);

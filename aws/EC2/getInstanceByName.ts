@@ -3,7 +3,7 @@ import { getEC2Client } from "./getEC2Client";
 
 
 export const getInstanceByName = async (instanceName: string) => {
-  const ec2Client = await getEC2Client();
+  const ec2Client = getEC2Client();
   const command = new DescribeInstancesCommand({
     Filters: [
       {

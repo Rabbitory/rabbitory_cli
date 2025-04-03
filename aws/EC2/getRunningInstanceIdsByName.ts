@@ -2,7 +2,7 @@ import { DescribeInstancesCommand } from "@aws-sdk/client-ec2";
 import { getEC2Client } from "./getEC2Client";
 
 export const getRunningInstanceIdsByName = async (instanceName: string) => {
-  const ec2Client = await getEC2Client();
+  const ec2Client = getEC2Client();
   const command = new DescribeInstancesCommand({
     Filters: [
       {

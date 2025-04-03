@@ -1,4 +1,5 @@
 import { prompt } from "enquirer";
+import { setRegion } from "./region";
 
 const regions: { [key: string]: string[] } = {
   "USA":
@@ -37,5 +38,5 @@ export const promptUserForRegion = async () => {
     }
   ])
 
-  return regionResponse.region;
+  setRegion(regionResponse.region);
 }

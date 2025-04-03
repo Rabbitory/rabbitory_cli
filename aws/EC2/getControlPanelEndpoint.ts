@@ -1,8 +1,8 @@
 import { DescribeInstancesCommand } from "@aws-sdk/client-ec2";
 import { getEC2Client } from "./getEC2Client";
 
-export const getRabbitoryUrl = async (instanceId: string): Promise<string | null> => {
-  const ec2Client = getEC2Client();
+export const getRabbitoryEndpoint = async (instanceId: string): Promise<string | null> => {
+  const ec2Client = await getEC2Client();
   
   try {
     const command = new DescribeInstancesCommand({ InstanceIds: [instanceId] });
