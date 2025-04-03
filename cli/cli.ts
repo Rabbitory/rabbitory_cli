@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Command } from "commander";
 import { deploy } from "./commands/deploy";
 import { destroy } from "./commands/destroy";

@@ -8,87 +8,145 @@ import { getInstanceIdsByPublisher } from "../../aws/EC2/getInstanceIdsByPublish
 import { runWithSpinner } from "../utils/spinner";
 import { promptUserForRegion } from "../utils/promptUserForRegion";
 import chalk from "chalk";
-import { fetchAllRegions } from "../../aws/EC2/getAllEC2Regions";
+import { getAllEC2Regions } from "../../aws/EC2/getAllEC2Regions";
 
+/**
+ * Deletes all broker instances in the given regions.
+ */
 const deleteAllBrokerInstances = async (regions: string[]) => {
-  for (const region of regions) {
-    const brokerIds = await getInstanceIdsByPublisher("Rabbitory");
-    if (brokerIds !== undefined) {
-      for (const brokerId of brokerIds) {
-        await deleteInstance(brokerId, region);
-      }
-    }
+  try {
+    await Promise.all(
+      regions.map(async (_region) => {
+        try {
+          const brokerIds = await getInstanceIdsByPublisher("Rabbitory");
+          if (brokerIds?.length) {
+            await Promise.all(
+              brokerIds.map(async (brokerId) => {
+                try {
+                  await deleteInstance(brokerId);
+                } catch (error) {
+                  throw new Error(`Failed to delete broker instance ${brokerId}: ${error}`);
+                }
+              })
+            );
+          }
+        } catch (error) {
+          throw new Error(`Failed to fetch broker instances in region ${_region}: ${error}`);
+        }
+      })
+    );
+  } catch (error) {
+    throw new Error(`Failed to delete all broker instances: ${error}`);
   }
-}
+};
 
+/**
+ * Deletes all security groups in the given regions.
+ */
 const deleteAllSecurityGroups = async (regions: string[]) => {
-  for (const region of regions) {
-    await deleteRabbitorySG(region);
+  try {
+    await Promise.all(
+      regions.map(async (region) => {
+        try {
+          await deleteRabbitorySG(region);
+        } catch (error) {
+          throw new Error(`Failed to delete security group in region ${region}: ${error}`);
+        }
+      })
+    );
+  } catch (error) {
+    throw new Error(`Failed to delete all security groups: ${error}`);
   }
-}
+};
 
 export const destroy = async () => {
   try {
     const controlPanelName = "RabbitoryControlPanel";
-    const primaryRegion: string = await promptUserForRegion();
 
-    const regions = await fetchAllRegions();
+    let primaryRegion: string;
+    try {
+      primaryRegion = await promptUserForRegion();
+    } catch (error) {
+      throw new Error(`Failed to get primary region: ${error}`);
+    }
 
-    if (!regions || regions.length === 0) {
-      console.error("Error fetching regions");
-      process.exit(1);
+    let regions: string[];
+    try {
+      regions = await getAllEC2Regions();
+      if (!regions?.length) throw new Error("No regions found");
+    } catch (error) {
+      throw new Error(`Error fetching regions: ${error}`);
     }
 
     await runWithSpinner(
       "Deleting DynamoDB Table...",
-      () => deleteTable(primaryRegion),
-      "Deleted DynamoDB Table",
+      async () => {
+        try {
+          await deleteTable(primaryRegion);
+        } catch (error) {
+          throw new Error(`Failed to delete DynamoDB table: ${error}`);
+        }
+      },
+      "Deleted DynamoDB Table"
     );
 
-    const instanceIds: string[] | undefined = await getRunningInstanceIdsByName(
-      controlPanelName,
-      primaryRegion,
-    );
-    const instanceId: string | undefined =
-      instanceIds !== undefined && instanceIds.length > 0
-        ? instanceIds[0]
-        : undefined;
+    let instanceId: string | undefined;
+    try {
+      const instanceIds = await getRunningInstanceIdsByName(controlPanelName);
+      instanceId = instanceIds?.[0];
+    } catch (error) {
+      throw new Error(`Failed to fetch running instances: ${error}`);
+    }
 
-    if (instanceId !== undefined) {
+    if (instanceId) {
       await runWithSpinner(
         "Terminating Control Panel EC2 instance...",
-        () => deleteInstance(instanceId, primaryRegion),
-        "Terminated EC2 instance",
+        async () => {
+          try {
+            await deleteInstance(instanceId);
+          } catch (error) {
+            throw new Error(`Failed to delete EC2 instance ${instanceId}: ${error}`);
+          }
+        },
+        "Terminated EC2 instance"
       );
     }
 
-    await runWithSpinner(
-      "Deleting RabbitMQ Broker Instances...",
-      () => deleteAllBrokerInstances(regions),
-      "Deleted RabbitMQ Broker Instances",
-    );
-
-    await runWithSpinner(
-      "Deleting Rabbitory security group...",
-      () => deleteAllSecurityGroups(regions),
-      "Deleted Rabbitory security group",
-    );
-
-    await runWithSpinner(
-      "Deleting RMQ Broker IAM role...",
-      () => deleteBrokerRole(primaryRegion),
-      "Deleted RMQ Broker IAM role",
-    );
-    await runWithSpinner(
-      "Deleting Rabbitory IAM role...",
-      () => deleteRabbitoryRole(primaryRegion),
-      "Deleted Rabbitory IAM role",
-    );
+    await Promise.all([
+      runWithSpinner(
+        "Deleting RabbitMQ Broker Instances...",
+        () => deleteAllBrokerInstances(regions),
+        "Deleted RabbitMQ Broker Instances"
+      ),
+      runWithSpinner(
+        "Deleting Rabbitory security group...",
+        () => deleteAllSecurityGroups(regions),
+        "Deleted Rabbitory security group"
+      ),
+      runWithSpinner(
+        "Deleting RMQ Broker IAM role...",
+        async () => {
+          try {
+            await deleteBrokerRole(primaryRegion);
+          } catch (error) {
+            throw new Error(`Failed to delete RMQ Broker IAM role: ${error}`);
+          }
+        },
+        "Deleted RMQ Broker IAM role"
+      ),
+      runWithSpinner(
+        "Deleting Rabbitory IAM role...",
+        async () => {
+          try {
+            await deleteRabbitoryRole(primaryRegion);
+          } catch (error) {
+            throw new Error(`Failed to delete Rabbitory IAM role: ${error}`);
+          }
+        },
+        "Deleted Rabbitory IAM role"
+      ),
+    ]);
   } catch (error) {
-    console.error(
-      chalk.redBright("\nRabbitory destruction failed\n"),
-      error,
-      "\n",
-    );
+    console.error(chalk.redBright("\nRabbitory destruction failed\n"), error, "\n");
   }
 };

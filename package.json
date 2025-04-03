@@ -2,7 +2,9 @@
   "name": "rabbitory_cli",
   "version": "1.0.0",
   "description": "Command Line Interface for Rabbitory",
-  "main": "index.js",
+  "bin": {
+    "rabbitory": "./dist/cli/cli.js"
+  },
   "scripts": {
     "build": "npx tsc",
     "lint": "eslint",
