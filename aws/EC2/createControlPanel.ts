@@ -1,33 +1,6 @@
-import {
-  EC2Client,
-  RunInstancesCommand,
-  waitUntilInstanceRunning,
-} from "@aws-sdk/client-ec2";
+import { RunInstancesCommand, waitUntilInstanceRunning } from "@aws-sdk/client-ec2";
 import type { RunInstancesCommandInput } from "@aws-sdk/client-ec2";
-
-//const NODE_VERSION = "23.9";
-
-//const repoUrl = "https://github.com/Rabbitory/rabbitory_control_panel.git";
-
-// const userData = `#!/bin/bash
-// sudo apt update
-// sudo apt install -y npm
-// curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
-// export NVM_DIR="/usr/local/nvm"
-// [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-// nvm install ${NODE_VERSION}
-// nvm use ${NODE_VERSION}
-
-// git clone ${repoUrl}
-// cd rabbitory_control_panel
-// npm install
-// npm run build
-// npm install -g pm2
-// pm2 start npm --name "rabbitory_control_panel" -- start
-// eval "$(pm2 startup | grep 'sudo env')"
-// pm2 save
-// `;
+import { getEC2Client  } from "./getEC2Client";
 
 const getImageId = (region: string) => {
   switch (region) {
@@ -72,7 +45,7 @@ export const createControlPanel = async (
   securityGroupId: string,
   region: string,
 ): Promise<string> => {
-  const client = new EC2Client({ region: region });
+  const client = await getEC2Client();
 
   const userData = `#!/bin/bash
   # --- Root-level commands ---

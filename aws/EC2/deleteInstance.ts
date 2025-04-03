@@ -1,7 +1,8 @@
-import { EC2Client, TerminateInstancesCommand, waitUntilInstanceTerminated } from "@aws-sdk/client-ec2";
+import { TerminateInstancesCommand, waitUntilInstanceTerminated } from "@aws-sdk/client-ec2";
+import { getEC2Client } from "./getEC2Client";
 
-export const deleteInstance = async (id: string, region: string) => {
-  const ec2Client = new EC2Client({ region: region });
+export const deleteInstance = async (id: string) => {
+  const ec2Client = await getEC2Client();
 
   try {
     await ec2Client.send(

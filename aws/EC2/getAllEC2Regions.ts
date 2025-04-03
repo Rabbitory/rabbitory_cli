@@ -1,7 +1,8 @@
-import { EC2Client, DescribeRegionsCommand } from "@aws-sdk/client-ec2";
+import { DescribeRegionsCommand } from "@aws-sdk/client-ec2";
+import { getEC2Client } from "./getEC2Client";
 
 export const fetchAllRegions = async () => {
-  const client = new EC2Client({ region: "us-east-1" });
+  const client = await getEC2Client();
 
   try {
     const command = new DescribeRegionsCommand({});

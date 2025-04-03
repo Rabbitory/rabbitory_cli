@@ -25,7 +25,7 @@ const getContinent = async () => {
   return response.continent;
 }
 
-export const getRegion = async () => {
+export const promptUserForRegion = async () => {
   const continent = await getContinent();
 
   const regionResponse: { region: string } = await prompt([
