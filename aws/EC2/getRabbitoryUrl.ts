@@ -1,6 +1,6 @@
 import { EC2Client, DescribeInstancesCommand } from "@aws-sdk/client-ec2";
 
-export const getRabbitoryEndpoint = async (instanceId: string, region: string): Promise<string | null> => {
+export const getRabbitoryUrl = async (instanceId: string, region: string): Promise<string | null> => {
   const ec2Client = new EC2Client({ region });
   
   try {

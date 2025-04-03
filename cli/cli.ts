@@ -1,6 +1,6 @@
 import { Command } from "commander";
-import { deploy } from "./deploy";
-import { destroy } from "./destroy";
+import { deploy } from "./commands/deploy";
+import { destroy } from "./commands/destroy";
 
 const program = new Command();
 

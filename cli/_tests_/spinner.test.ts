@@ -1,4 +1,4 @@
-import { runWithSpinner } from '../spinner';
+import { runWithSpinner } from '../utils/spinner';
 import ora from 'ora';
 
 interface MockSpinner {

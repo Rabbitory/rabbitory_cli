@@ -1,14 +1,14 @@
-import { createRabbitoryIAM } from "../aws/IAM/createRabbitoryRole";
-import { createRMQBrokerIAM } from "../aws/IAM/createBrokerRole";
-import { createRabbitorySG } from "../aws/security-groups/createRabbitorySG";
-import { createControlPanel } from "../aws/EC2/createControlPanel";
-import { createTable } from "../aws/dynamoDB/createTable";
-import { runWithSpinner } from "./spinner";
-import { getRegion } from "./promptUserForRegion";
-import { logo } from "./logo";
+import { createRabbitoryIAM } from "../../aws/IAM/createRabbitoryRole";
+import { createRMQBrokerIAM } from "../../aws/IAM/createBrokerRole";
+import { createRabbitorySG } from "../../aws/security-groups/createRabbitorySG";
+import { createControlPanel } from "../../aws/EC2/createControlPanel";
+import { createTable } from "../../aws/dynamoDB/createTable";
+import { runWithSpinner } from "../utils/spinner";
+import { getRegion } from "../utils/promptUserForRegion";
+import { logo } from "../utils/logo";
 import chalk from "chalk";
 import { destroy } from "./destroy";
-import { waitForAppToBeReady } from "./getReadyRabbitoryUrl";
+import { getReadyRabbitoryUrl } from "../../aws/EC2/getReadyRabbitoryUrl";
 
 export const deploy = async () => {
   try {
@@ -23,9 +23,9 @@ export const deploy = async () => {
       'Created Rabbitory EC2 instance'
     );
     await runWithSpinner('Creating DynamoDB Table..', () => createTable(region), 'Created DynamoDB Table');
-    const dashboardUrl = await waitForAppToBeReady(instanceId, region);
+    const rabbitoryUrl = await getReadyRabbitoryUrl(instanceId, region);
     console.log(chalk.green('✔ Application is ready'));
-    console.log(chalk.white(`\nRabbitory Control Panel is available at: ${chalk.cyan(dashboardUrl)}\n`));
+    console.log(chalk.white(`\nRabbitory Control Panel is available at: ${chalk.cyan(rabbitoryUrl)}\n`));
     console.log(chalk.red(logo));
   } catch (error) {
     console.error(chalk.redBright("\nRabbitory deployment failed\n"), error, "\n");

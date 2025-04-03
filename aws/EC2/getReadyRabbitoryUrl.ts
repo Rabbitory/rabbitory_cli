@@ -1,12 +1,12 @@
-import { getRabbitoryEndpoint } from "../aws/EC2/getRabbitoryEndpoint";
+import { getRabbitoryUrl } from "./getRabbitoryUrl";
 import cliProgress from 'cli-progress';
 import chalk from 'chalk';
 
 const MAX_WAIT_TIME_MS = 6 * 60 * 1000; // 6 minutes
 const POLL_INTERVAL_MS = 15000; // 15 seconds
 
-export const waitForAppToBeReady = async (instanceId: string, region: string): Promise<string> => {
-  const endpoint: string | null = await getRabbitoryEndpoint(instanceId, region);
+export const getReadyRabbitoryUrl = async (instanceId: string, region: string): Promise<string> => {
+  const endpoint: string | null = await getRabbitoryUrl(instanceId, region);
   if (!endpoint) {
     throw new Error(`Failed to retrieve endpoint for instance ${instanceId} in region ${region}`);
   }

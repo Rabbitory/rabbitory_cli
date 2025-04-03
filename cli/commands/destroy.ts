@@ -1,14 +1,14 @@
-import { deleteTable } from "../aws/dynamoDB/deleteTable";
-import { deleteRabbitorySG } from "../aws/security-groups/deleteRabbitorySG";
-import { deleteBrokerRole } from "../aws/IAM/deleteBrokerRole";
-import { deleteRabbitoryRole } from "../aws/IAM/deleteRabbitoryRole";
-import { deleteInstance } from "../aws/EC2/deleteInstance";
-import { getRunningInstanceIdsByName } from "./getRunningInstanceIdsByName";
-import { getInstanceIdsByPublisher } from "./getInstanceIdsByPublisher";
-import { runWithSpinner } from "./spinner";
-import { getRegion } from "./promptUserForRegion";
+import { deleteTable } from "../../aws/dynamoDB/deleteTable";
+import { deleteRabbitorySG } from "../../aws/security-groups/deleteRabbitorySG";
+import { deleteBrokerRole } from "../../aws/IAM/deleteBrokerRole";
+import { deleteRabbitoryRole } from "../../aws/IAM/deleteRabbitoryRole";
+import { deleteInstance } from "../../aws/EC2/deleteInstance";
+import { getRunningInstanceIdsByName } from "../../aws/EC2/getRunningInstanceIdsByName";
+import { getInstanceIdsByPublisher } from "../../aws/EC2/getInstanceIdsByPublisher";
+import { runWithSpinner } from "../utils/spinner";
+import { getRegion } from "../utils/promptUserForRegion";
 import chalk from "chalk";
-import { fetchAllRegions } from "./getAllEC2Regions";
+import { fetchAllRegions } from "../../aws/EC2/getAllEC2Regions";
 
 const deleteAllBrokerInstances = async (regions: string[]) => {
   for (const region of regions) {
