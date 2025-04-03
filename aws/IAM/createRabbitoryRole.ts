@@ -6,6 +6,7 @@ import {
   IAMClient,
   CreateRoleResponse
 } from "@aws-sdk/client-iam";
+import { getIAMClient } from "./getIAMClient";
 
 const ROLE_NAME = "RabbitoryRole";
 const INSTANCE_PROFILE_NAME = "RabbitoryInstanceProfile";
@@ -85,8 +86,8 @@ const addRoleToInstanceProfile = async (client: IAMClient): Promise<void> => {
   }
 };
 
-export const createRabbitoryIAM = async (region: string): Promise<void> => {
-  const client = new IAMClient({ region: region });
+export const createRabbitoryIAM = async (): Promise<void> => {
+  const client = getIAMClient();
 
   try {
     await createRabbitoryRole(client);

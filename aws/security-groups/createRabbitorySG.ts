@@ -4,6 +4,7 @@ import {
   CreateSecurityGroupCommand,
   AuthorizeSecurityGroupIngressCommand
 } from "@aws-sdk/client-ec2";
+import { getEC2Client } from "../EC2/getEC2Client";
 
 const getVpcId = async (client: EC2Client): Promise<string> => {
   try {
@@ -70,8 +71,8 @@ const authorizeIngressTraffic = async (securityGroupId: string, client: EC2Clien
   }
 };
 
-export const createRabbitorySG = async (region: string): Promise<string> => {
-  const client = new EC2Client({ region: region });
+export const createRabbitorySG = async (): Promise<string> => {
+  const client = getEC2Client();
 
   try {
     const vpcId = await getVpcId(client);

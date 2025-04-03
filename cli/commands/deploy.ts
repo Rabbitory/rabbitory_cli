@@ -12,17 +12,17 @@ import { getReadyRabbitoryUrl } from "../../aws/EC2/getReadyRabbitoryUrl";
 
 export const deploy = async () => {
   try {
-    const region = await promptUserForRegion();
-    await runWithSpinner('Setting up Rabbitory Contol Panel IAM...', () => createRabbitoryIAM(region), 'Created Rabbitory Control Panel IAM role and instance profile');
-    await runWithSpinner('Setting up Rabbitmq Broker IAM...', () => createRMQBrokerIAM(region), 'Created Rabbitmq Broker IAM role and instance profile');
+    await promptUserForRegion();
+    await runWithSpinner('Setting up Rabbitory Contol Panel IAM...', () => createRabbitoryIAM(), 'Created Rabbitory Control Panel IAM role and instance profile');
+    await runWithSpinner('Setting up Rabbitmq Broker IAM...', () => createRMQBrokerIAM(), 'Created Rabbitmq Broker IAM role and instance profile');
     await runWithSpinner('Waiting for IAM instance profile to propagate...', () => new Promise((resolve) => setTimeout(resolve, 7000)), 'IAM instance profile propagated');
-    const rabbitorySecurityGroupId = await runWithSpinner('Setting up Rabbitory Security Group...', () => createRabbitorySG(region), 'Created Rabbitory security group');
+    const rabbitorySecurityGroupId = await runWithSpinner('Setting up Rabbitory Security Group...', () => createRabbitorySG(), 'Created Rabbitory security group');
     const instanceId = await runWithSpinner(
       'Creating Rabbitory Control Panel EC2 instance...',
       () => createControlPanel(rabbitorySecurityGroupId),
       'Created Rabbitory EC2 instance'
     );
-    await runWithSpinner('Creating DynamoDB Table..', () => createTable(region), 'Created DynamoDB Table');
+    await runWithSpinner('Creating DynamoDB Table..', () => createTable(), 'Created DynamoDB Table');
     const rabbitoryUrl = await getReadyRabbitoryUrl(instanceId);
     console.log(chalk.green('✔ Application is ready'));
     console.log(chalk.white(`\nRabbitory Control Panel is available at: ${chalk.cyan(rabbitoryUrl)}\n`));

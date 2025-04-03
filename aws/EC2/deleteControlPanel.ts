@@ -1,7 +1,7 @@
 import { TerminateInstancesCommand, waitUntilInstanceTerminated } from "@aws-sdk/client-ec2";
 import { getEC2Client } from "./getEC2Client";
 
-export const deleteInstance = async (id: string) => {
+export const deleteControlPanel = async (id: string) => {
   const ec2Client = getEC2Client();
 
   try {

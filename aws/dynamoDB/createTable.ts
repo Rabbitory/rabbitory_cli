@@ -1,24 +1,25 @@
+import { getDDBClient } from "./getDDBClient";
 import {
   DynamoDBClient,
   CreateTableCommand,
   DescribeTableCommand,
 } from "@aws-sdk/client-dynamodb";
 
-// might want to extract to own file if needed elsewhere
+
 const tableExists = async (tableName: string, client: DynamoDBClient): Promise<boolean> => {
   try {
     await client.send(new DescribeTableCommand({ TableName: tableName }));
-    return true; // Table exists
+    return true;
   } catch (err) {
     if (err instanceof Error && err.name !== "ResourceNotFoundException") {
       throw new Error(`Error checking table existence\n${err.message}`);
     }
-    return false; // Table does not exist
+    return false;
   }
 };
 
-export const createTable = async (region: string) => {
-  const client = new DynamoDBClient({ region: region });
+export const createTable = async () => {
+  const client = getDDBClient();
 
   const tableName = "RabbitoryInstancesMetadata";
 

@@ -2,14 +2,13 @@ import { deleteTable } from "../../aws/dynamoDB/deleteTable";
 import { deleteRabbitorySG } from "../../aws/security-groups/deleteRabbitorySG";
 import { deleteBrokerRole } from "../../aws/IAM/deleteBrokerRole";
 import { deleteRabbitoryRole } from "../../aws/IAM/deleteRabbitoryRole";
-import { deleteInstance } from "../../aws/EC2/deleteInstance";
+import { deleteControlPanel } from "../../aws/EC2/deleteControlPanel";
 import { getRunningInstanceIdsByName } from "../../aws/EC2/getRunningInstanceIdsByName";
 import { getInstanceIdsByPublisher } from "../../aws/EC2/getInstanceIdsByPublisher";
 import { runWithSpinner } from "../utils/spinner";
 import { promptUserForRegion } from "../utils/promptUserForRegion";
-import chalk from "chalk";
 import { getAllEC2Regions } from "../../aws/EC2/getAllEC2Regions";
-import { getRegion } from "../utils/region";
+import chalk from "chalk";
 
 
 const deleteAllBrokerInstances = async (regions: string[]) => {
@@ -22,7 +21,7 @@ const deleteAllBrokerInstances = async (regions: string[]) => {
             await Promise.all(
               brokerIds.map(async (brokerId) => {
                 try {
-                  await deleteInstance(brokerId);
+                  await deleteControlPanel(brokerId);
                 } catch (error) {
                   throw new Error(`Failed to delete broker instance ${brokerId}: ${error}`);
                 }
@@ -44,7 +43,7 @@ const deleteAllSecurityGroups = async (regions: string[]) => {
     await Promise.all(
       regions.map(async (region) => {
         try {
-          await deleteRabbitorySG(region);
+          await deleteRabbitorySG();
         } catch (error) {
           throw new Error(`Failed to delete security group in region ${region}: ${error}`);
         }
@@ -57,32 +56,12 @@ const deleteAllSecurityGroups = async (regions: string[]) => {
 
 export const destroy = async () => {
   try {
-    try {
-      await promptUserForRegion();
-    } catch (error) {
-      throw new Error(`Failed to get primary region: ${error}`);
-    }
-
+    await promptUserForRegion();
     const controlPanelName = "RabbitoryControlPanel";
-    const primaryRegion = getRegion();
-    let regions: string[];
-    try {
-      regions = await getAllEC2Regions();
-      if (!regions?.length) throw new Error("No regions found");
-    } catch (error) {
-      throw new Error(`Error fetching regions: ${error}`);
-    }
+    const regions: string[] = await getAllEC2Regions();
+    if (!regions?.length) throw new Error("No regions found");
 
-    await runWithSpinner(
-      "Deleting DynamoDB Table...",
-      async () => {
-        try {
-          await deleteTable(primaryRegion);
-        } catch (error) {
-          throw new Error(`Failed to delete DynamoDB table: ${error}`);
-        }
-      },
-      "Deleted DynamoDB Table"
+    await runWithSpinner("Deleting DynamoDB Table...", () => deleteTable(), "Deleted DynamoDB Table"
     );
 
     let instanceId: string | undefined;
@@ -98,7 +77,7 @@ export const destroy = async () => {
         "Terminating Control Panel EC2 instance...",
         async () => {
           try {
-            await deleteInstance(instanceId);
+            await deleteControlPanel(instanceId);
           } catch (error) {
             throw new Error(`Failed to delete EC2 instance ${instanceId}: ${error}`);
           }
@@ -122,7 +101,7 @@ export const destroy = async () => {
         "Deleting RMQ Broker IAM role...",
         async () => {
           try {
-            await deleteBrokerRole(primaryRegion);
+            await deleteBrokerRole();
           } catch (error) {
             throw new Error(`Failed to delete RMQ Broker IAM role: ${error}`);
           }
@@ -133,7 +112,7 @@ export const destroy = async () => {
         "Deleting Rabbitory IAM role...",
         async () => {
           try {
-            await deleteRabbitoryRole(primaryRegion);
+            await deleteRabbitoryRole();
           } catch (error) {
             throw new Error(`Failed to delete Rabbitory IAM role: ${error}`);
           }

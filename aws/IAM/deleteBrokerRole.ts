@@ -6,6 +6,7 @@ import {
   DeleteInstanceProfileCommand,
   RemoveRoleFromInstanceProfileCommand
 } from "@aws-sdk/client-iam";
+import { getIAMClient } from "./getIAMClient";
 
 const ROLE_NAME = "RMQBrokerRole";
 const INSTANCE_PROFILE_NAME = "RMQBrokerInstanceProfile";
@@ -61,8 +62,8 @@ const deleteInstanceProfile = async (client: IAMClient) => {
   }
 };
 
-export const deleteBrokerRole = async (region: string) => {
-  const client = new IAMClient({ region: region });
+export const deleteBrokerRole = async () => {
+  const client = getIAMClient();
 
   try {
     await removeRoleFromInstanceProfile(client);

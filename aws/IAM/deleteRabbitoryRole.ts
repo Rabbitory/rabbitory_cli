@@ -6,6 +6,7 @@ import {
   DeleteInstanceProfileCommand,
   DeleteRoleCommand,
 } from "@aws-sdk/client-iam";
+import { getIAMClient } from "./getIAMClient";
 
 const ROLE_NAME = "RabbitoryRole";
 const INSTANCE_PROFILE_NAME = "RabbitoryInstanceProfile";
@@ -65,8 +66,8 @@ const deleteInstanceProfile = async (client: IAMClient) => {
   }
 };
 
-export const deleteRabbitoryRole = async (region: string) => {
-  const client = new IAMClient({ region: region });
+export const deleteRabbitoryRole = async () => {
+  const client = getIAMClient();
 
   try {
     await removeRoleFromInstanceProfile(client);

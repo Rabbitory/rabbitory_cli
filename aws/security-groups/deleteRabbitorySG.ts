@@ -3,6 +3,7 @@ import {
   DescribeSecurityGroupsCommand,
   DeleteSecurityGroupCommand,
 } from "@aws-sdk/client-ec2";
+import { getEC2Client } from "../EC2/getEC2Client";
 
 const getRabbitorySGIds = async (client: EC2Client): Promise<string[]> => {
   try {
@@ -33,8 +34,8 @@ const deleteSecurityGroup = async (groupId: string, client: EC2Client): Promise<
   }
 };
 
-export const deleteRabbitorySG = async (region: string): Promise<void> => {
-  const client = new EC2Client({ region: region });
+export const deleteRabbitorySG = async (): Promise<void> => {
+  const client = getEC2Client();
 
   try {
     const securityGroupIds = await getRabbitorySGIds(client);
