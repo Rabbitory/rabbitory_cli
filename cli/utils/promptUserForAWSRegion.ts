@@ -3,7 +3,6 @@ import { setRegion } from "./region";
 
 interface GlobalRegionsType {
   "North America": string[];
-  "Central America": string[];
   "South America": string[];
   "Europe": string[];
   "Asia Pacific": string[];
@@ -17,17 +16,14 @@ interface GlobalRegionResponseType {
   globalRegion: GlobalRegionType;
 }
 
-interface AvailabilityZoneResponseType {
-  availabilityZone: string;
+interface AWSRegionResponseType {
+  awsRegion: string;
 }
 
 const globalRegions: GlobalRegionsType = {
   "North America": [
     "us-east-1", "us-east-2", "us-west-1", "us-west-2",
-    "ca-central-1",
-  ],
-  "Central America": [
-    "mx-west-1",
+    "ca-central-1", "mx-west-1",
   ],
   "South America": [
     "sa-east-1",
@@ -60,9 +56,9 @@ const promptUserForGlobalRegion = async (): Promise<GlobalRegionType> => {
   return response.globalRegion;
 }
 
-export const promptUserForAvailabilityZone = async (): Promise<void> => {
+export const promptUserForAWSRegion = async (): Promise<void> => {
   const globalRegion: GlobalRegionType = await promptUserForGlobalRegion();
-  const response: AvailabilityZoneResponseType = await prompt([
+  const response: AWSRegionResponseType = await prompt([
     {
       type: "select",
       name: "region",
@@ -71,5 +67,5 @@ export const promptUserForAvailabilityZone = async (): Promise<void> => {
     }
   ]);
 
-  setRegion(response.availabilityZone);
+  setRegion(response.awsRegion);
 }

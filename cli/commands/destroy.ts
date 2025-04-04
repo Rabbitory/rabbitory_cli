@@ -6,13 +6,13 @@ import { deleteAllBrokerSGs } from "../../aws/security-groups/deleteAllBrokerSGs
 import { deleteBrokerRole } from "../../aws/IAM/deleteBrokerRole";
 import { deleteRabbitoryRole } from "../../aws/IAM/deleteRabbitoryRole";
 import { runWithSpinner } from "../utils/spinner";
-import { promptUserForAvailabilityZone } from "../utils/promptUserForAvailabilityZone";
+import { promptUserForAWSRegion } from "../utils/promptUserForAWSRegion";
 import chalk from "chalk";
 
 
 export const destroy = async () => {
   try {
-    await promptUserForAvailabilityZone();
+    await promptUserForAWSRegion();
     await runWithSpinner("Deleting DynamoDB Table...", () => deleteTable(), "Deleted DynamoDB Table");
     await runWithSpinner("Terminating Control Panel EC2 instance...", () => deleteControlPanel(), "Terminated EC2 instance");
     await runWithSpinner("Deleting RabbitMQ Broker Instances...", () => deleteAllBrokerInstances(), "Deleted RabbitMQ Broker Instances");

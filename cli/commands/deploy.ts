@@ -4,7 +4,7 @@ import { createRabbitorySG } from "../../aws/security-groups/createRabbitorySG";
 import { createControlPanel } from "../../aws/EC2/createControlPanel";
 import { createTable } from "../../aws/dynamoDB/createTable";
 import { runWithSpinner } from "../utils/spinner";
-import { promptUserForAvailabilityZone } from "../utils/promptUserForAvailabilityZone";
+import { promptUserForAWSRegion } from "../utils/promptUserForAWSRegion";
 import { logo } from "../utils/logo";
 import chalk from "chalk";
 import { destroy } from "./destroy";
@@ -12,7 +12,7 @@ import { getReadyRabbitoryUrl } from "../../aws/EC2/getReadyRabbitoryUrl";
 
 export const deploy = async () => {
   try {
-    await promptUserForAvailabilityZone();
+    await promptUserForAWSRegion();
     await runWithSpinner('Setting up Rabbitory Contol Panel IAM...', () => createRabbitoryIAM(), 'Created Rabbitory Control Panel IAM role and instance profile');
     await runWithSpinner('Setting up Rabbitmq Broker IAM...', () => createRMQBrokerIAM(), 'Created Rabbitmq Broker IAM role and instance profile');
     await runWithSpinner('Waiting for IAM instance profile to propagate...', () => new Promise((resolve) => setTimeout(resolve, 7000)), 'IAM instance profile propagated');
