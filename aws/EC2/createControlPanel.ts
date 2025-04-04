@@ -4,6 +4,55 @@ import { getEC2Client  } from "./getEC2Client";
 import { getRegion } from "../../cli/utils/region";
 
 
+// const getImageId = () => {
+//   const region = getRegion();
+
+//   switch (region) {
+//     case "us-east-1":
+//       return "ami-084568db4383264d4";
+//     case "us-east-2":
+//       return "ami-04f167a56786e4b09";
+//     case "us-west-1":
+//       return "ami-04f7a54071e74f488";
+//     case "us-west-2":
+//       return "ami-075686beab831bb7f";
+//     case "ca-central-1":
+//       return "ami-08355844f8bc94f55";
+//     case "ap-southeast-1":
+//       return "ami-01938df366ac2d954";
+//     case "ap-southeast-2":
+//       return "ami-0f5d1713c9af4fe30";
+//     case "ap-northeast-1":
+//       return "ami-026c39f4021df9abe";
+//     case "ap-northeast-2":
+//       return "ami-0d5bb3742db8fc264";
+//     case "ap-south-1":
+//       return "ami-0e35ddab05955cf57";
+//     case "ap-east-1":
+//       return "ami-052c08d70def0ac62"; // Found for ap-east-1 (Hong Kong)
+//     case "eu-central-1":
+//       return "ami-03250b0e01c28d196";
+//     case "eu-north-1":
+//       return "ami-0c1ac8a41498c1a9c";
+//     case "eu-west-1":
+//       return "ami-0df368112825f8d8f";
+//     case "eu-west-2":
+//       return "ami-0a94c8e4ca2674d5a";
+//     case "eu-west-3":
+//       return "ami-0ae30afba46710143";
+//     case "sa-east-1":
+//       return "ami-0d866da98d63e2b42";
+//     case "me-south-1":
+//       return "ami-0e748500f1b6d4492"; // Found for me-south-1
+//     case "me-central-1":
+//       return "ami-0e1e1d1535af076a2"; // Found for me-central-1
+//     case "af-south-1":
+//       return "ami-0aeeebd8b2d3e0b75"; // Found for af-south-1 (Cape Town)
+//     default:
+//       throw new Error(`Invalid region: ${region}`);
+//   }
+// };
+
 const getImageId = () => {
   const region = getRegion();
 
@@ -20,7 +69,7 @@ const getImageId = () => {
       return "ami-08355844f8bc94f55";
     case "ap-southeast-1":
       return "ami-01938df366ac2d954";
-    case "ap-southeast-2":
+    case "ap-souteast-2":
       return "ami-0f5d1713c9af4fe30";
     case "ap-northeast-1":
       return "ami-026c39f4021df9abe";
@@ -28,8 +77,6 @@ const getImageId = () => {
       return "ami-0d5bb3742db8fc264";
     case "ap-south-1":
       return "ami-0e35ddab05955cf57";
-    case "ap-east-1":
-      return "ami-052c08d70def0ac62"; // Found for ap-east-1 (Hong Kong)
     case "eu-central-1":
       return "ami-03250b0e01c28d196";
     case "eu-north-1":
@@ -42,12 +89,6 @@ const getImageId = () => {
       return "ami-0ae30afba46710143";
     case "sa-east-1":
       return "ami-0d866da98d63e2b42";
-    case "me-south-1":
-      return "ami-0e748500f1b6d4492"; // Found for me-south-1
-    case "me-central-1":
-      return "ami-0e1e1d1535af076a2"; // Found for me-central-1
-    case "af-south-1":
-      return "ami-0aeeebd8b2d3e0b75"; // Found for af-south-1 (Cape Town)
     default:
       throw new Error(`Invalid region: ${region}`);
   }
