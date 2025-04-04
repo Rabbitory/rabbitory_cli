@@ -12,7 +12,7 @@ export const getReadyRabbitoryUrl = async (instanceId: string): Promise<string> 
   }
   
   const progressBar = new cliProgress.SingleBar({
-    format: `${chalk.green('Waiting for application to be ready...')} [{bar}] {percentage}% | ETA: {eta_formatted}`,
+    format: `${chalk.white('Waiting for application to be ready...')} [{bar}] {percentage}% | ETA: {eta_formatted}`,
     barCompleteChar: '\u2588',
     barIncompleteChar: '\u2591',
     hideCursor: true,

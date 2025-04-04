@@ -6,6 +6,8 @@ export const runWithSpinner = async <T>(
   callbackFn: () => Promise<T>, 
   successMsg: string
 ): Promise<T> => {
+  const successHexNum = "#99ffcc";
+
   const spinner = ora({
     text: chalk.white(waitingMsg),
     color: 'white',
@@ -14,7 +16,7 @@ export const runWithSpinner = async <T>(
 
   try {
     const result = await callbackFn();
-    spinner.succeed(chalk.green(successMsg));
+    spinner.succeed(chalk.hex(successHexNum)(successMsg));
     return result;
   } catch (error) {
     spinner.fail(chalk.bgRed(`${waitingMsg} - Failed`));

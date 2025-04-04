@@ -13,6 +13,8 @@ import chalk from "chalk";
 export const destroy = async () => {
   try {
     await promptUserForAWSRegion();
+    console.log('\n');
+    
     await runWithSpinner("Deleting DynamoDB Table...", () => deleteTable(), "Deleted DynamoDB Table");
     await runWithSpinner("Terminating Control Panel EC2 instance...", () => deleteControlPanel(), "Terminated EC2 instance");
     await runWithSpinner("Deleting RabbitMQ Broker Instances...", () => deleteAllBrokerInstances(), "Deleted RabbitMQ Broker Instances");
