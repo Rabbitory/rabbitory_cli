@@ -1,17 +1,26 @@
-import { deleteRabbitorySG } from "./deleteRabbitorySG";
+import { getEC2Client } from "../EC2/getEC2Client";
+import {
+  DescribeSecurityGroupsCommand,
+  DeleteSecurityGroupCommand,
+} from "@aws-sdk/client-ec2";
 
-export const deleteAllSecurityGroups = async (regions: string[]) => {
+
+export const deleteAllBrokerSGs = async (): Promise<void> => {
+  const client = getEC2Client();
   try {
-    await Promise.all(
-      regions.map(async (region) => {
-        try {
-          await deleteRabbitorySG();
-        } catch (error) {
-          throw new Error(`Failed to delete security group in region ${region}: ${error}`);
+    const command = new DescribeSecurityGroupsCommand({});
+    const response = await client.send(command);
+    const brokerSGs = response.SecurityGroups?.filter(sg => /^rabbitmq-sg-.*/i.test(sg.GroupName || ""));
+    
+    if (brokerSGs?.length) {
+      for (const sg of brokerSGs) {
+        if (sg.GroupId) {
+          const deleteCommand = new DeleteSecurityGroupCommand({ GroupId: sg.GroupId });
+          await client.send(deleteCommand);
         }
-      })
-    );
-  } catch (error) {
-    throw new Error(`Failed to delete all security groups: ${error}`);
+      }
+    }
+  } catch (error: unknown) {
+    throw new Error(`Error deleting 'rabbitmq-sg-...' security groups\n${error instanceof Error ? error.message : String(error)}`);
   }
 };

@@ -1,5 +1,6 @@
 import { deleteTable } from "../../aws/dynamoDB/deleteTable";
 import { deleteRabbitorySG } from "../../aws/security-groups/deleteRabbitorySG";
+import { deleteAllBrokerSGs } from "../../aws/security-groups/deleteAllBrokerSGs";
 import { deleteBrokerRole } from "../../aws/IAM/deleteBrokerRole";
 import { deleteRabbitoryRole } from "../../aws/IAM/deleteRabbitoryRole";
 import { deleteControlPanel } from "../../aws/EC2/deleteControlPanel";
@@ -38,21 +39,7 @@ const deleteAllBrokerInstances = async (regions: string[]) => {
   }
 };
 
-const deleteAllSecurityGroups = async (regions: string[]) => {
-  try {
-    await Promise.all(
-      regions.map(async (region) => {
-        try {
-          await deleteRabbitorySG();
-        } catch (error) {
-          throw new Error(`Failed to delete security group in region ${region}: ${error}`);
-        }
-      })
-    );
-  } catch (error) {
-    throw new Error(`Failed to delete all security groups: ${error}`);
-  }
-};
+
 
 export const destroy = async () => {
   try {
@@ -61,8 +48,7 @@ export const destroy = async () => {
     const regions: string[] = await getAllEC2Regions();
     if (!regions?.length) throw new Error("No regions found");
 
-    await runWithSpinner("Deleting DynamoDB Table...", () => deleteTable(), "Deleted DynamoDB Table"
-    );
+    await runWithSpinner("Deleting DynamoDB Table...", () => deleteTable(), "Deleted DynamoDB Table");
 
     let instanceId: string | undefined;
     try {
@@ -73,53 +59,15 @@ export const destroy = async () => {
     }
 
     if (instanceId) {
-      await runWithSpinner(
-        "Terminating Control Panel EC2 instance...",
-        async () => {
-          try {
-            await deleteControlPanel(instanceId);
-          } catch (error) {
-            throw new Error(`Failed to delete EC2 instance ${instanceId}: ${error}`);
-          }
-        },
-        "Terminated EC2 instance"
-      );
+      await runWithSpinner("Terminating Control Panel EC2 instance...", () => deleteControlPanel(instanceId), "Terminated EC2 instance");
     }
 
-    await Promise.all([
-      runWithSpinner(
-        "Deleting RabbitMQ Broker Instances...",
-        () => deleteAllBrokerInstances(regions),
-        "Deleted RabbitMQ Broker Instances"
-      ),
-      runWithSpinner(
-        "Deleting Rabbitory security group...",
-        () => deleteAllSecurityGroups(regions),
-        "Deleted Rabbitory security group"
-      ),
-      runWithSpinner(
-        "Deleting RMQ Broker IAM role...",
-        async () => {
-          try {
-            await deleteBrokerRole();
-          } catch (error) {
-            throw new Error(`Failed to delete RMQ Broker IAM role: ${error}`);
-          }
-        },
-        "Deleted RMQ Broker IAM role"
-      ),
-      runWithSpinner(
-        "Deleting Rabbitory IAM role...",
-        async () => {
-          try {
-            await deleteRabbitoryRole();
-          } catch (error) {
-            throw new Error(`Failed to delete Rabbitory IAM role: ${error}`);
-          }
-        },
-        "Deleted Rabbitory IAM role"
-      ),
-    ]);
+
+    runWithSpinner("Deleting RabbitMQ Broker Instances...", () => deleteAllBrokerInstances(regions), "Deleted RabbitMQ Broker Instances");
+    runWithSpinner("Deleting Rabbitory Control Panel security group...", () => deleteRabbitorySG(), "Deleted Rabbitory Control Panel security group");
+    runWithSpinner("Deleting Rabbitory security group...", () => deleteAllBrokerSGs(), "Deleted Rabbitory security group");
+    runWithSpinner("Deleting RMQ Broker IAM role...", () => deleteBrokerRole(), "Deleted RMQ Broker IAM role");
+    runWithSpinner("Deleting Rabbitory IAM role...", () => deleteRabbitoryRole(), "Deleted Rabbitory IAM role");
   } catch (error) {
     console.error(chalk.redBright("\nRabbitory destruction failed\n"), error, "\n");
   }

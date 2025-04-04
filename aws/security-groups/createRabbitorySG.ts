@@ -34,7 +34,7 @@ const getVpcId = async (client: EC2Client): Promise<string> => {
 
 const initializeRabbitorySG = async (vpcId: string, client: EC2Client): Promise<string> => {
   try {
-    const securityGroupName = "RabbitorySG";
+    const securityGroupName = "rabbitory-sg";
     const description = "Security group for Rabbitory Control Panel EC2";
 
     const createSGCommand = new CreateSecurityGroupCommand({
