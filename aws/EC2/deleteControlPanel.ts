@@ -10,7 +10,7 @@ export const deleteControlPanel = async () => {
     const instanceId = instanceIds?.[0];
 
     if (!instanceId) {
-      throw new Error("No running Rabbitory Control Panel instance found.");
+      return;
     }
 
     await ec2Client.send(
