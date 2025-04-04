@@ -2,7 +2,7 @@ import { createRabbitoryIAM } from "../../aws/IAM/createRabbitoryRole";
 import { createRMQBrokerIAM } from "../../aws/IAM/createBrokerRole";
 import { createRabbitorySG } from "../../aws/security-groups/createRabbitorySG";
 import { createControlPanel } from "../../aws/EC2/createControlPanel";
-import { createTable } from "../../aws/DynamoDB/createTable";
+import { createTable } from "../../aws/dynamoDB/createTable";
 import { runWithSpinner } from "../utils/spinner";
 import { setupAws } from "../utils/setupAws";
 import { promptUserForAWSRegion } from "../utils/promptUserForAWSRegion";

@@ -1,4 +1,4 @@
-import { deleteTable } from "../../aws/DynamoDB/deleteTable";
+import { deleteTable } from "../../aws/dynamoDB/deleteTable";
 import { deleteControlPanel } from "../../aws/EC2/deleteControlPanel";
 import { deleteAllBrokerInstances } from "../../aws/EC2/deleteAllBrokerInstances";
 import { deleteRabbitorySG } from "../../aws/security-groups/deleteRabbitorySG";
