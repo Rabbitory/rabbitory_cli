@@ -123,7 +123,7 @@ export const createControlPanel = async (
       },
     ],
     UserData: encodedUserData,
-    IamInstanceProfile: { Name: "RabbitoryInstanceProfile" },
+    IamInstanceProfile: { Name: "rabbitory-control-panel-instance-profile" },
     NetworkInterfaces: [
       {
         DeviceIndex: 0,

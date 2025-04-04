@@ -1,9 +1,9 @@
 import { DeleteTableCommand } from "@aws-sdk/client-dynamodb";
 import { getDDBClient } from "./getDDBClient";
 
-const tableName = "RabbitoryInstancesMetadata";
 
 export const deleteTable = async () => {
+  const tableName = "rabbitory-instances-metadata";
   const client = getDDBClient();
   try {
     const command = new DeleteTableCommand({ TableName: tableName });

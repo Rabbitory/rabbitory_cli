@@ -19,9 +19,8 @@ const tableExists = async (tableName: string, client: DynamoDBClient): Promise<b
 };
 
 export const createTable = async () => {
+  const tableName = "rabbitory-instances-metadata";
   const client = getDDBClient();
-
-  const tableName = "RabbitoryInstancesMetadata";
 
   const exists = await tableExists(tableName, client);
   if (exists) return;

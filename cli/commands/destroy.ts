@@ -44,7 +44,7 @@ const deleteAllBrokerInstances = async (regions: string[]) => {
 export const destroy = async () => {
   try {
     await promptUserForRegion();
-    const controlPanelName = "RabbitoryControlPanel";
+    const controlPanelName = "rabbitory-control-panel";
     const regions: string[] = await getAllEC2Regions();
     if (!regions?.length) throw new Error("No regions found");
 
