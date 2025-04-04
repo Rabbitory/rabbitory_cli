@@ -2,7 +2,7 @@ import { getRabbitoryUrl } from "./getRabbitoryUrl";
 import cliProgress from 'cli-progress';
 import chalk from 'chalk';
 
-const MAX_WAIT_TIME_MS = 6 * 60 * 1000; // 6 minutes
+const MAX_WAIT_TIME_MS = 5 * 60 * 1000; // 5 minutes
 const POLL_INTERVAL_MS = 15000; // 15 seconds
 
 export const getReadyRabbitoryUrl = async (instanceId: string): Promise<string> => {

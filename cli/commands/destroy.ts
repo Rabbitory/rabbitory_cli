@@ -10,7 +10,7 @@ import { promptUserForAWSRegion } from "../utils/promptUserForAWSRegion";
 import chalk from "chalk";
 
 const START_MSG = '\nPreparing to teardown the Rabbitory Infrastructure...\n';
-const COMPLETE_MSG = `\nRabbitory infrastructure teardown complete. All Rabbitory AWS services and resources have been removed.\n`
+const COMPLETE_MSG = `\nRabbitory infrastructure teardown complete.\nAll Rabbitory AWS services and resources have been removed.\n`
 
 export const destroy = async () => {
   try {
