@@ -4,17 +4,24 @@ import { createRabbitorySG } from "../../aws/security-groups/createRabbitorySG";
 import { createControlPanel } from "../../aws/EC2/createControlPanel";
 import { createTable } from "../../aws/dynamoDB/createTable";
 import { runWithSpinner } from "../utils/spinner";
+import { setupAws } from "../utils/setupAws";
 import { promptUserForAWSRegion } from "../utils/promptUserForAWSRegion";
 import { destroy } from "./destroy";
 import { getReadyRabbitoryUrl } from "../../aws/EC2/getReadyRabbitoryUrl";
 import { formatLogo } from "../utils/logo";
 import { stdout } from "process";
+import { successHexNum } from "../utils/chalkColors";
 import chalk from "chalk";
 
 const TERMINAL_WIDTH = stdout.columns || 80;
+const START_MSG = "\nWelcome to Rabbitory! Let's get your infrastructure setup.\n"
 
 export const deploy = async () => {
   try {
+    setupAws();
+
+    console.log(START_MSG);
+
     await promptUserForAWSRegion();
     console.log('\n');
 
@@ -25,9 +32,10 @@ export const deploy = async () => {
     const instanceId = await runWithSpinner('Creating Rabbitory Control Panel EC2 instance...', () => createControlPanel(rabbitorySecurityGroupId), 'Created Rabbitory EC2 instance');
     await runWithSpinner('Creating DynamoDB Table..', () => createTable(), 'Created DynamoDB Table');
     const rabbitoryUrl = await getReadyRabbitoryUrl(instanceId);
-    console.log(chalk.green('✔ Application is ready'));
-    console.log(chalk.white(`\nRabbitory Control Panel is available at: ${chalk.cyan(rabbitoryUrl)}\n`));
-    console.log(chalk.red(formatLogo(TERMINAL_WIDTH)));
+    console.log(chalk.hex(successHexNum)('\n✔ Application is ready'));
+
+    console.log(chalk.white(`\nThe Rabbitory Control Panel is available at: ${chalk.cyan(rabbitoryUrl)}\n`));
+    console.log(formatLogo(TERMINAL_WIDTH));
   } catch (error) {
     console.error(chalk.redBright("\nRabbitory deployment failed\n"), error, "\n");
     console.log('Rolling back your deployment...');

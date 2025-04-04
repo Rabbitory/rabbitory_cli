@@ -1,12 +1,12 @@
 import ora from 'ora';
 import chalk from 'chalk';
+import { successHexNum } from './chalkColors';
 
 export const runWithSpinner = async <T>(
   waitingMsg: string, 
   callbackFn: () => Promise<T>, 
   successMsg: string
 ): Promise<T> => {
-  const successHexNum = "#99ffcc";
 
   const spinner = ora({
     text: chalk.white(waitingMsg),

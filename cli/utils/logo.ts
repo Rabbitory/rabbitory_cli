@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import { logoHexNum } from "./chalkColors";
 
 const fullLogo = "\n" +
   " ooooooooo.              .o8        .o8        o8o      .                                  \n" +
@@ -16,14 +17,11 @@ const mediumLogo = "";
 const smallLogo = chalk.bold("🐰 Rabbitory");
 
 export function formatLogo(terminalWidth: number): string {
-  const hexNumber = '#ffaa80';
-
   if (terminalWidth >= 100) {
-    return chalk.hex(hexNumber)(fullLogo);
-;
+    return chalk.hex(logoHexNum)(fullLogo);
   } else if (terminalWidth >= 70) {
-    return chalk.hex(hexNumber)(mediumLogo);
+    return chalk.hex(logoHexNum)(mediumLogo);
   } else {
-    return chalk.hex(hexNumber)(smallLogo);
+    return chalk.hex(logoHexNum)(smallLogo);
   }
 }
