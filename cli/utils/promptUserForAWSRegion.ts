@@ -61,8 +61,8 @@ export const promptUserForAWSRegion = async (): Promise<void> => {
   const response: AWSRegionResponseType = await prompt([
     {
       type: "select",
-      name: "region",
-      message: "Select your region:",
+      name: "awsRegion",
+      message: "Select your AWS region:",
       choices: globalRegions[globalRegion]
     }
   ]);

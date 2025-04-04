@@ -3,7 +3,9 @@ import type { RunInstancesCommandInput } from "@aws-sdk/client-ec2";
 import { getEC2Client  } from "./getEC2Client";
 import { getRegion } from "../../cli/utils/region";
 
-const getImageId = (region: string) => {
+const getImageId = () => {
+  const region = getRegion();
+
   switch (region) {
     case "us-east-1":
       return "ami-084568db4383264d4";
@@ -17,7 +19,7 @@ const getImageId = (region: string) => {
       return "ami-08355844f8bc94f55";
     case "ap-southeast-1":
       return "ami-01938df366ac2d954";
-    case "ap-souteast-2":
+    case "ap-southeast-2":
       return "ami-0f5d1713c9af4fe30";
     case "ap-northeast-1":
       return "ami-026c39f4021df9abe";
@@ -108,7 +110,7 @@ export const createControlPanel = async (
   `.replace(/^\s+/gm, "");
 
   const encodedUserData = Buffer.from(userData).toString("base64");
-  const imageId = getImageId(region);
+  const imageId = getImageId();
 
   const params: RunInstancesCommandInput = {
     ImageId: imageId,

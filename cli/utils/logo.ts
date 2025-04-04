@@ -1,4 +1,4 @@
-export const logo = "\n" +
+const logo = "\n" +
   "    ooooooooo.              .o8        .o8        o8o      .                                  \n" +
   "    `888   `Y88.           \"888       \"888        `\"'    .o8                                  \n" +
   "     888   .d88'  .oooo.    888oooo.   888oooo.  oooo  .o888oo  .ooooo.  oooo d8b oooo    ooo \n" +
@@ -9,3 +9,14 @@ export const logo = "\n" +
   "                                                                                  .o..P'      \n" +
   "                                                                                  `Y8P'       \n";
 
+  export function centerLogo(terminalWidth: number): string {
+    const lines = logo.split("\n");
+  
+    return lines
+      .map((line) => {
+        const trimmedLine = line.trimEnd(); // remove trailing spaces
+        const padding = Math.max(0, Math.floor((terminalWidth - trimmedLine.length) / 2));
+        return " ".repeat(padding) + trimmedLine;
+      })
+      .join("\n");
+  }  

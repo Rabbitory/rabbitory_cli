@@ -10,7 +10,7 @@ export const deleteRabbitorySG = async (): Promise<void> => {
   try {
     const command = new DescribeSecurityGroupsCommand({});
     const response = await client.send(command);
-    const rabbitorySG = response.SecurityGroups?.find(sg => sg.GroupName === "rabbitory-sg");
+    const rabbitorySG = response.SecurityGroups?.find(sg => sg.GroupName === "rabbitory-control-panel-sg");
     
     if (rabbitorySG?.GroupId) {
       const deleteCommand = new DeleteSecurityGroupCommand({ GroupId: rabbitorySG.GroupId });
