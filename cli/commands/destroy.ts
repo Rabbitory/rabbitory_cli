@@ -15,9 +15,8 @@ const COMPLETE_MSG = `\nRabbitory infrastructure teardown complete. All Rabbitor
 export const destroy = async () => {
   try {
     console.log(START_MSG);
-    
+
     await promptUserForAWSRegion();
-    console.log('\n');
 
     await runWithSpinner("Deleting DynamoDB Table...", () => deleteTable(), "Deleted DynamoDB Table");
     await runWithSpinner("Terminating Control Panel EC2 instance...", () => deleteControlPanel(), "Terminated EC2 instance");

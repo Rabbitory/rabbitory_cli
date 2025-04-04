@@ -14,7 +14,7 @@ import { successHexNum } from "../utils/chalkColors";
 import chalk from "chalk";
 
 const TERMINAL_WIDTH = stdout.columns || 80;
-const START_MSG = "\nWelcome to Rabbitory! Let's get your infrastructure setup.\n"
+const START_MSG = "\nPreparing to setup the Rabbitory Infrastructure...\n"
 
 export const deploy = async () => {
   try {
@@ -23,7 +23,6 @@ export const deploy = async () => {
     console.log(START_MSG);
 
     await promptUserForAWSRegion();
-    console.log('\n');
 
     await runWithSpinner('Setting up Rabbitory Contol Panel IAM...', () => createRabbitoryIAM(), 'Created Rabbitory Control Panel IAM role and instance profile');
     await runWithSpinner('Setting up Rabbitmq Broker IAM...', () => createRMQBrokerIAM(), 'Created Rabbitmq Broker IAM role and instance profile');
@@ -31,6 +30,8 @@ export const deploy = async () => {
     const rabbitorySecurityGroupId = await runWithSpinner('Setting up Rabbitory Security Group...', () => createRabbitorySG(), 'Created Rabbitory security group');
     const instanceId = await runWithSpinner('Creating Rabbitory Control Panel EC2 instance...', () => createControlPanel(rabbitorySecurityGroupId), 'Created Rabbitory EC2 instance');
     await runWithSpinner('Creating DynamoDB Table..', () => createTable(), 'Created DynamoDB Table');
+    console.log('\n');
+
     const rabbitoryUrl = await getReadyRabbitoryUrl(instanceId);
     console.log(chalk.hex(successHexNum)('\n✔ Application is ready'));
 
