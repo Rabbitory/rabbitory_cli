@@ -10,11 +10,11 @@ import { destroy } from "./destroy";
 import { getReadyRabbitoryUrl } from "../../aws/EC2/getReadyRabbitoryUrl";
 import { formatLogo } from "../utils/logo";
 import { stdout } from "process";
-import { successHexNum } from "../utils/chalkColors";
 import chalk from "chalk";
 
 const TERMINAL_WIDTH = stdout.columns || 80;
 const START_MSG = "\nPreparing to setup the Rabbitory Infrastructure...\n"
+const URL_WAIT_MSG = "\nWaiting for Rabbitory Control Panel to be ready...";
 
 export const deploy = async () => {
   try {
@@ -30,10 +30,9 @@ export const deploy = async () => {
     const rabbitorySecurityGroupId = await runWithSpinner('Setting up Rabbitory Security Group...', () => createRabbitorySG(), 'Created Rabbitory security group');
     const instanceId = await runWithSpinner('Creating Rabbitory Control Panel EC2 instance...', () => createControlPanel(rabbitorySecurityGroupId), 'Created Rabbitory EC2 instance');
     await runWithSpinner('Creating DynamoDB Table..', () => createTable(), 'Created DynamoDB Table');
-    console.log('\n');
 
+    console.log(URL_WAIT_MSG);
     const rabbitoryUrl = await getReadyRabbitoryUrl(instanceId);
-    console.log(chalk.hex(successHexNum)('\n✔ Application is ready'));
 
     console.log(chalk.white(`\nThe Rabbitory Control Panel is available at: ${chalk.cyan(rabbitoryUrl)}\n`));
     console.log(formatLogo(TERMINAL_WIDTH));

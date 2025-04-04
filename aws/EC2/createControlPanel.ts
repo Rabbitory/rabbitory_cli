@@ -54,8 +54,6 @@ import { getUbuntuAmiId } from "../AMI/getUbuntuAmiId";
 //   }
 // };
 
-
-
 export const createControlPanel = async (
   securityGroupId: string
 ): Promise<string> => {
@@ -63,6 +61,7 @@ export const createControlPanel = async (
   const client = getEC2Client();
   const region = getRegion();
   const imageId = await getUbuntuAmiId(region);
+  // const imageId = getImageId();
 
   // const userData1 = `#!/bin/bash
   // # --- Root-level commands ---

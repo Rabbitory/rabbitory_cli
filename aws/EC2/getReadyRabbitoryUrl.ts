@@ -1,6 +1,5 @@
 import { getRabbitoryUrl } from "./getRabbitoryUrl";
 import cliProgress from 'cli-progress';
-import chalk from 'chalk';
 
 const MAX_WAIT_TIME_MS = 5 * 60 * 1000; // 5 minutes
 const POLL_INTERVAL_MS = 15000; // 15 seconds
@@ -12,7 +11,7 @@ export const getReadyRabbitoryUrl = async (instanceId: string): Promise<string> 
   }
   
   const progressBar = new cliProgress.SingleBar({
-    format: `${chalk.white('Waiting for Rabbitory Control Panel to be ready...')} [{bar}] {percentage}% | ETA: {eta_formatted}`,
+    format: `[{bar}] {percentage}% | ETA: {eta_formatted}`,
     barCompleteChar: '\u2588',
     barIncompleteChar: '\u2591',
     hideCursor: true,
