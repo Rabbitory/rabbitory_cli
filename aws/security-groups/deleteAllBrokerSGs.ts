@@ -10,7 +10,7 @@ export const deleteAllBrokerSGs = async (): Promise<void> => {
   try {
     const command = new DescribeSecurityGroupsCommand({});
     const response = await client.send(command);
-    const brokerSGs = response.SecurityGroups?.filter(sg => /^rabbitmq-sg-.*/i.test(sg.GroupName || ""));
+    const brokerSGs = response.SecurityGroups?.filter(sg => /^rabbitory-broker-sg-.*/i.test(sg.GroupName || ""));
     
     if (brokerSGs?.length) {
       for (const sg of brokerSGs) {
