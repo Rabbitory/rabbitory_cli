@@ -3,6 +3,7 @@ import type { RunInstancesCommandInput } from "@aws-sdk/client-ec2";
 import { getEC2Client  } from "./getEC2Client";
 import { getRegion } from "../../cli/utils/region";
 
+
 const getImageId = () => {
   const region = getRegion();
 
@@ -27,6 +28,8 @@ const getImageId = () => {
       return "ami-0d5bb3742db8fc264";
     case "ap-south-1":
       return "ami-0e35ddab05955cf57";
+    case "ap-east-1":
+      return "ami-052c08d70def0ac62"; // Found for ap-east-1 (Hong Kong)
     case "eu-central-1":
       return "ami-03250b0e01c28d196";
     case "eu-north-1":
@@ -39,10 +42,17 @@ const getImageId = () => {
       return "ami-0ae30afba46710143";
     case "sa-east-1":
       return "ami-0d866da98d63e2b42";
+    case "me-south-1":
+      return "ami-0e748500f1b6d4492"; // Found for me-south-1
+    case "me-central-1":
+      return "ami-0e1e1d1535af076a2"; // Found for me-central-1
+    case "af-south-1":
+      return "ami-0aeeebd8b2d3e0b75"; // Found for af-south-1 (Cape Town)
     default:
       throw new Error(`Invalid region: ${region}`);
   }
 };
+
 
 export const createControlPanel = async (
   securityGroupId: string

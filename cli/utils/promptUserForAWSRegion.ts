@@ -23,7 +23,7 @@ interface AWSRegionResponseType {
 const globalRegions: GlobalRegionsType = {
   "North America": [
     "us-east-1", "us-east-2", "us-west-1", "us-west-2",
-    "ca-central-1", "mx-west-1",
+    "ca-central-1",
   ],
   "South America": [
     "sa-east-1",
@@ -33,10 +33,10 @@ const globalRegions: GlobalRegionsType = {
   ],
   "Asia Pacific": [
     "ap-southeast-1", "ap-southeast-2", "ap-northeast-1", "ap-northeast-2", "ap-south-1",
-    "ap-east-1", "ap-south-2",
+    "ap-east-1",
   ],
   "Middle East": [
-    "me-south-1", "me-central-1", "is-central-1",
+    "me-south-1", "me-central-1",
   ],
   "Africa": [
     "af-south-1",
