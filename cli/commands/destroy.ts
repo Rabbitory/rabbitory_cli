@@ -62,12 +62,11 @@ export const destroy = async () => {
       await runWithSpinner("Terminating Control Panel EC2 instance...", () => deleteControlPanel(instanceId), "Terminated EC2 instance");
     }
 
-
-    runWithSpinner("Deleting RabbitMQ Broker Instances...", () => deleteAllBrokerInstances(regions), "Deleted RabbitMQ Broker Instances");
-    runWithSpinner("Deleting Rabbitory Control Panel security group...", () => deleteRabbitorySG(), "Deleted Rabbitory Control Panel security group");
-    runWithSpinner("Deleting Rabbitory security group...", () => deleteAllBrokerSGs(), "Deleted Rabbitory security group");
-    runWithSpinner("Deleting RMQ Broker IAM role...", () => deleteBrokerRole(), "Deleted RMQ Broker IAM role");
-    runWithSpinner("Deleting Rabbitory IAM role...", () => deleteRabbitoryRole(), "Deleted Rabbitory IAM role");
+    await runWithSpinner("Deleting RabbitMQ Broker Instances...", () => deleteAllBrokerInstances(regions), "Deleted RabbitMQ Broker Instances");
+    await runWithSpinner("Deleting Rabbitory Control Panel security group...", () => deleteRabbitorySG(), "Deleted Rabbitory Control Panel security group");
+    await runWithSpinner("Deleting Rabbitory security group...", () => deleteAllBrokerSGs(), "Deleted Rabbitory security group");
+    await runWithSpinner("Deleting RMQ Broker IAM role...", () => deleteBrokerRole(), "Deleted RMQ Broker IAM role");
+    await runWithSpinner("Deleting Rabbitory IAM role...", () => deleteRabbitoryRole(), "Deleted Rabbitory IAM role");
   } catch (error) {
     console.error(chalk.redBright("\nRabbitory destruction failed\n"), error, "\n");
   }

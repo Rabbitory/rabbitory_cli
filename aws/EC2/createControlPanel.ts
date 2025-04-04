@@ -112,14 +112,14 @@ export const createControlPanel = async (
 
   const params: RunInstancesCommandInput = {
     ImageId: imageId,
-    InstanceType: "t3.small", // t3.small
+    InstanceType: "t3.small",
 
     MinCount: 1,
     MaxCount: 1,
     TagSpecifications: [
       {
         ResourceType: "instance",
-        Tags: [{ Key: "Name", Value: "RabbitoryControlPanel" }],
+        Tags: [{ Key: "Name", Value: "rabbitory-control-panel" }],
       },
     ],
     UserData: encodedUserData,
