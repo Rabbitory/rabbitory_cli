@@ -7,3 +7,5 @@ Commands for running this code - as of 3/18/25
 `npm run build`: builds the ts files into dist folder
 `node dist/cli/cli.js deploy`: runs the deploy cli command and builds infrastructure
 `node dist/cli/cli.js destroy`: runs the destroy cli command and tears down infrastructure
+
+MAKe sure user has their prefered deployment region enabled in their account.
