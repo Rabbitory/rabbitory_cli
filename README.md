@@ -44,6 +44,13 @@ rabbitory deploy
 
 After entering this command, you'll be prompted to enter your preferred AWS global region, then the region associated with your desired availability zone.
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/select-global-region-ex.png" alt="select-global-region" width="60%" />
+</p>
+
+![Select Global Region](https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/select-global-region-ex.png)
+![Select AWS Region](https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/select-aws-region-ex.png)
+
 Upon deployment, Rabbitory spins up all the necessary AWS infrastructure for you to self-host your control panel, where you can create, configure, and manage your Rabbitmq instances. Rabbitory CLI creates the following resources for you:
 
 - IAM Roles
