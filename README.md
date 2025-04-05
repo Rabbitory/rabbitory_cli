@@ -1,6 +1,14 @@
-# 🐇 Rabbitory CLI
+<a name="top"></a>
+![rabbitory logo](https://raw.githubusercontent.com/your-username/rabbitory/main/assets/rabbitory-logo.png)
 
-**Rabbitory** is a command-line interface (CLI) tool designed to streamline the deployment and management of RabbitMQ infrastructure on AWS. With Rabbitory, you can effortlessly set up, configure, and manage RabbitMQ instances, security groups, and related resources.
+[![npm version](https://img.shields.io/npm/v/rabbitory)](https://www.npmjs.com/package/rabbitory)
+~add real npm package here~
+
+# Rabbitory CLI
+
+**Rabbitory CLI** is a command-line interface tool designed to streamline the deployment of the Rabbitory Control Panel infrastructure on AWS. With Rabbitory CLI, you can effortlessly set up, configure, and manage RabbitMQ instances, security groups, and related resources.
+
+---
 
 ## 📦 Installation
 
@@ -12,28 +20,48 @@ Before installing Rabbitory, ensure that you have the following installed:
 
 - **npm**: Node.js package manager, which comes bundled with Node.js.
 
-- **AWS Command Line Interface (AWS CLI)**: This is essential for authenticating with your AWS account. If you haven't installed it yet, follow the [AWS CLI Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html).
+- **AWS Command Line Interface (AWS CLI)**: This is essential for authenticating with your AWS account. If you haven't installed it yet, follow the [AWS CLI Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html). After installing AWS CLI, please proceed to configure your AWS
 
-### Configuring AWS Credentials
+### Installing Rabittory CLI
 
-Rabbitory interacts with your AWS account to deploy resources. Therefore, it's crucial to configure your AWS credentials. Here's how:
+Once your AWS credentials are set up, you can install the Rabbitory CLI by running the following command:
 
-1. **Obtain AWS Access Keys**:
+```
+npm install -g rabbitory
+```
 
-   - Navigate to the AWS Management Console.
+---
 
-   - Go to the **IAM (Identity and Access Management)** section.
+## 🐰 Usage
 
-   - Create a new user with programmatic access or use an existing user.
+### Deploying Rabbitory
 
-   - Attach the necessary policies to grant permissions for EC2, DynamoDB, and Security Groups.
+Deploying your self-hosted Rabbitory Control Panel is as easy as running the following command:
 
-   - Generate an **Access Key ID** and **Secret Access Key**.
+```
+rabbitory deploy
+```
 
-2. **Configure AWS CLI**:
+After entering this command, you'll be prompted to enter your preferred AWS global region, then the region associated with your desired availability zone.
 
-   Open your terminal and run:
+Upon deployment, Rabbitory spins up all the necessary AWS infrastructure for you to self-host your control panel, where you can create, configure, and manage your Rabbitmq instances. Rabbitory CLI creates the following resources for you:
 
-   ```bash
-   aws configure
-   ```
+- IAM Roles
+- IAM Instance Profiles,
+- Security Groups
+- DynamoDB Tables
+- EC2 (Rabbitory Control Panel)
+
+![Deploy success](https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/rabbitory-deploy-success.png)
+
+### Tearing down Rabbitory
+
+If you need to teardown your Rabbitory Control Panel and all of its associated Rabbitmq instances, you can run:
+
+```
+rabbitory destroy
+```
+
+🤝 Developed By: Jacqueline Amherst | Zijin Gong | Laren Cozart | Mason Abruzzesse
+
+-->create links for our names to our github overview pages
