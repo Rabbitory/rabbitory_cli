@@ -45,7 +45,7 @@ After entering this command, you'll be prompted to enter your preferred AWS glob
 <p align="left">
   <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/select-global-region-ex.png" alt="select-global-region" width="60%" />
 </p>
-<p align="cenleftter">
+<p align="left">
   <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/select-aws-region-ex.png" alt="select-aws-region" width="60%" />
 </p>
 
@@ -71,7 +71,9 @@ rabbitory destroy
 
 Tearing down Rabbitory involves selecting the global region and aws availability zone where your Rabbitory Control Panel was initially deployed. Then, all AWS resources that were created will be automatically deleted for you, leaving you with a clean AWS environment.
 
-![Destroy success](https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/rabbitory-destroy-success.png)
+<p align="left">
+  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/rabbitory-destroy-success.png" alt="select-aws-region" width="60%" />
+</p>
 
 ## 🛠 Features
 
