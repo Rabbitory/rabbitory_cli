@@ -71,7 +71,7 @@ rabbitory destroy
 
 Tearing down Rabbitory involves selecting the global region and aws availability zone where your Rabbitory Control Panel was initially deployed. Then, all AWS resources that were created will be automatically deleted for you, leaving you with a clean AWS environment.
 
-## ![Destroy success](https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/rabbitory-destroy-success.png)
+![Destroy success](https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/rabbitory-destroy-success.png)
 
 ## 🛠 Features
 
