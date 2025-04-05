@@ -6,9 +6,7 @@
 
 # Rabbitory CLI
 
-**Rabbitory CLI** is a command-line interface tool designed to streamline the deployment of the Rabbitory Control Panel infrastructure on AWS. With Rabbitory CLI, you can effortlessly set up, configure, and manage RabbitMQ instances, security groups, and related resources.
-
----
+**Rabbitory CLI** is a command-line interface tool designed to streamline the deployment of the Rabbitory Control Panel infrastructure on AWS. With Rabbitory CLI, you can effortlessly integrate with your AWS environment and automatically provision the resources needed to manage your Rabbitmq instances on the Cloud.
 
 ## 📦 Installation
 
@@ -53,11 +51,13 @@ After entering this command, you'll be prompted to enter your preferred AWS glob
 
 Upon deployment, Rabbitory spins up all the necessary AWS infrastructure for you to self-host your control panel, where you can create, configure, and manage your Rabbitmq instances. Rabbitory CLI creates the following resources for you:
 
-✔️ IAM Roles
-✔️ IAM Instance Profiles,
-✔️ Security Groups
-✔️ DynamoDB Tables
-✔️ EC2 (Rabbitory Control Panel)
+- ✔️ IAM Roles
+- ✔️ IAM Instance Profiles
+- ✔️ Security Groups
+- ✔️ EC2 (Rabbitory Control Panel)
+- ✔️ DynamoDB Tables
+
+Once Rabittory has been successfully deployed, you'll receive a link to your
 
 ![Deploy success](https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/rabbitory-deploy-success.png)
 
@@ -69,7 +69,9 @@ If you need to teardown your Rabbitory Control Panel and all of its associated R
 rabbitory destroy
 ```
 
----
+Tearing down Rabbitory involves selecting the global region and aws availability zone where your Rabbitory Control Panel was initially deployed. Then, all AWS resources that were created will be automatically deleted for you, leaving you with a clean AWS environment.
+
+## ![Destroy success](https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/rabbitory-destroy-success.png)
 
 ## 🛠 Features
 
