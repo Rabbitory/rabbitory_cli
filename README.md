@@ -84,6 +84,9 @@ Rabbitory CLI handles the full deployment lifecycle of your RabbitMQ environment
 ### Automatic Deployment Rollback
 
 If any step of the deployment process fails, Rabbitory CLI will automatically roll back all changes to leave your AWS environment clean and consistent.
+
+---
+
 🤝 Developed By: Jacqueline Amherst | Zijin Gong | Laren Cozart | Mason Abruzzesse
 
 -->create links for our names to our github overview pages
