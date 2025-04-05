@@ -6,7 +6,7 @@ import { deleteAllBrokerSGs } from "../../aws/security-groups/deleteAllBrokerSGs
 import { deleteBrokerRole } from "../../aws/IAM/deleteBrokerRole";
 import { deleteRabbitoryRole } from "../../aws/IAM/deleteRabbitoryRole";
 import { runWithSpinner } from "../utils/spinner";
-import { promptUserForAWSRegion } from "../utils/promptUserForAWSRegion";
+import { promptUserForRegionCode } from "../utils/promptUserForAWSRegion";
 import chalk from "chalk";
 
 const START_MSG = '\nPreparing to teardown the Rabbitory Infrastructure...\n';
@@ -16,7 +16,7 @@ export const destroy = async () => {
   try {
     console.log(START_MSG);
 
-    await promptUserForAWSRegion();
+    await promptUserForRegionCode();
 
     await runWithSpinner("Deleting DynamoDB Table...", () => deleteTable(), "Deleted DynamoDB Table");
     await runWithSpinner("Terminating Control Panel EC2 instance...", () => deleteControlPanel(), "Terminated EC2 instance");

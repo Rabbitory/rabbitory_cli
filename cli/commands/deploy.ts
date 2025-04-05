@@ -5,7 +5,7 @@ import { createControlPanel } from "../../aws/EC2/createControlPanel";
 import { createTable } from "../../aws/dynamoDB/createTable";
 import { runWithSpinner } from "../utils/spinner";
 import { setupAws } from "../utils/setupAws";
-import { promptUserForAWSRegion } from "../utils/promptUserForAWSRegion";
+import { promptUserForRegionCode } from "../utils/promptUserForAWSRegion";
 import { destroy } from "./destroy";
 import { getReadyRabbitoryUrl } from "../../aws/EC2/getReadyRabbitoryUrl";
 import { formatLogo } from "../utils/logo";
@@ -22,7 +22,7 @@ export const deploy = async () => {
 
     console.log(START_MSG);
 
-    await promptUserForAWSRegion();
+    await promptUserForRegionCode();
 
     await runWithSpinner('Setting up Rabbitory Contol Panel IAM...', () => createRabbitoryIAM(), 'Created Rabbitory Control Panel IAM role and instance profile');
     await runWithSpinner('Setting up Rabbitmq Broker IAM...', () => createRMQBrokerIAM(), 'Created Rabbitmq Broker IAM role and instance profile');
