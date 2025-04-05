@@ -53,11 +53,11 @@ After entering this command, you'll be prompted to enter your preferred AWS glob
 
 Upon deployment, Rabbitory spins up all the necessary AWS infrastructure for you to self-host your control panel, where you can create, configure, and manage your Rabbitmq instances. Rabbitory CLI creates the following resources for you:
 
-- IAM Roles
-- IAM Instance Profiles,
-- Security Groups
-- DynamoDB Tables
-- EC2 (Rabbitory Control Panel)
+✔️ IAM Roles
+✔️ IAM Instance Profiles,
+✔️ Security Groups
+✔️ DynamoDB Tables
+✔️ EC2 (Rabbitory Control Panel)
 
 ![Deploy success](https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/rabbitory-deploy-success.png)
 
@@ -69,6 +69,17 @@ If you need to teardown your Rabbitory Control Panel and all of its associated R
 rabbitory destroy
 ```
 
+---
+
+## 🛠 Features
+
+### Seamless AWS Integration & Deployment Automation
+
+Rabbitory CLI handles the full deployment lifecycle of your RabbitMQ environment, including IAM, EC2, DynamoDB, and security groups — with zero manual setup.
+
+### Automatic Deployment Rollback
+
+If any step of the deployment process fails, Rabbitory CLI will automatically roll back all changes to leave your AWS environment clean and consistent.
 🤝 Developed By: Jacqueline Amherst | Zijin Gong | Laren Cozart | Mason Abruzzesse
 
 -->create links for our names to our github overview pages
