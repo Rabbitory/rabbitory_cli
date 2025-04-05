@@ -12,7 +12,7 @@
 
 ### Seamless AWS Integration
 
-By using your awscli configuration, Rabbitory provisions the Control Panel infrastructure in your preferred AWS user account. Rabbitory CLI also allows you to choose your preferred region for deploying this infrastructure with different 20 regions to choose from.
+By using your AWS CLI configuration, Rabbitory provisions the Control Panel infrastructure in your preferred AWS user account. Rabbitory CLI also allows you to choose your preferred region for deploying this infrastructure with 20 different regions to choose from.
 
 ### Deployment Automation
 
@@ -71,7 +71,7 @@ After entering this command, you'll be prompted to enter your preferred AWS glob
   <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/select-aws-region-ex.png" alt="select-aws-region" width="60%" />
 </p>
 
-Upon deployment, Rabbitory spins up all the necessary AWS infrastructure for you to self-host your personal Rabbitory Control Panel, where you can create, configure, and manage your RabbitMQ instances. Once Rabittory has been successfully deployed, you'll receive a link to this Control Panel.
+Upon deployment, Rabbitory spins up all the necessary AWS infrastructure for you to self-host your personal Rabbitory Control Panel, where you can create, configure, and manage your RabbitMQ instances. Once Rabittory has been successfully deployed, you'll receive a link to your Control Panel.
 
 ![Deploy success](https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/rabbitory-deploy-success.png)
 
