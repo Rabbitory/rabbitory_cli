@@ -48,7 +48,7 @@ const promptUserForGlobalRegion = async (): Promise<GlobalRegionType> => {
     {
       type: "select",
       name: "globalRegion",
-      message: "Select your global region:",
+      message: "Select your AWS global region:",
       choices: Object.keys(globalRegions),
     }
   ]);
@@ -56,13 +56,13 @@ const promptUserForGlobalRegion = async (): Promise<GlobalRegionType> => {
   return response.globalRegion;
 }
 
-export const promptUserForAWSRegion = async (): Promise<void> => {
+export const promptUserForRegionCode = async (): Promise<void> => {
   const globalRegion: GlobalRegionType = await promptUserForGlobalRegion();
   const response: AWSRegionResponseType = await prompt([
     {
       type: "select",
       name: "awsRegion",
-      message: "Select your AWS region:",
+      message: "Select your AWS region code:",
       choices: globalRegions[globalRegion]
     }
   ]);
