@@ -11,3 +11,9 @@ export const getDDBClient = () => {
   
   return ddbClient;
 };
+
+export const setPrivateDDBClientForTesting = (client: DynamoDBClient | null) => {
+  ddbClient = client;
+};
+
+// export const getPrivateDDBClientInternalForTesting = () => ddbClient;
