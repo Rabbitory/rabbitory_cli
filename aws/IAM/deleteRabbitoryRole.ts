@@ -6,9 +6,10 @@ import {
   DeleteInstanceProfileCommand,
   DeleteRoleCommand,
 } from "@aws-sdk/client-iam";
+import { getIAMClient } from "./getIAMClient";
 
-const ROLE_NAME = "RabbitoryRole";
-const INSTANCE_PROFILE_NAME = "RabbitoryInstanceProfile";
+const ROLE_NAME = "rabbitory-control-panel-role";
+const INSTANCE_PROFILE_NAME = "rabbitory-control-panel-instance-profile";
 
 const isAwsError = (error: unknown): error is { name: string; message: string } => {
   return typeof error === "object" && error !== null && "name" in error && "message" in error;
@@ -65,8 +66,8 @@ const deleteInstanceProfile = async (client: IAMClient) => {
   }
 };
 
-export const deleteRabbitoryRole = async (region: string) => {
-  const client = new IAMClient({ region: region });
+export const deleteRabbitoryRole = async () => {
+  const client = getIAMClient();
 
   try {
     await removeRoleFromInstanceProfile(client);

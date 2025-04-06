@@ -1,3 +1,4 @@
+import { getIAMClient } from "./getIAMClient";
 import {
   IAMClient,
   CreateRoleCommand,
@@ -7,8 +8,8 @@ import {
   CreateRoleResponse,
 } from "@aws-sdk/client-iam";
 
-export const ROLE_NAME = "RMQBrokerRole";
-export const INSTANCE_PROFILE_NAME = "RMQBrokerInstanceProfile";
+export const ROLE_NAME = "rabbitory-broker-role";
+export const INSTANCE_PROFILE_NAME = "rabbitory-broker-instance-profile";
 
 const ROLE_REQUEST = {
   AssumeRolePolicyDocument: JSON.stringify({
@@ -82,8 +83,8 @@ const addRoleToInstanceProfile = async (client: IAMClient): Promise<void> => {
   }
 };
 
-export const createRMQBrokerIAM = async (region: string): Promise<void> => {
-  const client = new IAMClient({ region: region });
+export const createRMQBrokerIAM = async (): Promise<void> => {
+  const client = getIAMClient();
 
   try {
     await createBrokerRole(client);

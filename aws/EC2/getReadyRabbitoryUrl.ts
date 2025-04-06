@@ -1,18 +1,19 @@
-import { getRabbitoryEndpoint } from "../aws/EC2/getRabbitoryEndpoint";
+import { getRabbitoryUrl } from "./getRabbitoryUrl";
 import cliProgress from 'cli-progress';
-import chalk from 'chalk';
+import { successHexNum } from "../../cli/utils/chalkColors";
+import chalk from "chalk";
 
-const MAX_WAIT_TIME_MS = 6 * 60 * 1000; // 6 minutes
+const MAX_WAIT_TIME_MS = 5 * 60 * 1000; // 5 minutes
 const POLL_INTERVAL_MS = 15000; // 15 seconds
 
-export const waitForAppToBeReady = async (instanceId: string, region: string): Promise<string> => {
-  const endpoint: string | null = await getRabbitoryEndpoint(instanceId, region);
+export const getReadyRabbitoryUrl = async (instanceId: string): Promise<string> => {
+  const endpoint: string | null = await getRabbitoryUrl(instanceId);
   if (!endpoint) {
-    throw new Error(`Failed to retrieve endpoint for instance ${instanceId} in region ${region}`);
+    throw new Error(`Failed to retrieve endpoint for instance ${instanceId}`);
   }
   
   const progressBar = new cliProgress.SingleBar({
-    format: `${chalk.green('Waiting for application to be ready...')} [{bar}] {percentage}% | ETA: {eta_formatted}`,
+    format: chalk.hex(successHexNum)(`[{bar}] {percentage}% | ETA: {eta_formatted}`),
     barCompleteChar: '\u2588',
     barIncompleteChar: '\u2591',
     hideCursor: true,

@@ -1,78 +1,17 @@
-import {
-  EC2Client,
-  RunInstancesCommand,
-  waitUntilInstanceRunning,
-} from "@aws-sdk/client-ec2";
+import { RunInstancesCommand, waitUntilInstanceRunning } from "@aws-sdk/client-ec2";
 import type { RunInstancesCommandInput } from "@aws-sdk/client-ec2";
+import { getEC2Client  } from "./getEC2Client";
+import { getRegion } from "../../cli/utils/region";
+import { getUbuntuAmiId } from "../AMI/getUbuntuAmiId";
 
-//const NODE_VERSION = "23.9";
-
-//const repoUrl = "https://github.com/Rabbitory/rabbitory_control_panel.git";
-
-// const userData = `#!/bin/bash
-// sudo apt update
-// sudo apt install -y npm
-// curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
-// export NVM_DIR="/usr/local/nvm"
-// [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
-// nvm install ${NODE_VERSION}
-// nvm use ${NODE_VERSION}
-
-// git clone ${repoUrl}
-// cd rabbitory_control_panel
-// npm install
-// npm run build
-// npm install -g pm2
-// pm2 start npm --name "rabbitory_control_panel" -- start
-// eval "$(pm2 startup | grep 'sudo env')"
-// pm2 save
-// `;
-
-const getImageId = (region: string) => {
-  switch (region) {
-    case "us-east-1":
-      return "ami-084568db4383264d4";
-    case "us-east-2":
-      return "ami-04f167a56786e4b09";
-    case "us-west-1":
-      return "ami-04f7a54071e74f488";
-    case "us-west-2":
-      return "ami-075686beab831bb7f";
-    case "ca-central-1":
-      return "ami-08355844f8bc94f55";
-    case "ap-southeast-1":
-      return "ami-01938df366ac2d954";
-    case "ap-souteast-2":
-      return "ami-0f5d1713c9af4fe30";
-    case "ap-northeast-1":
-      return "ami-026c39f4021df9abe";
-    case "ap-northeast-2":
-      return "ami-0d5bb3742db8fc264";
-    case "ap-south-1":
-      return "ami-0e35ddab05955cf57";
-    case "eu-central-1":
-      return "ami-03250b0e01c28d196";
-    case "eu-north-1":
-      return "ami-0c1ac8a41498c1a9c";
-    case "eu-west-1":
-      return "ami-0df368112825f8d8f";
-    case "eu-west-2":
-      return "ami-0a94c8e4ca2674d5a";
-    case "eu-west-3":
-      return "ami-0ae30afba46710143";
-    case "sa-east-1":
-      return "ami-0d866da98d63e2b42";
-    default:
-      throw new Error(`Invalid region: ${region}`);
-  }
-};
 
 export const createControlPanel = async (
-  securityGroupId: string,
-  region: string,
+  securityGroupId: string
 ): Promise<string> => {
-  const client = new EC2Client({ region: region });
+
+  const client = getEC2Client();
+  const region = getRegion();
+  const imageId = await getUbuntuAmiId(region);
 
   const userData = `#!/bin/bash
   # --- Root-level commands ---
@@ -134,23 +73,23 @@ export const createControlPanel = async (
   sudo env PATH=$PATH:$NODE_DIR pm2 startup systemd -u ubuntu --hp /home/ubuntu
   `.replace(/^\s+/gm, "");
 
+
   const encodedUserData = Buffer.from(userData).toString("base64");
-  const imageId = getImageId(region);
 
   const params: RunInstancesCommandInput = {
     ImageId: imageId,
-    InstanceType: "t3.small", // t3.small
+    InstanceType: "t3.small",
 
     MinCount: 1,
     MaxCount: 1,
     TagSpecifications: [
       {
         ResourceType: "instance",
-        Tags: [{ Key: "Name", Value: "RabbitoryControlPanel" }],
+        Tags: [{ Key: "Name", Value: "rabbitory-control-panel" }],
       },
     ],
     UserData: encodedUserData,
-    IamInstanceProfile: { Name: "RabbitoryInstanceProfile" },
+    IamInstanceProfile: { Name: "rabbitory-control-panel-instance-profile" },
     NetworkInterfaces: [
       {
         DeviceIndex: 0,
