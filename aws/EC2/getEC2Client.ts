@@ -11,3 +11,7 @@ export const getEC2Client = () => {
   
   return ec2Client;
 };
+
+export const setPrivateEC2ClientForTesting = (client: EC2Client | null) => {
+  ec2Client = client;
+};

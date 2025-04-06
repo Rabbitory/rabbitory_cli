@@ -11,3 +11,7 @@ export const getIAMClient = () => {
   
   return iamClient;
 };
+
+export const setPrivateIAMClientForTesting = (client: IAMClient | null) => {
+  iamClient = client;
+};
