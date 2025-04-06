@@ -65,15 +65,15 @@ rabbitory deploy
 After entering this command, you'll be prompted to enter your preferred AWS global region, then your preferred AWS region code.
 
 <p align="left">
-  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/select-global-region-ex.png" alt="select-global-region" width="60%" />
+  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/assets/select-global-region-ex.png" alt="select-global-region" width="60%" />
 </p>
 <p align="left">
-  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/select-aws-region-ex.png" alt="select-aws-region" width="60%" />
+  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/assets/select-aws-region-ex.png" alt="select-aws-region" width="60%" />
 </p>
 
 Upon deployment, Rabbitory spins up all the necessary AWS infrastructure for you to self-host your personal Rabbitory Control Panel, where you can create, configure, and manage your RabbitMQ instances. Once Rabittory has been successfully deployed, you'll receive a link to your Control Panel.
 
-![Deploy success](https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/rabbitory-deploy-success.png)
+![Deploy success](https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/assets/rabbitory-deploy-success.png)
 
 ### Tearing down Rabbitory
 
@@ -86,7 +86,7 @@ rabbitory destroy
 Tearing down Rabbitory involves selecting the global region and AWS region code where your Rabbitory Control Panel was initially deployed. Then, all AWS resources that were created will be automatically deleted for you, leaving you with a clean AWS environment.
 
 <p align="left">
-  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/laren/cli-readme/assets/rabbitory-destroy-success.png" alt="select-aws-region" width="80%" />
+  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/assets/rabbitory-destroy-success.png" alt="select-aws-region" width="80%" />
 </p>
 
 ---
