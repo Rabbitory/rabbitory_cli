@@ -10,7 +10,6 @@ export async function runNginxCertbotSetup(
   const ssmClient = new SSMClient({ region });
 
   const commands = [
-    // Step 1: Install nginx, certbot
     "sudo apt-get update -y",
     "sudo apt-get install -y nginx snapd",
     "sudo snap install core",
@@ -19,7 +18,7 @@ export async function runNginxCertbotSetup(
     "sudo ln -s /snap/bin/certbot /usr/bin/certbot",
     "sudo systemctl start nginx",
     "sudo systemctl enable nginx",
-    // Step 2: Setup temporary HTTP-only nginx config
+
     `sudo bash -c 'cat > /etc/nginx/sites-available/default <<EOF
 server {
     listen 80;
@@ -33,10 +32,8 @@ server {
 EOF'`,
     "sudo systemctl reload nginx",
 
-    // Step 3: Run certbot to obtain certificates (using standalone or nginx plugin)
     `sudo certbot certonly --webroot -w /var/www/html --non-interactive --agree-tos --email ${email} -d ${domain} -d www.${domain}`,
 
-    // Step 4: Configure nginx for HTTPS after certbot succeeds
     `sudo bash -c 'cat > /etc/nginx/sites-available/default <<EOF
 server {
     listen 80;

@@ -1,5 +1,3 @@
-// If using Node v18+, you can remove this
-
 export async function waitForHTTPPropagation(
   domain: string,
   timeoutMs: number = 1800000
