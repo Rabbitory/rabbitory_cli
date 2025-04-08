@@ -17,6 +17,7 @@
     "@aws-sdk/client-dynamodb": "^3.767.0",
     "@aws-sdk/client-ec2": "^3.767.0",
     "@aws-sdk/client-iam": "^3.758.0",
+    "@aws-sdk/client-route-53": "^3.782.0",
     "@aws-sdk/client-ssm": "^3.782.0",
     "@aws-sdk/util-waiter": "^3.370.0",
     "chalk": "^4.1.2",
