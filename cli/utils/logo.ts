@@ -12,15 +12,17 @@ const fullLogo = "\n" +
   "                                                                                  .o..P'      \n" +
   "                                                                                  `Y8P'       \n";
 
-const mediumLogo = "";
-
 const smallLogo = chalk.bold("🐰 Rabbitory");
 
+const logo = "    ____  ___    ____  ____  ______________  ______  __\n" +
+  "   / __ \/   |  / __ )/ __ )/  _/_  __/ __ \/ __ \ \/ /\n" +
+  "  / /_/ / /| | / __  / __  |/ /  / / / / / / /_/ /\  / \n" +
+  " / _, _/ ___ |/ /_/ / /_/ // /  / / / /_/ / _, _/ / /  \n" +
+  "/_/ |_/_/  |_/_____/_____/___/ /_/  \____/_/ |_| /_/   "
+
 export function formatLogo(terminalWidth: number): string {
-  if (terminalWidth >= 100) {
-    return chalk.hex(logoHexNum)(fullLogo);
-  } else if (terminalWidth >= 70) {
-    return chalk.hex(logoHexNum)(mediumLogo);
+  if (terminalWidth >= 56) {
+    return chalk.hex(logoHexNum)(logo);
   } else {
     return chalk.hex(logoHexNum)(smallLogo);
   }
