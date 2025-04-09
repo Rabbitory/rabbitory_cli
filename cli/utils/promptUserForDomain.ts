@@ -1,7 +1,7 @@
 import { prompt } from "enquirer";
 
-interface UseCustomDomainResponse {
-  useCustomDomain: boolean;
+interface DeploymentMethodResponse {
+  deploymentMethod: string;
 }
 
 interface DomainEmailResponse {
@@ -11,17 +11,22 @@ interface DomainEmailResponse {
 
 export const promptUserForCustomDomain =
   async (): Promise<DomainEmailResponse | null> => {
-    const useResponse: UseCustomDomainResponse = await prompt([
+    const customDomain = "Use custom domain (https)";
+    const defaultPublicIP = "Use default public IP (http only)";
+
+    const useResponse: DeploymentMethodResponse = await prompt([
       {
-        type: "confirm",
-        name: "useCustomDomain",
-        message:
-          "Do you want to use a custom domain for your app?",
-        initial: true,
+        type: "select",
+        name: "deploymentMethod",
+        message: "Choose a deployment method:",
+        choices: [
+          customDomain,
+          defaultPublicIP,
+        ],
       },
     ]);
 
-    if (!useResponse.useCustomDomain) {
+    if (useResponse.deploymentMethod === defaultPublicIP) {
       console.log("Proceeding with default public IP setup...");
       return null;
     }
