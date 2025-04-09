@@ -16,7 +16,7 @@ export const promptUserForCustomDomain =
         type: "confirm",
         name: "useCustomDomain",
         message:
-          "Do you want to use a custom domain from Route53 for your app?",
+          "Do you want to use a custom domain for your app?",
         initial: true,
       },
     ]);
@@ -30,7 +30,7 @@ export const promptUserForCustomDomain =
       {
         type: "input",
         name: "domainName",
-        message: "Enter your Route53 domain (e.g., myapp.com):",
+        message: "Enter your domain name (e.g., myapp.com):",
         validate: (input: string) =>
           input.trim() !== "" || "Domain name cannot be empty",
       },
