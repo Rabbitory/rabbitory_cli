@@ -27,7 +27,7 @@ export const promptUserForCustomDomain =
     ]);
 
     if (useResponse.deploymentMethod === defaultPublicIP) {
-      console.log("Proceeding with default public IP setup...");
+      console.log("\nProceeding with default public IP setup...\n");
       return null;
     }
 
