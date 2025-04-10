@@ -13,7 +13,7 @@ export const handleHostedZoneSetup = async (
   if (zoneResult.isNew && zoneResult.nameServers) {
     await promptUserToUpdateNameservers(zoneResult.nameServers);
   } else {
-    console.log(`Using existing hosted zone for ${customDomain}.`);
+    console.log(`\nUsing existing hosted zone for ${customDomain}.`);
   }
   return zoneResult;
 };

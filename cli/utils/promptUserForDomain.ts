@@ -1,7 +1,7 @@
 import { prompt } from "enquirer";
 
-interface UseCustomDomainResponse {
-  useCustomDomain: boolean;
+interface DeploymentMethodResponse {
+  deploymentMethod: string;
 }
 
 interface DomainEmailResponse {
@@ -11,18 +11,23 @@ interface DomainEmailResponse {
 
 export const promptUserForCustomDomain =
   async (): Promise<DomainEmailResponse | null> => {
-    const useResponse: UseCustomDomainResponse = await prompt([
+    const customDomain = "Use custom domain (https)";
+    const defaultPublicIP = "Use default public IP (http only)";
+
+    const useResponse: DeploymentMethodResponse = await prompt([
       {
-        type: "confirm",
-        name: "useCustomDomain",
-        message:
-          "Do you want to use a custom domain from Route53 for your app?",
-        initial: true,
+        type: "select",
+        name: "deploymentMethod",
+        message: "Choose a deployment method:",
+        choices: [
+          customDomain,
+          defaultPublicIP,
+        ],
       },
     ]);
 
-    if (!useResponse.useCustomDomain) {
-      console.log("Proceeding with default public IP setup...");
+    if (useResponse.deploymentMethod === defaultPublicIP) {
+      console.log("\nProceeding with default public IP setup...\n");
       return null;
     }
 
@@ -30,7 +35,7 @@ export const promptUserForCustomDomain =
       {
         type: "input",
         name: "domainName",
-        message: "Enter your Route53 domain (e.g., myapp.com):",
+        message: "Enter your domain name (e.g., myapp.com):",
         validate: (input: string) =>
           input.trim() !== "" || "Domain name cannot be empty",
       },

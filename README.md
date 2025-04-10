@@ -6,6 +6,19 @@
 
 # Rabbitory CLI
 
+- [Rabbitory CLI](#rabbitory-cli)
+  - [🛠 Features](#🛠-features)
+    - [Seamless AWS Integration](#seamless-aws-integration)
+    - [Deployment Automation](#deployment-automation)
+    - [Automated Rollback](#automated-rollback)
+  - [📦 Installation](#📦-installation)
+    - [Prerequisites](#prerequisites)
+    - [Installing Rabbitory CLI](#installing-rabbitory-cli)
+  - [🐰 Usage](#🐰-usage)
+    - [Deploying Rabbitory](#deploying-rabbitory)
+      - [Custom Domain Setup](#custom-domain-setup)
+    - [Tearing down Rabbitory](#tearing-down-rabbitory)
+
 **Rabbitory CLI** is a command-line interface tool designed to streamline the deployment of the Rabbitory Control Panel infrastructure on AWS. With Rabbitory CLI, you can effortlessly integrate with your AWS environment and automatically provision the resources needed to manage your RabbitMQ instances on the Cloud.
 
 ## 🛠 Features
@@ -42,7 +55,7 @@ Before installing Rabbitory, ensure that you have the following installed:
 
 - **AWS Command Line Interface (AWS CLI)**: This is essential for authenticating with your AWS account. If you haven't installed it yet, follow the [AWS CLI Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html). After installing AWS CLI, please proceed to configure your AWS.
 
-### Installing Rabittory CLI
+### Installing Rabbitory CLI
 
 Once your AWS credentials are set up, you can install the Rabbitory CLI by running the following command:
 
@@ -71,9 +84,23 @@ After entering this command, you'll be prompted to enter your preferred AWS glob
   <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/assets/select-aws-region-ex.png" alt="select-aws-region" width="60%" />
 </p>
 
-Upon deployment, Rabbitory spins up all the necessary AWS infrastructure for you to self-host your personal Rabbitory Control Panel, where you can create, configure, and manage your RabbitMQ instances. Once Rabittory has been successfully deployed, you'll receive a link to your Control Panel.
+Now that a region has been selected, you'll be prompted to choose between deploying to the default public IP address provided by AWS or providing your own custom domain. See next section for more information on custom domain setup.
+
+Upon deployment, Rabbitory spins up all the necessary AWS infrastructure for you to self-host your personal Rabbitory Control Panel, where you can create, configure, and manage your RabbitMQ instances. Once Rabbitory has been successfully deployed, you'll receive a link to your Control Panel.
 
 ![Deploy success](https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/assets/rabbitory-deploy-success.png)
+
+#### Custom Domain Setup
+
+Using a custom domain provides secure HTTPS access and a professional URL for your Control Panel. If you choose the default public IP option, the Control Panel will only be accessible via HTTP.
+
+If you opt to use a custom domain, you’ll be prompted to provide your domain name and email address. You’ll then need to update your domain registrar's nameservers with the ones provided. After DNS propagation (which may take up to 30 minutes), the deployment will automatically:
+
+- Create Route 53 records for both your apex domain and www subdomain
+- Set up SSL certificates using Let's Encrypt
+- Configure Nginx with HTTPS
+
+Your Rabbitory Control Panel will then be accessible via HTTPS at both your apex domain (<https://yourdomain.com>) and www subdomain (<https://www.yourdomain.com>).
 
 ### Tearing down Rabbitory
 
