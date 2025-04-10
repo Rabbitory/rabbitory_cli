@@ -1,4 +1,18 @@
 <a name="top"></a>
+
+- [Rabbitory CLI](#rabbitory-cli)
+  - [🛠 Features](#🛠-features)
+    - [Seamless AWS Integration](#seamless-aws-integration)
+    - [Deployment Automation](#deployment-automation)
+    - [Automated Rollback](#automated-rollback)
+  - [📦 Installation](#📦-installation)
+    - [Prerequisites](#prerequisites)
+    - [Installing Rabbitory CLI](#installing-rabbitory-cli)
+  - [🐰 Usage](#🐰-usage)
+    - [Deploying Rabbitory](#deploying-rabbitory)
+      - [Custom Domain Setup](#custom-domain-setup)
+    - [Tearing down Rabbitory](#tearing-down-rabbitory)
+
 ![rabbitory logo](https://raw.githubusercontent.com/your-username/rabbitory/main/assets/rabbitory-logo.png)
 
 [![npm version](https://img.shields.io/npm/v/rabbitory)](https://www.npmjs.com/package/rabbitory)
