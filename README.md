@@ -1,4 +1,10 @@
 <a name="top"></a>
+![rabbitory logo](https://raw.githubusercontent.com/your-username/rabbitory/main/assets/rabbitory-logo.png)
+
+[![npm version](https://img.shields.io/npm/v/rabbitory)](https://www.npmjs.com/package/rabbitory)
+~add real npm package here~
+
+# Rabbitory CLI
 
 - [Rabbitory CLI](#rabbitory-cli)
   - [🛠 Features](#🛠-features)
@@ -12,13 +18,6 @@
     - [Deploying Rabbitory](#deploying-rabbitory)
       - [Custom Domain Setup](#custom-domain-setup)
     - [Tearing down Rabbitory](#tearing-down-rabbitory)
-
-![rabbitory logo](https://raw.githubusercontent.com/your-username/rabbitory/main/assets/rabbitory-logo.png)
-
-[![npm version](https://img.shields.io/npm/v/rabbitory)](https://www.npmjs.com/package/rabbitory)
-~add real npm package here~
-
-# Rabbitory CLI
 
 **Rabbitory CLI** is a command-line interface tool designed to streamline the deployment of the Rabbitory Control Panel infrastructure on AWS. With Rabbitory CLI, you can effortlessly integrate with your AWS environment and automatically provision the resources needed to manage your RabbitMQ instances on the Cloud.
 
