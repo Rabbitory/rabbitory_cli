@@ -59,7 +59,8 @@ Before installing Rabbitory, ensure that you have the following installed:
 Once your AWS credentials are set up, you can install the Rabbitory CLI by running the following command:
 
 ```
-npm install -g rabbitory
+npm install rabbitory_cli -g
+
 ```
 
 ---
