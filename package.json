@@ -1,7 +1,11 @@
 {
   "name": "rabbitory_cli",
-  "version": "1.0.0",
-  "description": "Command Line Interface for Rabbitory",
+  "version": "0.1.0",
+  "description": "Rabbitory's custom Command Line Interface for provisioning and managing self-hosted RabbitMQ instances on AWS EC2",
+  "repository": {
+  "type": "git",
+  "url": "https://github.com/Rabbitory/rabbitory_cli"
+  },
   "bin": {
     "rabbitory": "./dist/cli/cli.js"
   },
@@ -10,7 +14,21 @@
     "lint": "eslint",
     "test": "jest"
   },
-  "keywords": [],
+  "keywords": [  "rabbitmq",
+  "cli",
+  "aws",
+  "ec2",
+  "rabbitory",
+  "message-broker",
+  "infrastructure",
+  "devops",
+  "self-hosted",
+  "cloud",
+  "automation",
+  "deployment",
+  "provisioning",
+  "messaging",
+  "amqp"],
   "author": "",
   "license": "ISC",
   "dependencies": {
