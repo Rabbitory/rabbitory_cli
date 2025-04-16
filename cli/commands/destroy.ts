@@ -10,6 +10,7 @@ import { promptUserForRegionCode } from "../utils/promptUserForAWSRegion";
 import chalk from "chalk";
 
 const START_MSG = '\nPreparing to teardown the Rabbitory Infrastructure...\n';
+const TEAR_DOWN_MSG = "\nDestroying AWS Resources for Rabbitory...\n(This usually takes about 3-5 minutes to complete)\n"
 const COMPLETE_MSG = `\nRabbitory infrastructure teardown complete.\nAll Rabbitory AWS services and resources have been removed.\n`
 
 export const destroy = async () => {
@@ -17,6 +18,8 @@ export const destroy = async () => {
     console.log(START_MSG);
 
     await promptUserForRegionCode();
+
+    console.log(TEAR_DOWN_MSG);
 
     await runWithSpinner("Deleting DynamoDB Table...", () => deleteTable(), "Deleted DynamoDB Table");
     await runWithSpinner("Terminating Control Panel EC2 instance...", () => deleteControlPanel(), "Terminated EC2 instance");

@@ -119,5 +119,3 @@ Tearing down Rabbitory involves selecting the global region and AWS region code 
 ---
 
 🤝 Developed By: Jacqueline Amherst | Zijin Gong | Laren Cozart | Mason Abruzzesse
-
--->create links for our names to our github overview pages

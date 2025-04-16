@@ -21,7 +21,9 @@ import { getRegion } from "../utils/region";
 
 const TERMINAL_WIDTH = stdout.columns || 80;
 const START_MSG = "\nPreparing to setup the Rabbitory Infrastructure...\n";
-const URL_WAIT_MSG = "\nWaiting for Rabbitory Control Panel to be ready...";
+const RESOURCE_PROVISIONING_MSG = "\nProvisioning AWS Resources for Rabbitory...\n(This usually takes about 2-3 minutes to complete)\n";
+const DNS_RECORDS_MSG = "\nCreating DNS Records...\n(This can take between 5 and 30 minutes to complete dependent on DNS record propagation)\n";
+const URL_WAIT_MSG = "\nWaiting for Rabbitory Control Panel to be ready...\n(This usually takes about 3-5 minutes to complete)\n";
 
 export const deploy = async () => {
   try {
@@ -32,6 +34,8 @@ export const deploy = async () => {
     await promptUserForRegionCode();
 
     const userResponse = await promptUserForCustomDomain();
+
+    console.log(RESOURCE_PROVISIONING_MSG);
 
     await runWithSpinner(
       "Setting up Rabbitory Contol Panel IAM...",
@@ -72,13 +76,17 @@ export const deploy = async () => {
         throw new Error("Rabbitory instance does not have a public IP yet.");
       }
       const zoneResult = await handleHostedZoneSetup(domainName, region);
+
+      console.log(DNS_RECORDS_MSG);
+
       await runWithSpinner(
-        "Creating A record for apex domain...",
+        "Creating an A-record for apex domain...",
         () => createRecord(zoneResult.hostedZoneId, domainName, ip, region),
-        "A record for apex domain created"
+        "Created A-record for apex domain"
       );
+
       await runWithSpinner(
-        "Creating A record for www subdomain...",
+        "Creating an A-record for www subdomain...",
         () =>
           createRecord(
             zoneResult.hostedZoneId,
@@ -86,8 +94,9 @@ export const deploy = async () => {
             ip,
             region
           ),
-        "A record for www subdomain created"
+        "Created A-record for www subdomain"
       );
+
       await runWithSpinner(
         "Waiting for DNS propagation...",
         () => waitForHTTPPropagation(domainName),
@@ -101,6 +110,7 @@ export const deploy = async () => {
     }
 
     console.log(URL_WAIT_MSG);
+
     const rabbitoryUrl = await getReadyRabbitoryUrl(
       instanceId,
       userResponse && `https://${userResponse.domainName}`
@@ -108,11 +118,12 @@ export const deploy = async () => {
 
     console.log(
       chalk.white(
-        `\nThe Rabbitory Control Panel is available at: ${chalk.cyan(
+        `\nThe Rabbitory Control Panel is now available at: ${chalk.cyan(
           rabbitoryUrl
         )}\n`
       )
     );
+
     console.log(formatLogo(TERMINAL_WIDTH));
   } catch (error) {
     console.error(
@@ -120,6 +131,7 @@ export const deploy = async () => {
       error,
       "\n"
     );
+
     console.log("Rolling back your deployment...");
     await destroy();
     console.log("\nDeployment successfully rolled back.");
