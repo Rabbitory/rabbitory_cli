@@ -1,24 +1,14 @@
-<a name="top"></a>
-![rabbitory logo](https://raw.githubusercontent.com/your-username/rabbitory/main/assets/rabbitory-logo.png)
-
-[![npm version](https://img.shields.io/npm/v/rabbitory_cli)](https://www.npmjs.com/package/rabbitory_cli)
+<a name="top">
+<img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/rabbitory-logo.png" alt="rabbitory-logo" width="20%"/>
+</a>
 
 # Rabbitory CLI
 
-**Rabbitory CLI** is a command-line interface tool designed to streamline the deployment of the Rabbitory Control Panel infrastructure on AWS. With Rabbitory CLI, you can effortlessly integrate with your AWS environment and automatically provision the resources needed to manage your RabbitMQ instances on the Cloud.
+[![npm version](https://img.shields.io/npm/v/rabbitory_cli)](https://www.npmjs.com/package/rabbitory_cli)
 
-- [Rabbitory CLI](#rabbitory-cli)
-  - [🛠 Features](#🛠-features)
-    - [Seamless AWS Integration](#seamless-aws-integration)
-    - [Deployment Automation](#deployment-automation)
-    - [Automated Rollback](#automated-rollback)
-  - [📦 Installation](#📦-installation)
-    - [Prerequisites](#prerequisites)
-    - [Installing Rabbitory CLI](#installing-rabbitory-cli)
-  - [🐰 Usage](#🐰-usage)
-    - [Deploying Rabbitory](#deploying-rabbitory)
-    - [Custom Domain Setup](#custom-domain-setup)
-    - [Tearing down Rabbitory](#tearing-down-rabbitory)
+Rabbitory command-line interface (CLI) streamlines the deployment of the Rabbitory Control Panel infrastructure on AWS. You can effortlessly integrate with your AWS environment and automatically provision the resources needed to manage your RabbitMQ instances on the Cloud.
+
+For information
 
 ## 🛠 Features
 
@@ -60,7 +50,6 @@ Once your AWS credentials are set up, you can install the Rabbitory CLI by runni
 
 ```
 npm install rabbitory_cli -g
-
 ```
 
 ---
@@ -78,19 +67,18 @@ rabbitory deploy
 After entering this command, you'll be prompted to enter your preferred AWS global region, then your preferred AWS region code.
 
 <p align="left">
-  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/assets/select-global-region-ex.png" alt="select-global-region" width="60%" />
-</p>
-<p align="left">
-  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/assets/select-aws-region-ex.png" alt="select-aws-region" width="60%" />
+  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/select-region-code.png" alt="select-region-code" width="80%"/>
 </p>
 
 Now that a region has been selected, you'll be prompted to choose between deploying to the default public IP address provided by AWS or providing your own custom domain. See next section for more information on custom domain setup.
 
 Upon deployment, Rabbitory spins up all the necessary AWS infrastructure for you to self-host your personal Rabbitory Control Panel, where you can create, configure, and manage your RabbitMQ instances. Once Rabbitory has been successfully deployed, you'll receive a link to your Control Panel.
 
-![Deploy success](https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/assets/rabbitory-deploy-success.png)
+<p align="left">
+  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/deploy-success.png" alt="deploy-success" />
+</p>
 
-#### Custom Domain Setup
+### Custom Domain Setup
 
 Using a custom domain provides secure HTTPS access and a professional URL for your Control Panel. If you choose the default public IP option, the Control Panel will only be accessible via HTTP.
 
@@ -99,6 +87,13 @@ If you opt to use a custom domain, you’ll be prompted to provide your domain n
 - Create Route 53 records for both your apex domain and www subdomain
 - Set up SSL certificates using Let's Encrypt
 - Configure Nginx with HTTPS
+
+<p align="left">
+  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/select-http-or-https.png" alt="select-http-or-https"/>
+</p>
+<p align="left">
+  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/provide-custom-domain.png" alt="provide-custom-domain" />
+</p>
 
 Your Rabbitory Control Panel will then be accessible via HTTPS at both your apex domain (<https://yourdomain.com>) and www subdomain (<https://www.yourdomain.com>).
 
@@ -113,7 +108,7 @@ rabbitory destroy
 Tearing down Rabbitory involves selecting the global region and AWS region code where your Rabbitory Control Panel was initially deployed. Then, all AWS resources that were created will be automatically deleted for you, leaving you with a clean AWS environment.
 
 <p align="left">
-  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/assets/rabbitory-destroy-success.png" alt="select-aws-region" width="80%" />
+  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/destroy-success.png" alt="destroy-success" />
 </p>
 
 ---
