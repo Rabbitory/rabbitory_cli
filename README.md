@@ -84,16 +84,16 @@ Using a custom domain provides secure HTTPS access and a professional URL for yo
 
 If you opt to use a custom domain, you’ll be prompted to provide your domain name and email address. You’ll then need to update your domain registrar's nameservers with the ones provided. After DNS propagation (which may take up to 30 minutes), the deployment will automatically:
 
+- Create Route 53 records for both your apex domain and www subdomain
+- Set up SSL certificates using Let's Encrypt
+- Configure Nginx with HTTPS
+
 <p align="left">
   <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/select-http-or-https.png" alt="select-http-or-https"/>
 </p>
 <p align="left">
   <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/provide-custom-domain.png" alt="provide-custom-domain" />
 </p>
-
-- Create Route 53 records for both your apex domain and www subdomain
-- Set up SSL certificates using Let's Encrypt
-- Configure Nginx with HTTPS
 
 Your Rabbitory Control Panel will then be accessible via HTTPS at both your apex domain (<https://yourdomain.com>) and www subdomain (<https://www.yourdomain.com>).
 
