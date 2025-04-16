@@ -1,6 +1,6 @@
 {
   "name": "rabbitory_cli",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Rabbitory's custom Command Line Interface for provisioning and managing self-hosted RabbitMQ instances on AWS EC2",
   "repository": {
   "type": "git",
