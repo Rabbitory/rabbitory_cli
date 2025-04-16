@@ -78,7 +78,7 @@ Upon deployment, Rabbitory spins up all the necessary AWS infrastructure for you
   <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/deploy-success.png" alt="deploy-success" />
 </p>
 
-#### Custom Domain Setup
+### Custom Domain Setup
 
 Using a custom domain provides secure HTTPS access and a professional URL for your Control Panel. If you choose the default public IP option, the Control Panel will only be accessible via HTTP.
 
