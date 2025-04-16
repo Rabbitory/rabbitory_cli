@@ -67,7 +67,7 @@ rabbitory deploy
 After entering this command, you'll be prompted to enter your preferred AWS global region, then your preferred AWS region code.
 
 <p align="left">
-  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/select-region-code.png" alt="select-region-code"/>
+  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/select-region-code.png" alt="select-region-code" width="80%/>
 </p>
 
 Now that a region has been selected, you'll be prompted to choose between deploying to the default public IP address provided by AWS or providing your own custom domain. See next section for more information on custom domain setup.
