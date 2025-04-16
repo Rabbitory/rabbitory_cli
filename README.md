@@ -8,8 +8,6 @@
 
 Rabbitory command-line interface (CLI) streamlines the deployment of the Rabbitory Control Panel infrastructure on AWS. You can effortlessly integrate with your AWS environment and automatically provision the resources needed to manage your RabbitMQ instances on the Cloud.
 
-For information
-
 ## 🛠 Features
 
 ### Seamless AWS Integration
@@ -74,6 +72,8 @@ Now that a region has been selected, you'll be prompted to choose between deploy
 
 Upon deployment, Rabbitory spins up all the necessary AWS infrastructure for you to self-host your personal Rabbitory Control Panel, where you can create, configure, and manage your RabbitMQ instances. Once Rabbitory has been successfully deployed, you'll receive a link to your Control Panel.
 
+See the [Rabbitory Control Panel github repository ](https://github.com/Rabbitory/rabbitory_control_panel) for more information.
+
 <p align="left">
   <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/deploy-success.png" alt="deploy-success" />
 </p>
@@ -88,9 +88,6 @@ If you opt to use a custom domain, you’ll be prompted to provide your domain n
 - Set up SSL certificates using Let's Encrypt
 - Configure Nginx with HTTPS
 
-<p align="left">
-  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/select-http-or-https.png" alt="select-http-or-https"/>
-</p>
 <p align="left">
   <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/provide-custom-domain.png" alt="provide-custom-domain" />
 </p>
