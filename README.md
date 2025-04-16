@@ -67,9 +67,6 @@ rabbitory deploy
 After entering this command, you'll be prompted to enter your preferred AWS global region, then your preferred AWS region code.
 
 <p align="left">
-  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/select-global-region.png" alt="select-global-region" width="80%" />
-</p>
-<p align="left">
   <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/select-region-code.png" alt="select-region-code" width="80%" />
 </p>
 
