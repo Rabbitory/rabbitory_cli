@@ -91,7 +91,7 @@ If you opt to use a custom domain, you’ll be prompted to provide your domain n
   <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/select-http-or-https.png" alt="select-http-or-https" width="80%" />
 </p>
 <p align="left">
-  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/provide-custom-domain.png" alt="provide-custom-domain" width="80%" />
+  <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/provide-custom-domain.png" alt="provide-custom-domain" />
 </p>
 
 - Create Route 53 records for both your apex domain and www subdomain
