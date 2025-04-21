@@ -36,7 +36,7 @@ If any step of the deployment process fails, Rabbitory CLI will automatically ro
 
 Before installing Rabbitory, ensure that you have the following installed:
 
-- **Node.js**: Version 18 or higher. If you need to install Node.js, you can do so [here](https://nodejs.org/){:target="\_blank"}.
+- **Node.js**: Version 18 or higher. If you need to install Node.js, you can do so [here](https://nodejs.org/).
 
 - **npm**: Node.js package manager, which comes bundled with Node.js.
 
