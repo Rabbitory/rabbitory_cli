@@ -6,7 +6,7 @@
 
 [![npm version](https://img.shields.io/npm/v/rabbitory_cli)](https://www.npmjs.com/package/rabbitory_cli)
 
-Rabbitory command-line interface (CLI) streamlines the deployment of the Rabbitory Control Panel infrastructure on AWS. You can effortlessly integrate with your AWS environment and automatically provision the resources needed to manage your RabbitMQ instances on the Cloud.
+Rabbitory command-line interface (CLI) streamlines the deployment of the Rabbitory Control Panel infrastructure on AWS. Effortlessly integrate with your AWS environment and automatically provision the resources needed to manage your RabbitMQ instances on the Cloud.
 
 ## 🛠 Features
 
@@ -36,15 +36,15 @@ If any step of the deployment process fails, Rabbitory CLI will automatically ro
 
 Before installing Rabbitory, ensure that you have the following installed:
 
-- **Node.js**: Version 18 or higher. If you need to install Node.js, you can do so [here](https://nodejs.org/).
+- **Node.js**: Version 18 or higher. If you need to install Node.js, you can do so <a href="[/page/url/](https://nodejs.org/)" target="_blank">here</a>.
 
 - **npm**: Node.js package manager, which comes bundled with Node.js.
 
-- **AWS Command Line Interface (AWS CLI)**: This is essential for authenticating with your AWS account. If you haven't installed it yet, follow the [AWS CLI Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html). After installing AWS CLI, please proceed to configure your AWS.
+- **AWS Command Line Interface (AWS CLI)**: This is essential for authenticating with your AWS account. If you haven't installed it yet, follow the [AWS CLI Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html). Ensure the AWS user you are authenticated with has the AdministratorAccess policy permission. After installing AWS CLI, please proceed to configure your AWS.
 
 ### Installing Rabbitory CLI
 
-Once your AWS credentials are set up, you can install the Rabbitory CLI by running the following command:
+Once your AWS credentials are set up, install the Rabbitory CLI by running the following command:
 
 ```
 npm install rabbitory_cli -g
@@ -64,15 +64,15 @@ rabbitory deploy
 
 After entering this command, you'll be prompted to enter your preferred AWS global region, then your preferred AWS region code.
 
+Your preferred region to deploy Rabbitory can be different from your AWS user authenticated region. Just ensure your authenticated user has access to your preferred deployment region.
+
 <p align="left">
   <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/select-region-code.png" alt="select-region-code" width="80%"/>
 </p>
 
 Now that a region has been selected, you'll be prompted to choose between deploying to the default public IP address provided by AWS or providing your own custom domain. See next section for more information on custom domain setup.
 
-Upon deployment, Rabbitory spins up all the necessary AWS infrastructure for you to self-host your personal Rabbitory Control Panel, where you can create, configure, and manage your RabbitMQ instances. Once Rabbitory has been successfully deployed, you'll receive a link to your Control Panel.
-
-See the [Rabbitory Control Panel github repository ](https://github.com/Rabbitory/rabbitory_control_panel) for more information.
+Upon deployment, Rabbitory spins up all the necessary AWS infrastructure for you to self-host your personal Rabbitory Control Panel, where you can create, configure, and manage your RabbitMQ instances. Once Rabbitory has been successfully deployed, you'll receive a link to your Control Panel. See [Rabbitory Control Panel](https://github.com/Rabbitory/rabbitory_control_panel) for more information.
 
 <p align="left">
   <img src="https://raw.githubusercontent.com/Rabbitory/rabbitory_cli/main/assets/deploy-success.png" alt="deploy-success" />
@@ -96,7 +96,7 @@ Your Rabbitory Control Panel will then be accessible via HTTPS at both your apex
 
 ### Tearing down Rabbitory
 
-If you need to teardown your Rabbitory Control Panel and all of its associated RabbitMQ instances, you can run the following command:
+If you need to teardown your Rabbitory Control Panel and all of its associated RabbitMQ instances, run the following command:
 
 ```
 rabbitory destroy
